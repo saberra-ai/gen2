@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "failed_run": "https://github.com/saberra-ai/gen2/actions/runs/39088182262",
+  "source_commit": "ba48a1d0101aa454e74f6eacd9838e9ae724d5a4",
+  "four_windows_checkout_failures": [
+    {
+      "job_id": 117559072449,
+      "name": "features (windows-latest, asr-dynamic,backend-diar-nemo)"
+    },
+    {
+      "job_id": 117559072456,
+      "name": "features (windows-latest)"
+    },
+    {
+      "job_id": 117559072501,
+      "name": "features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)"
+    },
+    {
+      "job_id": 117559072558,
+      "name": "features (windows-latest, backend-diar-nemo)"
+    }
+  ],
+  "checkout_error_count": 8,
+  "long_paths": [
+    {
+      "path": "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-thread-cpu-local-replay/reviewed-sources/benches/results/nemotron-diarization/windows-x86_64/2026-10-17-thread-cpu-admission-preparation/prepared/collect-windows-thread-cpu-profile-v1.py",
+      "absolute_characters_under_runner_root": 264
+    },
+    {
+      "path": "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-thread-cpu-local-replay/reviewed-sources/benches/results/nemotron-diarization/windows-x86_64/2026-10-17-thread-cpu-admission-preparation/prepared/replay-windows-thread-cpu-profile-supervision-v1.py",
+      "absolute_characters_under_runner_root": 275
+    }
+  ],
+  "all_other_jobs_passed": true,
+  "repair_windows_execution": "pending",
+  "release_qualified": false,
+  "inputs": {
+    "feature-checks-ba48a1d0-failed.json": {
+      "bytes": 28499,
+      "sha256": "2d40f5e4a747f08d6a8cde0ff45871e840f8e88fd22821f4614cf5769941b953"
+    },
+    "feature-checks-ba48a1d0-failed.log": {
+      "bytes": 120285,
+      "sha256": "b457aaf35825830065f3c4e4034825f37b00c6b4c4db96cefb8de29f758ad33d"
+    }
+  }
+}

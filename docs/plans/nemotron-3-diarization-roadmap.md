@@ -12,6 +12,13 @@ output replay makes no additional model calls. Human word annotation and
 independent review remain documented as deferred at the user's request; N4/N5
 and main promotion remain open.
 
+The [Windows checkout regression](../research/nemotron-windows-checkout.md)
+introduced by deeply nested retained evidence is now repaired and verified.
+All 13 feature-check jobs pass at `f421e960`, including all four Windows
+configurations and their actual 22-file long-path checks. This restores
+checkout/feature compatibility; it does not change the failed accuracy or
+Windows real-time results, or close N4/N5 release gates.
+
 The separate [batched matrix observer control](../research/nemotron-matrix-batch-results.md)
 now passes all twelve fresh native Mac graph processes, 144 byte-exact vectors
 against the earlier observer, and complete dispatch/fusion coverage. Only

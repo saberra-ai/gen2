@@ -1,0 +1,811 @@
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	﻿2026-10-18T01:54:57.1060106Z ##[group]Run actions/checkout@v4
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:57.1062429Z with:
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:57.1062950Z   submodules: recursive
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:57.1064059Z   repository: saberra-ai/gen2
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:57.1069080Z   token: ***
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:57.1069579Z   ssh-strict: true
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:57.1070009Z   ssh-user: git
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:57.1070440Z   persist-credentials: true
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:57.1070925Z   clean: true
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:57.1071357Z   sparse-checkout-cone-mode: true
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:57.1071886Z   fetch-depth: 1
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:57.1072303Z   fetch-tags: false
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:57.1072741Z   show-progress: true
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:57.1073175Z   lfs: false
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:57.1073581Z   set-safe-directory: true
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:57.1074129Z   allow-unsafe-pr-checkout: false
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:57.1074930Z ##[endgroup]
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:57.2942395Z Syncing repository: saberra-ai/gen2
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:57.2945019Z ##[group]Getting Git version info
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:57.2946200Z Working directory is 'D:\a\gen2\gen2'
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:57.4664891Z [command]"C:\Program Files\Git\bin\git.exe" version
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:57.9391198Z git version 2.56.0.windows.2
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:57.9450837Z ##[endgroup]
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:57.9473702Z Temporarily overriding HOME='D:\a\_temp\ec55be41-ff28-497a-8d49-99d623f7e297' before making global git config changes
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:57.9476762Z Adding repository directory to the temporary git global config as a safe directory
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:57.9488473Z [command]"C:\Program Files\Git\bin\git.exe" config --global --add safe.directory D:\a\gen2\gen2
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:58.0283015Z Deleting the contents of 'D:\a\gen2\gen2'
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:58.0288726Z ##[group]Initializing the repository
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:58.0301210Z [command]"C:\Program Files\Git\bin\git.exe" init D:\a\gen2\gen2
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:58.2510640Z Initialized empty Git repository in D:/a/gen2/gen2/.git/
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:58.2572411Z [command]"C:\Program Files\Git\bin\git.exe" remote add origin https://github.com/saberra-ai/gen2
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:58.3611801Z ##[endgroup]
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:58.3613346Z ##[group]Disabling automatic garbage collection
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:58.3619002Z [command]"C:\Program Files\Git\bin\git.exe" config --local gc.auto 0
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:58.4045903Z ##[endgroup]
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:58.4047024Z ##[group]Setting up auth
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:58.4057064Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:58.4463388Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:01.2367660Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:01.2776415Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:02.0821550Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp ^includeIf\.gitdir:
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:02.1414112Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "git config --local --show-origin --name-only --get-regexp remote.origin.url"
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:02.8659120Z [command]"C:\Program Files\Git\bin\git.exe" config --local http.https://github.com/.extraheader "AUTHORIZATION: basic ***"
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:02.9139591Z ##[endgroup]
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:02.9140539Z ##[group]Fetching the repository
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:02.9154883Z [command]"C:\Program Files\Git\bin\git.exe" -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +ba48a1d0101aa454e74f6eacd9838e9ae724d5a4:refs/remotes/origin/codex/nemotron3-n0
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:10.2298508Z From https://github.com/saberra-ai/gen2
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:10.2302518Z  * [new ref]         ba48a1d0101aa454e74f6eacd9838e9ae724d5a4 -> origin/codex/nemotron3-n0
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:10.2344008Z ##[endgroup]
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:10.2344667Z ##[group]Determining the checkout info
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:10.2348594Z ##[endgroup]
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:10.2362523Z [command]"C:\Program Files\Git\bin\git.exe" sparse-checkout disable
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:10.2888064Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset-all extensions.worktreeConfig
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:10.3302623Z ##[group]Checking out the ref
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:10.3312095Z [command]"C:\Program Files\Git\bin\git.exe" checkout --progress --force -B codex/nemotron3-n0 refs/remotes/origin/codex/nemotron3-n0
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:11.5135004Z Updating files:   6% (1746/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:11.5841726Z Updating files:   7% (1973/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:11.6508600Z Updating files:   8% (2255/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:11.7161172Z Updating files:   9% (2537/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:11.7720473Z Updating files:  10% (2818/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:11.8948562Z Updating files:  11% (3100/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:11.9536993Z Updating files:  12% (3382/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:12.1050824Z Updating files:  13% (3664/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:12.2860242Z Updating files:  14% (3946/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:12.4258077Z Updating files:  15% (4227/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:12.4332291Z Updating files:  16% (4509/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:12.5136438Z Updating files:  16% (4522/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:12.6802838Z Updating files:  17% (4791/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:12.8879134Z Updating files:  18% (5073/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:12.9676054Z Updating files:  19% (5355/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:13.0325546Z Updating files:  20% (5636/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:13.0985928Z Updating files:  21% (5918/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:13.1565073Z Updating files:  22% (6200/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:13.2505460Z Updating files:  23% (6482/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:13.3449532Z Updating files:  24% (6763/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:13.4202594Z Updating files:  25% (7045/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:13.4335216Z Updating files:  26% (7327/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:13.5192781Z Updating files:  26% (7366/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:13.5909723Z Updating files:  27% (7609/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:13.6616138Z Updating files:  28% (7891/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:13.7396645Z Updating files:  29% (8172/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:13.8194756Z Updating files:  30% (8454/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:13.9071735Z Updating files:  31% (8736/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:13.9841622Z Updating files:  32% (9018/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:14.0795386Z Updating files:  33% (9300/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:14.3439176Z Updating files:  34% (9581/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:14.4259325Z Updating files:  35% (9863/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:14.4333507Z Updating files:  36% (10145/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:14.5196785Z Updating files:  36% (10171/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:14.6092205Z Updating files:  37% (10427/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:14.7191787Z Updating files:  38% (10709/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:14.8062724Z Updating files:  39% (10990/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:14.9019680Z Updating files:  40% (11272/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:14.9813164Z Updating files:  41% (11554/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:15.1187702Z Updating files:  42% (11836/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:15.2285862Z Updating files:  43% (12117/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:15.4695576Z Updating files:  44% (12399/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:15.4697631Z Updating files:  44% (12680/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:15.6129583Z Updating files:  45% (12681/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:15.8502343Z Updating files:  46% (12963/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:15.9422608Z Updating files:  47% (13245/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:16.4524017Z Updating files:  48% (13526/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:16.7277040Z Updating files:  48% (13772/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:17.4561683Z Updating files:  49% (13808/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:18.0217219Z Updating files:  49% (13974/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:18.4560269Z Updating files:  50% (14090/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:19.3763750Z Updating files:  50% (14174/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:19.4563587Z Updating files:  51% (14372/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:20.4604877Z Updating files:  51% (14399/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:20.5744120Z Updating files:  51% (14601/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:21.4605241Z Updating files:  52% (14654/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:21.7602518Z Updating files:  52% (14810/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:21.8815400Z Updating files:  53% (14935/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:21.9818641Z Updating files:  54% (15217/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:22.0631116Z Updating files:  55% (15499/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:22.4377988Z Updating files:  56% (15781/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:22.4769143Z Updating files:  57% (16063/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:23.4828195Z Updating files:  57% (16069/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:23.8885290Z Updating files:  57% (16265/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:24.4910995Z Updating files:  58% (16344/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:25.3156013Z Updating files:  58% (16457/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:25.5054176Z Updating files:  59% (16626/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:26.5015333Z Updating files:  59% (16655/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:26.7327447Z Updating files:  59% (16850/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:27.5187686Z Updating files:  60% (16908/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:27.9502747Z Updating files:  60% (17069/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:28.1568790Z Updating files:  61% (17190/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:28.5169750Z Updating files:  62% (17471/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:29.1966535Z Updating files:  62% (17571/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:29.5049948Z Updating files:  63% (17753/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:29.5161251Z Updating files:  64% (18035/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:30.5203053Z Updating files:  64% (18038/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:30.6642943Z Updating files:  64% (18269/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:31.5137703Z Updating files:  65% (18317/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:32.0447715Z Updating files:  65% (18471/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:32.5261651Z Updating files:  66% (18599/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:33.4092087Z Updating files:  66% (18709/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:33.5352858Z Updating files:  67% (18880/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:34.5506550Z Updating files:  67% (18917/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:34.7749325Z Updating files:  67% (19115/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:35.1207731Z Updating files:  68% (19162/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:35.5508452Z Updating files:  69% (19444/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:36.2477665Z Updating files:  69% (19589/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:36.5506464Z Updating files:  70% (19726/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:37.5597836Z Updating files:  70% (19807/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:37.5868250Z Updating files:  70% (20007/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:38.5499412Z Updating files:  71% (20008/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:38.8282163Z Updating files:  71% (20214/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:39.5514416Z Updating files:  72% (20289/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:40.1940627Z Updating files:  72% (20452/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:40.5585084Z Updating files:  73% (20571/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:40.7155172Z Updating files:  73% (20655/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:41.5128964Z Updating files:  74% (20853/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:41.5613153Z Updating files:  75% (21135/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:42.5766296Z Updating files:  75% (21138/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:42.8359953Z Updating files:  75% (21337/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:43.5889419Z Updating files:  76% (21417/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:44.2079523Z Updating files:  76% (21559/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:44.6021411Z Updating files:  77% (21698/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:45.5937215Z Updating files:  77% (21760/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:45.6202094Z Updating files:  77% (21965/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:46.3923816Z Updating files:  78% (21980/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:46.4706535Z Updating files:  79% (22262/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:46.5927199Z Updating files:  80% (22544/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:46.6233902Z Updating files:  80% (22781/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:46.9010535Z Updating files:  81% (22825/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:47.6014773Z Updating files:  82% (23107/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:48.2622515Z Updating files:  82% (23233/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:48.6145874Z Updating files:  83% (23389/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:49.6136779Z Updating files:  83% (23453/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:49.6242246Z Updating files:  83% (23660/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:50.6267384Z Updating files:  84% (23671/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:51.1309259Z Updating files:  84% (23843/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:51.6225591Z Updating files:  85% (23953/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:52.3438928Z Updating files:  85% (24061/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:52.4472154Z Updating files:  86% (24234/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:52.4986499Z Updating files:  87% (24516/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:52.5487424Z Updating files:  88% (24798/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:52.5864456Z Updating files:  89% (25080/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:52.6236837Z Updating files:  90% (25362/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:52.6480985Z Updating files:  90% (25526/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:52.7600016Z Updating files:  91% (25643/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:52.7648666Z Updating files:  92% (25925/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:52.7684904Z ##[error]error: unable to create file benches/results/nemotron-diarization/windows-x86_64/2026-10-17-thread-cpu-local-replay/reviewed-sources/benches/results/nemotron-diarization/windows-x86_64/2026-10-17-thread-cpu-admission-preparation/prepared/collect-windows-thread-cpu-profile-v1.py: Filename too long
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:52.7700295Z ##[error]error: unable to create file benches/results/nemotron-diarization/windows-x86_64/2026-10-17-thread-cpu-local-replay/reviewed-sources/benches/results/nemotron-diarization/windows-x86_64/2026-10-17-thread-cpu-admission-preparation/prepared/replay-windows-thread-cpu-profile-supervision-v1.py: Filename too long
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:53.2741951Z Updating files:  93% (26207/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:53.3441728Z Updating files:  94% (26489/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:53.4310567Z Updating files:  95% (26771/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:53.5241050Z Updating files:  96% (27052/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:53.6247264Z Updating files:  97% (27334/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:53.6391698Z Updating files:  97% (27600/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:53.7183526Z Updating files:  98% (27616/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:53.8358537Z Updating files:  99% (27898/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:53.8359096Z Updating files: 100% (28179/28179)
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:53.8359876Z Updating files: 100% (28179/28179), done.
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:53.8828328Z Switched to a new branch 'codex/nemotron3-n0'
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:53.8844821Z branch 'codex/nemotron3-n0' set up to track 'origin/codex/nemotron3-n0'.
+features (windows-latest, asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:53.9130767Z ##[error]The process 'C:\Program Files\Git\bin\git.exe' failed with exit code 1
+features (windows-latest)	Run actions/checkout@v4	﻿2026-10-18T01:54:56.6951027Z ##[group]Run actions/checkout@v4
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:54:56.6952615Z with:
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:54:56.6953397Z   submodules: recursive
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:54:56.6954284Z   repository: saberra-ai/gen2
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:54:56.6962787Z   token: ***
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:54:56.6963612Z   ssh-strict: true
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:54:56.6964415Z   ssh-user: git
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:54:56.6965217Z   persist-credentials: true
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:54:56.6966100Z   clean: true
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:54:56.6966916Z   sparse-checkout-cone-mode: true
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:54:56.6967867Z   fetch-depth: 1
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:54:56.6968674Z   fetch-tags: false
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:54:56.6969498Z   show-progress: true
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:54:56.6970326Z   lfs: false
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:54:56.6971121Z   set-safe-directory: true
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:54:56.6972066Z   allow-unsafe-pr-checkout: false
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:54:56.6973297Z ##[endgroup]
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:54:56.8494137Z Syncing repository: saberra-ai/gen2
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:54:56.8496758Z ##[group]Getting Git version info
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:54:56.8497817Z Working directory is 'D:\a\gen2\gen2'
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:54:56.9402695Z [command]"C:\Program Files\Git\bin\git.exe" version
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:54:57.2455966Z git version 2.56.0.windows.2
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:54:57.2516188Z ##[endgroup]
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:54:57.2535242Z Temporarily overriding HOME='D:\a\_temp\08c346eb-c8e3-4602-b101-05d36a72fe98' before making global git config changes
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:54:57.2537845Z Adding repository directory to the temporary git global config as a safe directory
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:54:57.2546322Z [command]"C:\Program Files\Git\bin\git.exe" config --global --add safe.directory D:\a\gen2\gen2
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:54:57.3394915Z Deleting the contents of 'D:\a\gen2\gen2'
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:54:57.3402403Z ##[group]Initializing the repository
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:54:57.3410650Z [command]"C:\Program Files\Git\bin\git.exe" init D:\a\gen2\gen2
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:54:57.4311844Z Initialized empty Git repository in D:/a/gen2/gen2/.git/
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:54:57.4364938Z [command]"C:\Program Files\Git\bin\git.exe" remote add origin https://github.com/saberra-ai/gen2
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:54:57.5044218Z ##[endgroup]
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:54:57.5045704Z ##[group]Disabling automatic garbage collection
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:54:57.5053012Z [command]"C:\Program Files\Git\bin\git.exe" config --local gc.auto 0
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:54:57.5463193Z ##[endgroup]
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:54:57.5465328Z ##[group]Setting up auth
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:54:57.5482395Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:54:57.5892272Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:54:58.9930373Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:54:59.0331377Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:54:59.6293927Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp ^includeIf\.gitdir:
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:54:59.6709139Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "git config --local --show-origin --name-only --get-regexp remote.origin.url"
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:00.2611838Z [command]"C:\Program Files\Git\bin\git.exe" config --local http.https://github.com/.extraheader "AUTHORIZATION: basic ***"
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:00.3030119Z ##[endgroup]
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:00.3031026Z ##[group]Fetching the repository
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:00.3045925Z [command]"C:\Program Files\Git\bin\git.exe" -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +ba48a1d0101aa454e74f6eacd9838e9ae724d5a4:refs/remotes/origin/codex/nemotron3-n0
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:09.2796003Z From https://github.com/saberra-ai/gen2
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:09.2844358Z  * [new ref]         ba48a1d0101aa454e74f6eacd9838e9ae724d5a4 -> origin/codex/nemotron3-n0
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:09.2846527Z ##[endgroup]
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:09.2847133Z ##[group]Determining the checkout info
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:09.2848174Z ##[endgroup]
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:09.2858760Z [command]"C:\Program Files\Git\bin\git.exe" sparse-checkout disable
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:09.3402925Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset-all extensions.worktreeConfig
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:09.3828759Z ##[group]Checking out the ref
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:09.3842334Z [command]"C:\Program Files\Git\bin\git.exe" checkout --progress --force -B codex/nemotron3-n0 refs/remotes/origin/codex/nemotron3-n0
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:10.4781266Z Updating files:   6% (1967/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:10.5335199Z Updating files:   7% (1973/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:10.5926637Z Updating files:   8% (2255/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:10.6467082Z Updating files:   9% (2537/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:10.7154708Z Updating files:  10% (2818/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:10.8419028Z Updating files:  11% (3100/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:10.9920707Z Updating files:  12% (3382/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:11.1422647Z Updating files:  13% (3664/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:11.3283284Z Updating files:  14% (3946/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:11.4693004Z Updating files:  15% (4227/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:11.4899115Z Updating files:  16% (4509/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:11.5582894Z Updating files:  16% (4561/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:11.7275436Z Updating files:  17% (4791/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:11.8189838Z Updating files:  18% (5073/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:11.8988379Z Updating files:  19% (5355/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:11.9663410Z Updating files:  20% (5636/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:12.0244066Z Updating files:  21% (5918/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:12.0832139Z Updating files:  22% (6200/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:12.1847395Z Updating files:  23% (6482/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:12.2800897Z Updating files:  24% (6763/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:12.4744450Z Updating files:  25% (7045/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:12.5035793Z Updating files:  26% (7327/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:12.5749095Z Updating files:  26% (7425/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:12.6447413Z Updating files:  27% (7609/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:12.7154895Z Updating files:  28% (7891/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:12.7932013Z Updating files:  29% (8172/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:12.8723750Z Updating files:  30% (8454/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:12.9570592Z Updating files:  31% (8736/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:13.0342470Z Updating files:  32% (9018/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:13.1593257Z Updating files:  33% (9300/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:13.2744013Z Updating files:  34% (9581/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:13.3590835Z Updating files:  35% (9863/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:13.4547988Z Updating files:  36% (10145/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:13.5053052Z Updating files:  37% (10427/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:13.5419954Z Updating files:  37% (10606/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:13.6548799Z Updating files:  38% (10709/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:13.7462908Z Updating files:  39% (10990/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:13.8427038Z Updating files:  40% (11272/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:13.9209713Z Updating files:  41% (11554/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:14.0626268Z Updating files:  42% (11836/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:14.1736532Z Updating files:  43% (12117/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:14.4112493Z Updating files:  44% (12399/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:14.5298581Z Updating files:  45% (12681/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:14.5329314Z Updating files:  45% (12951/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:14.7695814Z Updating files:  46% (12963/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:14.8670790Z Updating files:  47% (13245/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:15.5385868Z Updating files:  48% (13526/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:15.6782649Z Updating files:  48% (13778/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:16.5277695Z Updating files:  49% (13808/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:17.0034291Z Updating files:  49% (13977/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:17.5478698Z Updating files:  50% (14090/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:18.3726222Z Updating files:  50% (14203/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:18.5570349Z Updating files:  51% (14372/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:19.5434618Z Updating files:  51% (14404/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:19.6118005Z Updating files:  51% (14611/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:20.5386437Z Updating files:  52% (14654/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:20.8015837Z Updating files:  52% (14850/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:20.9207319Z Updating files:  53% (14935/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:21.0226311Z Updating files:  54% (15217/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:21.1048912Z Updating files:  55% (15499/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:21.4885536Z Updating files:  56% (15781/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:21.5578537Z Updating files:  57% (16063/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:22.5798502Z Updating files:  57% (16071/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:22.8293397Z Updating files:  57% (16268/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:23.5638330Z Updating files:  58% (16344/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:24.1964279Z Updating files:  58% (16486/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:24.5733540Z Updating files:  59% (16626/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:25.5737940Z Updating files:  59% (16685/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:25.5764293Z Updating files:  59% (16900/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:26.5887663Z Updating files:  60% (16908/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:26.7723181Z Updating files:  60% (17135/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:26.9827259Z Updating files:  61% (17190/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:27.5865328Z Updating files:  62% (17471/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:28.0390666Z Updating files:  62% (17633/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:28.3462303Z Updating files:  63% (17753/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:28.5969485Z Updating files:  64% (18035/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:29.5323746Z Updating files:  64% (18128/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:29.6007751Z Updating files:  65% (18317/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:30.6022062Z Updating files:  65% (18333/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:30.8988858Z Updating files:  65% (18531/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:31.6070834Z Updating files:  66% (18599/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:32.2662592Z Updating files:  66% (18728/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:32.6051203Z Updating files:  67% (18880/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:33.6065932Z Updating files:  67% (18948/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:33.6574416Z Updating files:  67% (19150/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:33.9979528Z Updating files:  68% (19162/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:34.6247240Z Updating files:  69% (19444/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:35.1316762Z Updating files:  69% (19619/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:35.6089751Z Updating files:  70% (19726/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:36.5007083Z Updating files:  70% (19825/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:36.6081146Z Updating files:  71% (20008/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:37.6296738Z Updating files:  71% (20062/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:37.7540756Z Updating files:  71% (20266/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:38.6363872Z Updating files:  72% (20289/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:39.1309819Z Updating files:  72% (20463/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:39.6313642Z Updating files:  73% (20571/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:39.6579285Z Updating files:  73% (20766/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:40.4663971Z Updating files:  74% (20853/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:40.6339188Z Updating files:  75% (21135/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:41.6346162Z Updating files:  75% (21142/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:41.8055071Z Updating files:  75% (21364/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:42.6499315Z Updating files:  76% (21417/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:43.1765885Z Updating files:  76% (21564/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:43.6429261Z Updating files:  77% (21698/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:44.5573079Z Updating files:  77% (21797/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:44.6641239Z Updating files:  78% (21980/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:45.3346173Z Updating files:  78% (22018/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:45.4135817Z Updating files:  79% (22262/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:45.5675585Z Updating files:  80% (22544/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:45.6627581Z Updating files:  81% (22825/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:45.8589426Z Updating files:  81% (23061/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:46.6540051Z Updating files:  82% (23107/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:47.2180274Z Updating files:  82% (23259/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:47.6563351Z Updating files:  83% (23389/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:48.6042709Z Updating files:  83% (23465/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:48.6602515Z Updating files:  84% (23671/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:49.6847795Z Updating files:  84% (23703/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:49.9824569Z Updating files:  84% (23908/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:50.6700083Z Updating files:  85% (23953/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:51.1674250Z Updating files:  85% (24104/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:51.2710925Z Updating files:  86% (24234/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:51.4781220Z Updating files:  87% (24516/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:51.5283761Z Updating files:  88% (24798/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:51.5656177Z Updating files:  89% (25080/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:51.6226664Z Updating files:  90% (25362/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:51.6697275Z Updating files:  91% (25643/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:51.7369102Z Updating files:  91% (25867/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:51.7404585Z Updating files:  92% (25925/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:51.7439569Z ##[error]error: unable to create file benches/results/nemotron-diarization/windows-x86_64/2026-10-17-thread-cpu-local-replay/reviewed-sources/benches/results/nemotron-diarization/windows-x86_64/2026-10-17-thread-cpu-admission-preparation/prepared/collect-windows-thread-cpu-profile-v1.py: Filename too long
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:51.7453507Z ##[error]error: unable to create file benches/results/nemotron-diarization/windows-x86_64/2026-10-17-thread-cpu-local-replay/reviewed-sources/benches/results/nemotron-diarization/windows-x86_64/2026-10-17-thread-cpu-admission-preparation/prepared/replay-windows-thread-cpu-profile-supervision-v1.py: Filename too long
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:52.2526344Z Updating files:  93% (26207/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:52.3200937Z Updating files:  94% (26489/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:52.4032955Z Updating files:  95% (26771/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:52.4970351Z Updating files:  96% (27052/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:52.6089106Z Updating files:  97% (27334/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:52.6789768Z Updating files:  98% (27616/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:52.6894378Z Updating files:  98% (27866/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:52.9322081Z Updating files:  99% (27898/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:52.9322647Z Updating files: 100% (28179/28179)
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:52.9323557Z Updating files: 100% (28179/28179), done.
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:52.9811273Z Switched to a new branch 'codex/nemotron3-n0'
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:52.9829207Z branch 'codex/nemotron3-n0' set up to track 'origin/codex/nemotron3-n0'.
+features (windows-latest)	Run actions/checkout@v4	2026-10-18T01:55:53.0124231Z ##[error]The process 'C:\Program Files\Git\bin\git.exe' failed with exit code 1
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	﻿2026-10-18T01:54:55.7873924Z ##[group]Run actions/checkout@v4
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:55.7875464Z with:
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:55.7876035Z   submodules: recursive
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:55.7876551Z   repository: saberra-ai/gen2
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:55.7880875Z   token: ***
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:55.7881351Z   ssh-strict: true
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:55.7881848Z   ssh-user: git
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:55.7882430Z   persist-credentials: true
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:55.7883008Z   clean: true
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:55.7883494Z   sparse-checkout-cone-mode: true
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:55.7884051Z   fetch-depth: 1
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:55.7884565Z   fetch-tags: false
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:55.7885062Z   show-progress: true
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:55.7885611Z   lfs: false
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:55.7886043Z   set-safe-directory: true
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:55.7886716Z   allow-unsafe-pr-checkout: false
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:55.7887690Z ##[endgroup]
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:55.9455711Z Syncing repository: saberra-ai/gen2
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:55.9458922Z ##[group]Getting Git version info
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:55.9459952Z Working directory is 'D:\a\gen2\gen2'
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:56.0181505Z [command]"C:\Program Files\Git\bin\git.exe" version
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:56.3030803Z git version 2.56.0.windows.2
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:56.3082799Z ##[endgroup]
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:56.3102493Z Temporarily overriding HOME='D:\a\_temp\ae1981f6-6bef-41d6-9cb5-468f28606091' before making global git config changes
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:56.3106202Z Adding repository directory to the temporary git global config as a safe directory
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:56.3113182Z [command]"C:\Program Files\Git\bin\git.exe" config --global --add safe.directory D:\a\gen2\gen2
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:56.3756273Z Deleting the contents of 'D:\a\gen2\gen2'
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:56.3763413Z ##[group]Initializing the repository
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:56.3771570Z [command]"C:\Program Files\Git\bin\git.exe" init D:\a\gen2\gen2
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:56.4728296Z Initialized empty Git repository in D:/a/gen2/gen2/.git/
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:56.4779010Z [command]"C:\Program Files\Git\bin\git.exe" remote add origin https://github.com/saberra-ai/gen2
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:56.5452588Z ##[endgroup]
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:56.5454494Z ##[group]Disabling automatic garbage collection
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:56.5460801Z [command]"C:\Program Files\Git\bin\git.exe" config --local gc.auto 0
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:56.5830261Z ##[endgroup]
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:56.5832108Z ##[group]Setting up auth
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:56.5841107Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:56.6256487Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:57.9570109Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:57.9961444Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:58.5662066Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp ^includeIf\.gitdir:
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:58.6038980Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "git config --local --show-origin --name-only --get-regexp remote.origin.url"
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:59.1634407Z [command]"C:\Program Files\Git\bin\git.exe" config --local http.https://github.com/.extraheader "AUTHORIZATION: basic ***"
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:59.2017930Z ##[endgroup]
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:59.2019207Z ##[group]Fetching the repository
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:59.2030331Z [command]"C:\Program Files\Git\bin\git.exe" -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +ba48a1d0101aa454e74f6eacd9838e9ae724d5a4:refs/remotes/origin/codex/nemotron3-n0
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:03.7836160Z From https://github.com/saberra-ai/gen2
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:03.7840797Z  * [new ref]         ba48a1d0101aa454e74f6eacd9838e9ae724d5a4 -> origin/codex/nemotron3-n0
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:03.7889684Z ##[endgroup]
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:03.7891378Z ##[group]Determining the checkout info
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:03.7893868Z ##[endgroup]
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:03.7902484Z [command]"C:\Program Files\Git\bin\git.exe" sparse-checkout disable
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:03.8414509Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset-all extensions.worktreeConfig
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:03.8804140Z ##[group]Checking out the ref
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:03.8814856Z [command]"C:\Program Files\Git\bin\git.exe" checkout --progress --force -B codex/nemotron3-n0 refs/remotes/origin/codex/nemotron3-n0
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:05.0213219Z Updating files:   6% (1751/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:05.0547345Z Updating files:   7% (1973/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:05.0955349Z Updating files:   8% (2255/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:05.1292233Z Updating files:   9% (2537/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:05.1616163Z Updating files:  10% (2818/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:05.2913364Z Updating files:  11% (3100/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:05.3308978Z Updating files:  12% (3382/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:05.9704210Z Updating files:  13% (3664/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:06.0029474Z Updating files:  13% (3926/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:06.2134473Z Updating files:  14% (3946/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:06.3620481Z Updating files:  15% (4227/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:06.4362974Z Updating files:  16% (4509/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:06.6283283Z Updating files:  17% (4791/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:06.7003485Z Updating files:  18% (5073/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:07.1121347Z Updating files:  19% (5355/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:07.1541730Z Updating files:  19% (5389/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:07.2015002Z Updating files:  20% (5636/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:07.2398725Z Updating files:  21% (5918/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:07.2977601Z Updating files:  22% (6200/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:07.3928888Z Updating files:  23% (6482/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:07.4838231Z Updating files:  24% (6763/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:07.5454006Z Updating files:  25% (7045/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:07.6418134Z Updating files:  26% (7327/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:07.7065763Z Updating files:  27% (7609/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:07.7620232Z Updating files:  28% (7891/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:07.8317722Z Updating files:  29% (8172/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:07.8943831Z Updating files:  30% (8454/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:07.9680145Z Updating files:  31% (8736/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:07.9687664Z Updating files:  31% (9012/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:08.0331100Z Updating files:  32% (9018/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:08.5609502Z Updating files:  33% (9300/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:08.6822388Z Updating files:  34% (9581/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:08.7534280Z Updating files:  35% (9863/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:08.8443812Z Updating files:  36% (10145/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:08.9258292Z Updating files:  37% (10427/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:08.9816290Z Updating files:  38% (10709/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:09.0441007Z Updating files:  38% (10861/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:09.1209430Z Updating files:  39% (10990/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:09.2235002Z Updating files:  40% (11272/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:09.2990748Z Updating files:  41% (11554/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:09.9481342Z Updating files:  42% (11836/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:10.1011046Z Updating files:  43% (12117/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:10.2202106Z Updating files:  43% (12144/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:10.5160580Z Updating files:  44% (12399/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:10.6654805Z Updating files:  45% (12681/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:11.3345504Z Updating files:  46% (12963/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:11.3487761Z Updating files:  46% (13136/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:11.4372073Z Updating files:  47% (13245/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:11.9988761Z Updating files:  48% (13526/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:12.4653296Z Updating files:  48% (13760/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:13.0269688Z Updating files:  49% (13808/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:14.0281742Z Updating files:  49% (13905/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:14.2036413Z Updating files:  49% (14072/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:15.0257737Z Updating files:  50% (14090/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:16.0132458Z Updating files:  50% (14211/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:16.0537343Z Updating files:  51% (14372/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:17.0340583Z Updating files:  51% (14373/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:17.7306111Z Updating files:  51% (14513/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:18.0362159Z Updating files:  52% (14654/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:19.0648073Z Updating files:  52% (14671/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:19.3048991Z Updating files:  52% (14862/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:19.4242368Z Updating files:  53% (14935/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:19.5278941Z Updating files:  54% (15217/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:19.6101369Z Updating files:  55% (15499/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:20.0468822Z Updating files:  56% (15781/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:20.0940862Z Updating files:  56% (16058/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:21.0470727Z Updating files:  57% (16063/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:22.0863110Z Updating files:  57% (16186/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:22.1162203Z Updating files:  57% (16313/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:23.0555528Z Updating files:  58% (16344/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:24.0627212Z Updating files:  58% (16463/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:24.1323238Z Updating files:  58% (16595/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:25.0857156Z Updating files:  59% (16626/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:26.0835538Z Updating files:  59% (16750/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:26.1309797Z Updating files:  59% (16888/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:27.0942850Z Updating files:  60% (16908/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:27.7376415Z Updating files:  60% (17045/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:27.9881537Z Updating files:  61% (17190/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:28.1402664Z Updating files:  62% (17471/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:29.1161445Z Updating files:  62% (17496/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:29.5217456Z Updating files:  62% (17674/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:29.9020462Z Updating files:  63% (17753/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:30.1243747Z Updating files:  64% (18035/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:31.1235873Z Updating files:  64% (18078/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:31.9106763Z Updating files:  64% (18226/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:32.1495955Z Updating files:  65% (18317/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:33.3016907Z Updating files:  65% (18338/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:33.9979667Z Updating files:  65% (18469/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:34.1433663Z Updating files:  66% (18599/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:35.1478514Z Updating files:  66% (18625/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:35.8953015Z Updating files:  66% (18755/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:36.1362939Z Updating files:  67% (18880/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:37.1332701Z Updating files:  67% (18919/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:38.1348941Z Updating files:  67% (19081/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:38.2619799Z Updating files:  67% (19143/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:38.7060327Z Updating files:  68% (19162/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:39.1372681Z Updating files:  69% (19444/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:40.1381344Z Updating files:  69% (19584/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:40.2937884Z Updating files:  69% (19713/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:41.1727403Z Updating files:  70% (19726/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:42.2255775Z Updating files:  70% (19879/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:42.4180340Z Updating files:  70% (19994/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:43.1429764Z Updating files:  71% (20008/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:44.0737732Z Updating files:  71% (20156/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:44.1734061Z Updating files:  72% (20289/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:45.1855222Z Updating files:  72% (20296/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:45.9231383Z Updating files:  72% (20461/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:46.1680216Z Updating files:  73% (20571/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:46.6284573Z Updating files:  73% (20600/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:47.1820190Z Updating files:  74% (20853/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:48.0463500Z Updating files:  74% (21041/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:48.1941491Z Updating files:  75% (21135/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:49.5016164Z Updating files:  75% (21140/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:50.1845725Z Updating files:  75% (21263/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:50.4576485Z Updating files:  75% (21361/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:51.4249102Z Updating files:  76% (21417/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:52.1910911Z Updating files:  76% (21483/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:52.6852997Z Updating files:  76% (21626/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:53.1970697Z Updating files:  77% (21698/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:54.2235637Z Updating files:  77% (21759/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:54.5331548Z Updating files:  77% (21925/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:55.1928339Z Updating files:  78% (21980/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:56.1479461Z Updating files:  78% (22104/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:56.2051553Z Updating files:  79% (22262/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:56.2164146Z Updating files:  79% (22499/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:56.3795189Z Updating files:  80% (22544/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:56.7275091Z Updating files:  81% (22825/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:57.6566063Z Updating files:  82% (23107/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:58.2259809Z Updating files:  82% (23137/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:59.2454276Z Updating files:  82% (23231/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:59.5101137Z Updating files:  82% (23329/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:56:00.2549454Z Updating files:  83% (23389/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:56:01.2662256Z Updating files:  83% (23516/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:56:01.3643059Z Updating files:  83% (23648/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:56:02.2938161Z Updating files:  84% (23671/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:56:03.2240483Z Updating files:  84% (23813/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:56:03.2631459Z Updating files:  85% (23953/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:56:04.2681345Z Updating files:  85% (23989/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:56:04.8344407Z Updating files:  85% (24130/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:56:04.9416111Z Updating files:  86% (24234/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:56:04.9703861Z Updating files:  87% (24516/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:56:05.0013197Z Updating files:  88% (24798/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:56:05.0219262Z Updating files:  89% (25080/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:56:05.0616267Z Updating files:  90% (25362/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:56:05.1763624Z Updating files:  91% (25643/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:56:05.1786977Z Updating files:  92% (25925/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:56:05.1818236Z ##[error]error: unable to create file benches/results/nemotron-diarization/windows-x86_64/2026-10-17-thread-cpu-local-replay/reviewed-sources/benches/results/nemotron-diarization/windows-x86_64/2026-10-17-thread-cpu-admission-preparation/prepared/collect-windows-thread-cpu-profile-v1.py: Filename too long
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:56:05.1828868Z ##[error]error: unable to create file benches/results/nemotron-diarization/windows-x86_64/2026-10-17-thread-cpu-local-replay/reviewed-sources/benches/results/nemotron-diarization/windows-x86_64/2026-10-17-thread-cpu-admission-preparation/prepared/replay-windows-thread-cpu-profile-supervision-v1.py: Filename too long
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:56:05.6908215Z Updating files:  92% (25957/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:56:06.2427326Z Updating files:  93% (26207/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:56:06.2842295Z Updating files:  94% (26489/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:56:06.3071631Z Updating files:  94% (26660/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:56:06.3709435Z Updating files:  95% (26771/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:56:06.4449104Z Updating files:  96% (27052/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:56:06.5513953Z Updating files:  97% (27334/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:56:06.6070871Z Updating files:  98% (27616/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:56:06.7256909Z Updating files:  99% (27898/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:56:06.7257790Z Updating files: 100% (28179/28179)
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:56:06.7258263Z Updating files: 100% (28179/28179), done.
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:56:06.7692456Z Switched to a new branch 'codex/nemotron3-n0'
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:56:06.7705627Z branch 'codex/nemotron3-n0' set up to track 'origin/codex/nemotron3-n0'.
+features (windows-latest, backend-llamacpp,asr-dynamic,backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:56:06.8028648Z ##[error]The process 'C:\Program Files\Git\bin\git.exe' failed with exit code 1
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	﻿2026-10-18T01:54:57.6415574Z ##[group]Run actions/checkout@v4
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:57.6416635Z with:
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:57.6417056Z   submodules: recursive
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:57.6417524Z   repository: saberra-ai/gen2
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:57.6421879Z   token: ***
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:57.6422320Z   ssh-strict: true
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:57.6422720Z   ssh-user: git
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:57.6423131Z   persist-credentials: true
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:57.6423581Z   clean: true
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:57.6423996Z   sparse-checkout-cone-mode: true
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:57.6424487Z   fetch-depth: 1
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:57.6424882Z   fetch-tags: false
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:57.6425291Z   show-progress: true
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:57.6425715Z   lfs: false
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:57.6426101Z   set-safe-directory: true
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:57.6426595Z   allow-unsafe-pr-checkout: false
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:57.6427352Z ##[endgroup]
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:57.8141425Z Syncing repository: saberra-ai/gen2
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:57.8145128Z ##[group]Getting Git version info
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:57.8146363Z Working directory is 'D:\a\gen2\gen2'
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:57.9319752Z [command]"C:\Program Files\Git\bin\git.exe" version
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:58.2437080Z git version 2.56.0.windows.2
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:58.2497285Z ##[endgroup]
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:58.2520722Z Temporarily overriding HOME='D:\a\_temp\d3f50c92-e449-45fe-b199-30792ae47d30' before making global git config changes
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:58.2524166Z Adding repository directory to the temporary git global config as a safe directory
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:58.2533441Z [command]"C:\Program Files\Git\bin\git.exe" config --global --add safe.directory D:\a\gen2\gen2
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:58.3307558Z Deleting the contents of 'D:\a\gen2\gen2'
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:58.3314949Z ##[group]Initializing the repository
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:58.3324346Z [command]"C:\Program Files\Git\bin\git.exe" init D:\a\gen2\gen2
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:58.4259668Z Initialized empty Git repository in D:/a/gen2/gen2/.git/
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:58.4324477Z [command]"C:\Program Files\Git\bin\git.exe" remote add origin https://github.com/saberra-ai/gen2
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:58.5096288Z ##[endgroup]
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:58.5098764Z ##[group]Disabling automatic garbage collection
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:58.5106586Z [command]"C:\Program Files\Git\bin\git.exe" config --local gc.auto 0
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:58.5572583Z ##[endgroup]
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:58.5575073Z ##[group]Setting up auth
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:58.5583501Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:54:58.6053715Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:00.0470438Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:00.0889664Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:00.6645970Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp ^includeIf\.gitdir:
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:00.7043658Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "git config --local --show-origin --name-only --get-regexp remote.origin.url"
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:01.3258214Z [command]"C:\Program Files\Git\bin\git.exe" config --local http.https://github.com/.extraheader "AUTHORIZATION: basic ***"
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:01.3769246Z ##[endgroup]
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:01.3770291Z ##[group]Fetching the repository
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:01.3788095Z [command]"C:\Program Files\Git\bin\git.exe" -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +ba48a1d0101aa454e74f6eacd9838e9ae724d5a4:refs/remotes/origin/codex/nemotron3-n0
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:11.6232243Z From https://github.com/saberra-ai/gen2
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:11.6237641Z  * [new ref]         ba48a1d0101aa454e74f6eacd9838e9ae724d5a4 -> origin/codex/nemotron3-n0
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:11.6286914Z ##[endgroup]
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:11.6287610Z ##[group]Determining the checkout info
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:11.6290482Z ##[endgroup]
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:11.6301849Z [command]"C:\Program Files\Git\bin\git.exe" sparse-checkout disable
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:12.9019088Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset-all extensions.worktreeConfig
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:12.9587229Z ##[group]Checking out the ref
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:12.9588782Z [command]"C:\Program Files\Git\bin\git.exe" checkout --progress --force -B codex/nemotron3-n0 refs/remotes/origin/codex/nemotron3-n0
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:14.1195517Z Updating files:   6% (1728/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:14.1739199Z Updating files:   7% (1973/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:14.2366074Z Updating files:   8% (2255/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:14.2898008Z Updating files:   9% (2537/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:14.3432460Z Updating files:  10% (2818/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:14.4661130Z Updating files:  11% (3100/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:14.5262798Z Updating files:  12% (3382/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:14.6850167Z Updating files:  13% (3664/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:14.8706153Z Updating files:  14% (3946/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:15.0136451Z Updating files:  15% (4227/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:15.0479661Z Updating files:  16% (4509/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:15.1016156Z Updating files:  16% (4605/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:15.4003561Z Updating files:  17% (4791/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:15.4852233Z Updating files:  18% (5073/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:15.5790081Z Updating files:  19% (5355/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:15.6478131Z Updating files:  20% (5636/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:15.7173087Z Updating files:  21% (5918/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:15.7754921Z Updating files:  22% (6200/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:15.8747071Z Updating files:  23% (6482/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:15.9716339Z Updating files:  24% (6763/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:16.0441124Z Updating files:  25% (7045/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:16.0479842Z Updating files:  26% (7327/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:16.1455606Z Updating files:  26% (7341/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:16.2184288Z Updating files:  27% (7609/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:16.2897738Z Updating files:  28% (7891/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:16.3681548Z Updating files:  29% (8172/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:16.4469853Z Updating files:  30% (8454/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:16.5351461Z Updating files:  31% (8736/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:16.6175373Z Updating files:  32% (9018/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:16.8648609Z Updating files:  33% (9300/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:16.9817410Z Updating files:  34% (9581/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:17.0504097Z Updating files:  35% (9863/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:17.0695375Z Updating files:  35% (10092/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:17.1659350Z Updating files:  36% (10145/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:17.2583254Z Updating files:  37% (10427/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:17.3878282Z Updating files:  38% (10709/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:17.4753302Z Updating files:  39% (10990/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:17.5742921Z Updating files:  40% (11272/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:17.6543504Z Updating files:  41% (11554/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:17.7990875Z Updating files:  42% (11836/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:17.9223965Z Updating files:  43% (12117/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:18.0964157Z Updating files:  44% (12399/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:18.1722837Z Updating files:  44% (12679/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:18.2934727Z Updating files:  45% (12681/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:18.5425165Z Updating files:  46% (12963/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:18.6404714Z Updating files:  47% (13245/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:19.0686207Z Updating files:  48% (13526/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:19.4567476Z Updating files:  48% (13722/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:20.0630506Z Updating files:  49% (13808/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:20.7946941Z Updating files:  49% (13953/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:21.0800281Z Updating files:  50% (14090/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:22.0983881Z Updating files:  50% (14168/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:22.1674459Z Updating files:  50% (14370/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:23.1065562Z Updating files:  51% (14372/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:23.4519525Z Updating files:  51% (14568/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:24.0752275Z Updating files:  52% (14654/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:24.6557219Z Updating files:  52% (14766/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:24.7723000Z Updating files:  53% (14935/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:24.9079504Z Updating files:  54% (15217/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:24.9917884Z Updating files:  55% (15499/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:25.0792031Z Updating files:  56% (15781/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:25.3711731Z Updating files:  56% (15960/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:26.0950640Z Updating files:  57% (16063/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:26.7006574Z Updating files:  57% (16198/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:27.0967384Z Updating files:  58% (16344/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:28.0568573Z Updating files:  58% (16402/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:28.1073887Z Updating files:  59% (16626/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:29.1270923Z Updating files:  59% (16644/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:29.4145991Z Updating files:  59% (16848/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:30.1458371Z Updating files:  60% (16908/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:30.7849586Z Updating files:  60% (17042/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:31.1569960Z Updating files:  61% (17190/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:31.2059947Z Updating files:  61% (17464/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:32.1383922Z Updating files:  62% (17471/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:32.3737287Z Updating files:  62% (17683/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:32.6846802Z Updating files:  63% (17753/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:33.1536703Z Updating files:  64% (18035/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:33.9087742Z Updating files:  64% (18145/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:34.1512239Z Updating files:  65% (18317/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:35.1589560Z Updating files:  65% (18340/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:35.3222270Z Updating files:  65% (18558/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:36.1589302Z Updating files:  66% (18599/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:36.6906397Z Updating files:  66% (18756/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:37.1606656Z Updating files:  67% (18880/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:38.0648303Z Updating files:  67% (18986/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:38.1771647Z Updating files:  68% (19162/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:38.4143893Z Updating files:  68% (19207/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:39.1891484Z Updating files:  69% (19444/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:39.5470555Z Updating files:  69% (19676/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:40.2057590Z Updating files:  70% (19726/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:40.9043120Z Updating files:  70% (19879/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:41.2065062Z Updating files:  71% (20008/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:42.1666749Z Updating files:  71% (20075/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:42.2163518Z Updating files:  72% (20289/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:43.2295697Z Updating files:  72% (20295/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:43.5374996Z Updating files:  72% (20498/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:44.0622417Z Updating files:  73% (20571/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:44.2380851Z Updating files:  74% (20853/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:44.8824627Z Updating files:  74% (20975/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:45.2335175Z Updating files:  75% (21135/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:46.2141419Z Updating files:  75% (21182/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:46.2342390Z Updating files:  76% (21417/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:47.2361481Z Updating files:  76% (21421/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:47.5757877Z Updating files:  76% (21627/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:48.2525467Z Updating files:  77% (21698/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:48.9514379Z Updating files:  77% (21827/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:49.2550679Z Updating files:  78% (21980/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:49.7268358Z Updating files:  78% (22049/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:49.8065697Z Updating files:  79% (22262/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:50.0221836Z Updating files:  80% (22544/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:50.2541449Z Updating files:  81% (22825/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:50.3010667Z Updating files:  81% (23076/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:51.2532458Z Updating files:  82% (23107/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:51.6745234Z Updating files:  82% (23316/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:52.2611134Z Updating files:  83% (23389/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:53.0615600Z Updating files:  83% (23518/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:53.2868227Z Updating files:  84% (23671/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:54.2716761Z Updating files:  84% (23716/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:54.4205833Z Updating files:  84% (23935/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:55.2789363Z Updating files:  85% (23953/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:55.6110123Z Updating files:  85% (24134/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:55.7569424Z Updating files:  86% (24234/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:55.8077055Z Updating files:  87% (24516/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:55.8577516Z Updating files:  88% (24798/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:55.8949698Z Updating files:  89% (25080/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:55.9497955Z Updating files:  90% (25362/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:56.0790485Z Updating files:  91% (25643/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:56.0834859Z Updating files:  92% (25925/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:56.0869611Z ##[error]error: unable to create file benches/results/nemotron-diarization/windows-x86_64/2026-10-17-thread-cpu-local-replay/reviewed-sources/benches/results/nemotron-diarization/windows-x86_64/2026-10-17-thread-cpu-admission-preparation/prepared/collect-windows-thread-cpu-profile-v1.py: Filename too long
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:56.0887143Z ##[error]error: unable to create file benches/results/nemotron-diarization/windows-x86_64/2026-10-17-thread-cpu-local-replay/reviewed-sources/benches/results/nemotron-diarization/windows-x86_64/2026-10-17-thread-cpu-admission-preparation/prepared/replay-windows-thread-cpu-profile-supervision-v1.py: Filename too long
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:56.4557243Z Updating files:  92% (25958/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:56.5797850Z Updating files:  93% (26207/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:56.6460133Z Updating files:  94% (26489/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:56.7284663Z Updating files:  95% (26771/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:56.8226013Z Updating files:  96% (27052/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:57.0652641Z Updating files:  97% (27334/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:57.1404628Z Updating files:  98% (27616/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:57.2583805Z Updating files:  99% (27898/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:57.2584395Z Updating files: 100% (28179/28179)
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:57.2584869Z Updating files: 100% (28179/28179), done.
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:57.3056725Z Switched to a new branch 'codex/nemotron3-n0'
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:57.3073880Z branch 'codex/nemotron3-n0' set up to track 'origin/codex/nemotron3-n0'.
+features (windows-latest, backend-diar-nemo)	Run actions/checkout@v4	2026-10-18T01:55:57.3339118Z ##[error]The process 'C:\Program Files\Git\bin\git.exe' failed with exit code 1

@@ -1,0 +1,457 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    # Weekly, for the jobs too slow to gate a PR on.
+    - cron: "0 4 * * 1"
+
+env:
+  CARGO_TERM_COLOR: always
+  # Process-scoped Git option for the retained evidence's long Windows paths.
+  GIT_CONFIG_COUNT: '1'
+  GIT_CONFIG_KEY_0: core.longpaths
+  GIT_CONFIG_VALUE_0: 'true'
+
+jobs:
+  laya:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: Swatinem/rust-cache@v2
+      - run: python -m pip install onnxruntime==1.24.4
+      - name: Locate the explicitly installed native runtime
+        shell: bash
+        run: |
+          python - <<'PY'
+          import os, pathlib, onnxruntime
+          root = pathlib.Path(onnxruntime.__file__).parent / 'capi'
+          matches = list(root.glob('onnxruntime.dll')) + list(root.glob('libonnxruntime.so*')) + list(root.glob('libonnxruntime*.dylib'))
+          assert matches, f'no native runtime in {root}'
+          with open(os.environ['GITHUB_ENV'], 'a') as f:
+              f.write(f'GEN2_ORT_LIBRARY={matches[0]}\n')
+          PY
+      - run: cargo clippy --no-default-features --features laya-dynamic,tokio --all-targets -- -D warnings
+      - run: cargo test --no-default-features --features laya-dynamic,tokio --lib
+      - run: cargo test --no-default-features --features laya-dynamic,tokio --test laya_native native_worker -- --ignored
+      - run: cargo clippy -p gen2-laya-mobile --features dynamic -- -D warnings
+      - run: cargo build -p gen2-laya-mobile --features dynamic
+      - name: Exercise the mobile ABI against the native synthetic graph
+        shell: bash
+        run: |
+          python - <<'PY'
+          import os, platform, subprocess, sys
+          library = {'Windows':'gen2_laya_mobile.dll', 'Darwin':'libgen2_laya_mobile.dylib', 'Linux':'libgen2_laya_mobile.so'}[platform.system()]
+          subprocess.run([sys.executable, 'tools/laya/test_mobile_abi.py',
+                          '--library', 'target/debug/'+library,
+                          '--runtime', os.environ['GEN2_ORT_LIBRARY'],
+                          '--bundle', 'tests/fixtures/laya/smoke'], check=True)
+          PY
+      - run: python -m unittest discover -s tools/laya -p test_quality.py -v
+      # Real checkpoint and physical mobile qualification are separate gates;
+      # the small synthetic graph above proves runtime plumbing only.
+
+  laya-android:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - abi: arm64-v8a
+            target: aarch64-linux-android
+            compiler: aarch64-linux-android24
+          - abi: x86_64
+            target: x86_64-linux-android
+            compiler: x86_64-linux-android24
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: microsoft
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.11.1'
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: Swatinem/rust-cache@v2
+      - name: Prepare pinned NDK and Android runtime
+        shell: bash
+        run: |
+          SDKMANAGER="$(find "$ANDROID_SDK_ROOT/cmdline-tools" -type f -name sdkmanager | sort -V | tail -n 1)"
+          test -x "$SDKMANAGER"
+          "$SDKMANAGER" --sdk_root="$ANDROID_SDK_ROOT" 'ndk;27.3.13750724' 'platforms;android-35' 'build-tools;35.0.0'
+          NDK="$ANDROID_SDK_ROOT/ndk/27.3.13750724"
+          BIN="$NDK/toolchains/llvm/prebuilt/linux-x86_64/bin"
+          mkdir -p target/laya/android
+          curl --fail --location --silent --show-error --output target/laya/android/ort.aar \
+            https://repo.maven.apache.org/maven2/com/microsoft/onnxruntime/onnxruntime-android/1.24.3/onnxruntime-android-1.24.3.aar
+          echo 'e17cad728482733e3787abaf2a0bbe1b8122ff8a  target/laya/android/ort.aar' | sha1sum -c -
+          unzip -q target/laya/android/ort.aar -d target/laya/android/ort
+          echo "LAYA_NDK=$NDK" >> "$GITHUB_ENV"
+          echo "LAYA_NDK_BIN=$BIN" >> "$GITHUB_ENV"
+          TARGET='${{ matrix.target }}'
+          SUFFIX="${TARGET//-/_}"
+          UPPER="${SUFFIX^^}"
+          echo "CC_$SUFFIX=$BIN/${{ matrix.compiler }}-clang" >> "$GITHUB_ENV"
+          echo "CXX_$SUFFIX=$BIN/${{ matrix.compiler }}-clang++" >> "$GITHUB_ENV"
+          echo "AR_$SUFFIX=$BIN/llvm-ar" >> "$GITHUB_ENV"
+          echo "LAYA_CXX=$BIN/${{ matrix.compiler }}-clang++" >> "$GITHUB_ENV"
+          echo "CARGO_TARGET_${UPPER}_LINKER=$BIN/${{ matrix.compiler }}-clang" >> "$GITHUB_ENV"
+          echo "CARGO_TARGET_${UPPER}_RUSTFLAGS=-C link-arg=-Wl,-z,max-page-size=16384" >> "$GITHUB_ENV"
+          echo "ORT_LIB_LOCATION=$GITHUB_WORKSPACE/target/laya/android/ort/jni/${{ matrix.abi }}" >> "$GITHUB_ENV"
+          echo 'ORT_PREFER_DYNAMIC_LINK=1' >> "$GITHUB_ENV"
+      - run: cargo build --locked --release -p gen2-laya-mobile --target ${{ matrix.target }}
+      - name: Link and inspect the complete JNI library set
+        shell: bash
+        run: |
+          OUT=target/laya/android/jniLibs/${{ matrix.abi }}
+          mkdir -p "$OUT"
+          "$LAYA_CXX" -std=c++17 -O2 -fPIC -shared -static-libstdc++ \
+            -Wl,-z,max-page-size=16384 examples/laya-mobile/android/laya_jni.cpp \
+            -L target/${{ matrix.target }}/release -lgen2_laya_mobile -o "$OUT/libgen2_laya_jni.so"
+          cp target/${{ matrix.target }}/release/libgen2_laya_mobile.so "$OUT/"
+          cp "$ORT_LIB_LOCATION/libonnxruntime.so" "$OUT/"
+          python tools/laya/inspect_android.py --libraries "$OUT" --ndk "$LAYA_NDK" \
+            --readelf "$LAYA_NDK_BIN/llvm-readelf" --abi '${{ matrix.abi }}' --output target/laya/android/build-evidence.json
+      - name: Build, lint and inspect the offline host APK
+        shell: bash
+        run: |
+          keytool -genkeypair -keystore target/laya/android/debug.keystore \
+            -storepass android -keypass android -alias gen2debug -dname 'CN=Gen2 local debug' \
+            -keyalg RSA -keysize 2048 -validity 10000 -noprompt
+          gradle --no-daemon --max-workers=2 -p examples/laya-mobile/android -Pgen2Abi=${{ matrix.abi }} :app:assembleDebug :app:lintDebug
+          APK=examples/laya-mobile/android/app/build/outputs/apk/debug/app-debug.apk
+          "$ANDROID_SDK_ROOT/build-tools/35.0.0/apksigner" verify --verbose "$APK"
+          python tools/laya/inspect_android_apk.py --apk "$APK" \
+            --aapt2 "$ANDROID_SDK_ROOT/build-tools/35.0.0/aapt2" \
+            --libraries target/laya/android/jniLibs/${{ matrix.abi }} --fixture tests/fixtures/laya/smoke --abi '${{ matrix.abi }}' \
+            --output target/laya/android/apk-evidence.json
+      - name: Enable emulator acceleration on the hosted runner
+        if: matrix.abi == 'x86_64'
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Execute offline native inference in an Android emulator
+        if: matrix.abi == 'x86_64'
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          arch: x86_64
+          target: google_apis
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          script: python tools/laya/run_android_emulator.py --adb "$ANDROID_SDK_ROOT/platform-tools/adb" --apk examples/laya-mobile/android/app/build/outputs/apk/debug/app-debug.apk --output target/laya/android
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: laya-android-${{ matrix.abi }}-build-evidence
+          path: |
+            target/laya/android/build-evidence.json
+            target/laya/android/apk-evidence.json
+            target/laya/android/emulator*
+            examples/laya-mobile/android/app/build/outputs/apk/debug/app-debug.apk
+            examples/laya-mobile/android/app/build/reports/lint-results-debug.*
+      # x86_64 emulator execution is separate from physical arm64 qualification.
+
+  # The default build, which is what a consumer gets from `cargo add gen2`:
+  # llama.cpp, and so a C toolchain.
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@v2
+      - name: Install the C toolchain llama.cpp needs
+        run: sudo apt-get update && sudo apt-get install -y cmake libclang-dev
+      # Every file, not just the ones the default features reach: `cargo fmt`
+      # follows the module tree, so a module behind an inactive `#[cfg]` is
+      # skipped locally and only shows up here.
+      - run: find src -name '*.rs' -print0 | xargs -0 rustfmt --edition 2024 --check
+      - run: cargo clippy --all-targets -- -D warnings
+      - run: cargo test
+      - run: cargo doc --no-deps
+        env:
+          RUSTDOCFLAGS: -D warnings
+
+  # The async API, which is a separate compilation of the same crate. Runs on
+  # the external-api backend rather than the default: what it exercises is the
+  # `Stream` layer, and paying a llama.cpp build for that buys nothing.
+  tokio:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo clippy --all-targets --no-default-features --features backend-external-api,tokio,agent -- -D warnings
+      - run: cargo test --no-default-features --features backend-external-api,tokio,agent
+
+  # Every backend the README lists, built the way the README says to build it.
+  # A backend that only compiles alongside another one is not a backend.
+  backends:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: ubuntu-latest, features: backend-external-api }
+          - { os: ubuntu-latest, features: backend-llamacpp }
+          - { os: ubuntu-latest, features: backend-mistralrs }
+          # LiteRT-LM loads Google's runtime at run time, so a build needs
+          # nothing installed — which is exactly the property worth checking on
+          # two platforms.
+          - { os: ubuntu-latest, features: backend-litertlm }
+          - { os: macos-latest, features: backend-litertlm }
+          # GenAI is loaded dynamically too; these verify the Rust contract
+          # without claiming platform-specific native inference qualification.
+          - { os: ubuntu-latest, features: backend-onnx }
+          - { os: macos-latest, features: backend-onnx }
+          - { os: windows-latest, features: backend-onnx }
+          - { os: ubuntu-latest, features: "backend-llamacpp,backend-onnx" }
+          # Two backends, two formats. Proves `.gguf` still goes to llama.cpp
+          # once LiteRT-LM is compiled in beside it.
+          - { os: ubuntu-latest, features: "backend-llamacpp,backend-litertlm" }
+          - { os: macos-latest, features: metal }
+          - { os: macos-latest, features: "metal,tokio" }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - name: Install the C toolchain llama.cpp needs
+        if: contains(matrix.features, 'llamacpp') || contains(matrix.features, 'metal') || contains(matrix.features, 'mlx')
+        run: |
+          if [ "$RUNNER_OS" = "Linux" ]; then
+            sudo apt-get update && sudo apt-get install -y cmake libclang-dev
+          else
+            brew install cmake
+          fi
+      - run: cargo clippy --all-targets --no-default-features --features ${{ matrix.features }} -- -D warnings
+      # Not only clippy. A unit test compiled only under a non-default backend
+      # is a test nothing runs otherwise, and one of them had been failing
+      # unnoticed because every command that would have caught it used the
+      # default feature set.
+      - run: cargo test --no-default-features --features ${{ matrix.features }}
+
+  # The mobile lane has to actually compile for a mobile target.
+  #
+  # `ios`/`android` naming a backend proves nothing on its own — the interesting
+  # claim is that LiteRT-LM cross-compiles with nothing installed, because it
+  # links no native library and loads Google's runtime through a C ABI at run
+  # time. So the LiteRT-only build is checked first and on its own: it is the
+  # one that should need no toolchain beyond rustup.
+  #
+  # The full `ios`/`android` bundles are checked too, and those DO need a C
+  # toolchain — not for LiteRT-LM, but because llama.cpp compiles C++ and
+  # `tokenizers` pulls in `onig_sys`. That is a pre-existing property of any
+  # gen2 mobile build, which is why the two are separate jobs rather than one.
+  mobile-targets:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: macos-latest, target: aarch64-apple-ios, features: backend-litertlm }
+          - { os: ubuntu-latest, target: aarch64-linux-android, features: backend-litertlm }
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+      - uses: Swatinem/rust-cache@v2
+      - name: Point cc at the Android NDK
+        if: matrix.target == 'aarch64-linux-android'
+        run: |
+          # `tokenizers` depends on `onig_sys`, which compiles C. Every Android
+          # build of gen2 has always needed this, whatever the backend.
+          BIN="$ANDROID_NDK_LATEST_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin"
+          echo "CC_aarch64_linux_android=$BIN/aarch64-linux-android24-clang" >> "$GITHUB_ENV"
+          echo "AR_aarch64_linux_android=$BIN/llvm-ar" >> "$GITHUB_ENV"
+          echo "CARGO_TARGET_AARCH64_LINUX_ANDROID_LINKER=$BIN/aarch64-linux-android24-clang" >> "$GITHUB_ENV"
+      - run: >
+          cargo check --target ${{ matrix.target }}
+          --no-default-features --features ${{ matrix.features }}
+
+  # Whether this could be published at all.
+  #
+  # crates.io does not accept a package whose dependencies resolve only to git
+  # repositories. The root crate's no longer do — the backend that needed one
+  # moved to the unpublished companion under `crates/` — and this keeps it
+  # that way: the check is cheap and the answer only changes when the
+  # manifest does.
+  # A hard gate since S1.4: every dependency resolves from crates.io, and a
+  # change that reintroduces a git-only one fails here rather than at release.
+  publishable:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - name: Install the C toolchain llama.cpp needs
+        run: sudo apt-get update && sudo apt-get install -y cmake libclang-dev
+      - name: cargo publish --dry-run
+        run: |
+          if cargo publish --dry-run --allow-dirty 2>&1 | tee /tmp/publish.log; then
+            echo "publishable"
+          else
+            echo "::error::not publishable to crates.io — see the log"
+            grep -iE "git|registry|version" /tmp/publish.log | head -20 || true
+            exit 1
+          fi
+
+  # A build with no backend feature must compile and its plugin seam must
+  # work: a consumer that brings its own backend through
+  # `gen2::advanced::plugin` (the companion crate under `crates/` is one)
+  # enables no `backend-*` feature at all. This used to be a compile error by
+  # design; it is a run-time error now, at the first load nothing claims.
+  no-backend-build-still-works:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo clippy --all-targets --no-default-features -- -D warnings
+      - run: "cargo test --no-default-features --lib advanced::"
+
+  # Windows, default features: a consumer on MSVC gets llama.cpp built by
+  # cmake and bound by bindgen. Green since c820cbf (1108 tests), so it gates.
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - name: Point bindgen at the runner's LLVM
+        shell: pwsh
+        run: |
+          $llvm = "C:\Program Files\LLVM\bin"
+          if (Test-Path $llvm) { "LIBCLANG_PATH=$llvm" | Out-File -FilePath $env:GITHUB_ENV -Append }
+      - run: cargo test --lib
+
+  # The README's first screen, on a fresh machine: check out, install exactly
+  # the prerequisites the README lists (no Rust build cache — the first build's
+  # cost is part of the claim), and `cargo run --example hello` with default
+  # features. Only the model download is cached, keyed on the model reference,
+  # so the 397 MB arrives once per key rather than once per run. On macOS this
+  # is also S3.2's proof: no `metal` feature on the command line, and the
+  # example must report the weights on Metal. A hard gate — it is the README.
+  first-run:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    env:
+      GEN2_MODELS_DIR: ${{ github.workspace }}/.gen2-models
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Prerequisites, as the README lists them
+        run: |
+          if [ "$RUNNER_OS" = "Linux" ]; then
+            sudo apt-get update && sudo apt-get install -y build-essential cmake libclang-dev
+          else
+            brew install cmake
+          fi
+      # unsloth's repo is public, so no HF_TOKEN. The key names the model the
+      # example loads; change one, change the other.
+      - name: Restore the model download
+        uses: actions/cache@v4
+        with:
+          path: ${{ github.workspace }}/.gen2-models
+          key: gen2-models-hf-unsloth-Qwen3-0.6B-GGUF-Q4_K_M
+      - name: cargo run --example hello
+        run: |
+          set -o pipefail
+          attempt() { cargo run --example hello 2>&1 | tee hello.log; }
+          if ! attempt; then
+            echo "::warning::first attempt failed (the download can be flaky); retrying once"
+            sleep 30
+            attempt
+          fi
+      - name: The model answered and reported its timings
+        run: grep -E "tok/s" hello.log
+      - name: Metal is the default on Apple silicon
+        if: runner.os == 'macOS'
+        # ggml's registry name for its Metal backend is "MTL".
+        run: grep -E 'layers on the GPU \(MTL' hello.log
+
+  # The README benchmark table is generated from committed results JSON. This
+  # job needs no GPU: it regenerates the table and fails on drift (someone
+  # edited the table by hand), on a llama.cpp pin that no longer matches the
+  # results, or on results older than 90 days. Numbers are produced by hand
+  # on the owner's machines; see benches/results/README.md.
+  bench-freshness:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - run: "cargo bench --bench bench_table --no-default-features -- --check --max-age-days 90"
+
+  # The fuzz targets live in their own workspace on a nightly toolchain, so
+  # nothing in the ordinary build would notice them breaking. Building them is
+  # enough to catch that; running them is a nightly job's business, not a PR's.
+  fuzz-targets-still-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@nightly
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo install cargo-fuzz --locked
+      - run: cargo fuzz build gguf
+        working-directory: fuzz
+
+  # MLX builds and generates locally on macOS 26.3 with the Metal Toolchain
+  # installed; whether a stock runner has that component is still open. On the
+  # weekly schedule rather than per-PR because it is the most expensive job in
+  # the file — a macOS runner billed at ten times Linux, running a long native
+  # MLX build — and the answer does not change between commits.
+  mlx-builds-on-a-clean-machine:
+    if: github.event_name == 'schedule'
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - run: brew install cmake
+      - run: cargo clippy --all-targets --no-default-features --features backend-mlx -- -D warnings
+
+  # Coverage-guided fuzzing, on a schedule rather than per-PR: a PR should not
+  # wait on it, and a corpus is worth more when it accumulates.
+  fuzz:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@nightly
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo install cargo-fuzz --locked
+      - name: Fuzz the GGUF parser
+        run: cargo fuzz run gguf -- -max_total_time=900
+        working-directory: fuzz
+      - name: Keep any crash for triage
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fuzz-artifacts
+          path: fuzz/artifacts/

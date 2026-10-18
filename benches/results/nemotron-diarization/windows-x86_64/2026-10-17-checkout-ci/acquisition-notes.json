@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "run_id": 39089200762,
+  "source_commit": "f421e960599efe0f7ee37df5596cf450079fdb80",
+  "original_watch_exit_code": 0,
+  "initial_preterminal_requests": {
+    "count": 3,
+    "exit_code": 1,
+    "reason": "GitHub CLI withheld logs while run was active; empty output placeholders were not admitted."
+  },
+  "parallel_terminal_requests": {
+    "successful_job_ids": [
+      117562080031,
+      117562080045
+    ],
+    "failed_job_ids": [
+      117562080049,
+      117562080096
+    ],
+    "exit_code": 1,
+    "errors": [
+      "opening cache entry: unexpected EOF",
+      "opening cache entry: zip: not a valid zip file"
+    ],
+    "failed_output_bytes": 0
+  },
+  "sequential_terminal_requests": {
+    "job_ids": [
+      117562080049,
+      117562080096
+    ],
+    "exit_codes": [
+      0,
+      0
+    ]
+  },
+  "local_cache_deletion_or_configuration_changes": false,
+  "additional_workflow_or_model_dispatches": 0,
+  "release_qualified": false
+}

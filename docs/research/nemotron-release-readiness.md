@@ -62,3 +62,10 @@ Human review remains deferred, and skipped app transfer remains skipped. No
 credential, Keychain, signing, host-settings or physical-access action was taken.
 The goal stays incomplete and main stays unchanged until actual evidence closes
 all original gates.
+
+The subsequent [Windows checkout repair](nemotron-windows-checkout.md) now
+passes all 13 feature-check jobs at `f421e960`. The four Windows jobs each verify
+22 long tracked paths before compiling and testing. This repairs a repository
+checkout regression caused by retained evidence paths; it supplies no new
+model-quality, Windows real-time or release qualification. The unmet gates in
+the table remain unchanged.

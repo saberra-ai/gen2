@@ -35,7 +35,34 @@ Historical diagnostic workflows retain their preregistered source and settings;
 their checkout environment must be included when a justified new diagnostic is
 preregistered. No unchanged model experiment is dispatched for this repair.
 
-At this implementation checkpoint the repaired Windows jobs have not run.
-Original AMI accuracy, Windows real-time performance, human review, physical app,
-fresh-machine, other-platform and public release gates remain open. Main remains
-unpromoted.
+## Actual regression result
+
+The repair was committed and pushed at
+`f421e960599efe0f7ee37df5596cf450079fdb80`.
+[Run 39089200762](https://github.com/saberra-ai/gen2/actions/runs/39089200762)
+now completes successfully: all twelve OS/feature configurations and the
+evidence-tools job pass. Every Windows job passes checkout, the long-path
+assertions, formatting, clippy and tests. Each of the four Windows logs records
+22 tracked paths at least 260 characters long, checked before toolchain setup.
+
+The [15-member before/after receipt](../../benches/results/nemotron-diarization/windows-x86_64/2026-10-17-checkout-ci/collection.json)
+retains original failure metadata/logs, terminal successful metadata, all four
+complete Windows logs, both exact workflow sources, the collector and its
+first-bound input protocol. Its
+[qualification](../../benches/results/nemotron-diarization/windows-x86_64/2026-10-17-checkout-ci/qualification.json)
+requires all 13 jobs to succeed, the four actual 22-path stdout records and
+workflow bytes matching the fixed Git revision. The collector makes no model
+or native helper calls and publishes flat filenames, adding no long paths.
+
+Three early log requests were refused while the run remained active. Two
+parallel terminal downloads then returned GitHub CLI shared-cache errors;
+sequential retrieval completed successfully. The receipt preserves these
+acquisition notes, and only complete, validated logs were admitted. The original
+CI run was neither restarted nor replaced. No host cache was deleted or
+reconfigured.
+
+This closes the checkout regression and verifies the existing feature matrix.
+The normal CI workflow shares the process-environment fix; its separate entire
+workflow was not executed here. Original AMI accuracy, Windows real-time
+performance, human review, physical app, fresh-machine, other-platform and
+public release gates remain open. Main remains unpromoted.
