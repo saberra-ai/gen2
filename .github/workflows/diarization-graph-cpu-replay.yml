@@ -1,0 +1,49 @@
+name: Diarization graph CPU independent artifact replay
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/nemotron3-n0]
+    paths: [.github/workflows/diarization-graph-cpu-replay.yml]
+permissions:
+  contents: read
+  actions: read
+jobs:
+  register:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-24.04
+    steps:
+      - run: echo 'Graph CPU replay workflow registered. Actual identities and manual dispatch required.'
+  replay:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      GIT_LFS_SKIP_SMUDGE: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Existing owned-process and inherited-stage controls
+        run: |
+          python -B -m unittest discover -s tools/nemotron-diarization -p test_remote_q8_apack_replay.py
+          python -B -m unittest discover -s tools/nemotron-diarization -p test_remote_thread_cpu_replay.py
+      - name: Graph-only receiver and quarantine controls
+        run: |
+          python -B -m unittest discover -s tools/nemotron-diarization -p test_graph_cpu_receiver_sources.py
+          python -B -m unittest discover -s tools/nemotron-diarization -p test_graph_cpu_transport.py
+      - name: Full saved-artifact replay without native execution
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python -B tools/nemotron-diarization/graph_cpu_transport.py remote --cache "${{ runner.temp }}/graph-cpu-receiver-v1" --output "${{ runner.temp }}/graph-cpu-replay-result-v1"
+      - name: Preserve successful or failed replay evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nemotron-graph-cpu-replay
+          path: ${{ runner.temp }}/graph-cpu-replay-result-v1/
+          include-hidden-files: true
+          retention-days: 30

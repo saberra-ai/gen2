@@ -68,6 +68,14 @@ namespace. Actual native identities remain unset, no artifact is consumed, and
 the owned acquisition/bounded return/local replay route still needs completion
 before dispatch. No production, N4/N5 or main gate closes.
 
+The [graph CPU transport preparation](../research/nemotron-graph-cpu-transport.md)
+now connects the prepared receivers to owned Linux acquisition/result bundling
+and the bounded local quarantine algorithms. Fourteen focused controls pass,
+including real tiny Git bundle mutations and exact native-source feature CI
+admission. Actual identities remain unset; no artifact is consumed. Independent
+local semantic replay still needs completion before native dispatch. All
+original quality, timing, desktop and release gates remain open.
+
 The separate [batched matrix observer control](../research/nemotron-matrix-batch-results.md)
 now passes all twelve fresh native Mac graph processes, 144 byte-exact vectors
 against the earlier observer, and complete dispatch/fusion coverage. Only

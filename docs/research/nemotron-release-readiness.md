@@ -120,3 +120,9 @@ aggregation and closed publication checks. Native identities remain unset and
 no artifact is consumed. Owned acquisition, bounded result return and
 independent local replay remain required before native dispatch; the unmet
 requirements in the table remain unchanged.
+
+The [transport preparation](nemotron-graph-cpu-transport.md) now supplies owned
+Linux acquisition/bundling and bounded local quarantine wiring, with fourteen
+focused controls passing. Actual identities remain unset and no artifact is
+consumed; independent local semantic replay remains required before native
+dispatch. This supplies no actual model, timing or release result.
