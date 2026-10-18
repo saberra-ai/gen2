@@ -27,6 +27,12 @@ genuine zero user CPU delta and zero API errors. All thirteen feature CI jobs
 pass in run39091355966. Actual graph parity, timing bounds and all
 production/release gates remain open.
 
+The [separate native graph-only diagnostic preparation](../research/nemotron-windows-graph-cpu-profile.md)
+now supplies a distinct runtime identity and exact source/compiler admission,
+with a passing 658-test local model-free suite (650 executed, eight Windows-only skips). Its
+manual-only workflow has not been dispatched. The original graph/model parity,
+timing, production quality/performance and N4/N5 gates remain open.
+
 The separate [batched matrix observer control](../research/nemotron-matrix-batch-results.md)
 now passes all twelve fresh native Mac graph processes, 144 byte-exact vectors
 against the earlier observer, and complete dispatch/fusion coverage. Only

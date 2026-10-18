@@ -79,3 +79,9 @@ jobs pass in run39091355966. The raw row preserves a zero user CPU delta and
 zero API errors. Actual GGML parity, observer timing bounds and production
 performance remain unqualified. This
 does not select an optimization or close the Windows real-time gate.
+
+The subsequent [native graph-only diagnostic preparation](nemotron-windows-graph-cpu-profile.md)
+gives the observer a separate runtime identity and exact patch/source/compiler
+admission. Its 658-test local model-free suite passes (650 executed, eight
+Windows-only skips). The manual-only workflow has not been dispatched; actual graph/model
+parity, both observer bounds and production performance remain unqualified.
