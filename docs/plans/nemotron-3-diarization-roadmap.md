@@ -320,6 +320,18 @@ Only harness newline expectations were corrected to the exact platform newline;
 native counters, numerical work, admission and performance gates stay unchanged.
 The corrected producer requires a new frozen test-source identity and actual run.
 
+The corrected producer at `15c905d8` (run39083120058/job117544022272)
+is now terminal success. Its original24,016,727byte artifact remains on GitHub;
+only terminal API metadata and the full job log have been retained locally.
+A separate [saved CPU-counter artifact replay](../research/nemotron-windows-thread-cpu-replay.md)
+preserves the original8GiB full-native admission floor on Linux and returns a
+bounded result-only bundle. Its25-member preparation retains the reviewed
+receivers, exact59-command/library/model bindings,15 mutation controls and
+terminal metadata, including all13 successful native-source feature jobs.
+Real nested-child timeout/cancellation controls also pass locally after source
+preparation was changed to inherit one outer owned group. The replay/return/local interpretation have not executed;
+successful CI alone supplies no new performance or release qualification.
+
 Remaining release work as of 2026-10-17:
 
 - Meet the original 20% DER target on every required meeting slice. The two AMI
