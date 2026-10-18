@@ -45,15 +45,20 @@ The [actual source-only result](../research/nemotron-graph-cpu-source-results.md
 now independently matches all 3,425 materialized files and 3,049 input bindings,
 with nineteen exact command/ownership records and the original 8 GiB floor.
 The `ce65591d` preparation also passes all thirteen feature CI jobs. The native
-graph/model diagnostic remains undispatched; its registration, artifact replay
-and bounded return still need qualification. N4/N5 and main remain open.
+graph/model diagnostic remains undispatched; at that checkpoint registration,
+artifact replay and bounded return still needed qualification. N4/N5 and main
+remain open.
 
 The native workflow now has a push-only registration job and a separate
 manual-only compute guard in context `71a27e26`. All native tools and inference
 fields remain unchanged; only workflow/document protocol descriptors change.
 The source-only receiver is rebound to that exact context before publication.
-Actual registration, the matching source check and the artifact-return route
-remain pending; no native diagnostic or model is dispatched by registration.
+The [actual registration result](../research/nemotron-graph-cpu-registration.md)
+now confirms successful push run39094365683, active workflow388152309 and the
+native job skipped with zero steps. The matching source-only run39094365629
+reports success; its new-context artifact replay remains separate. The native
+diagnostic is still undispatched, and its artifact replay/return route remains
+unqualified. No original release gate closes.
 
 The separate [batched matrix observer control](../research/nemotron-matrix-batch-results.md)
 now passes all twelve fresh native Mac graph processes, 144 byte-exact vectors

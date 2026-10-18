@@ -1,0 +1,45 @@
+{
+  "source_commit": "0b2b7a7e9e81c83772d8059cc675cdb00a75e452",
+  "native_context_commit": "71a27e26a6285adf393f4b7d5862b21a5302efc4",
+  "registration_run": 39094365683,
+  "registration_job": 117577611570,
+  "workflow_id": 388152309,
+  "workflow_state": "active",
+  "native_job": 117577612370,
+  "native_job_skipped": true,
+  "native_steps_executed": 0,
+  "new_native_calls": 0,
+  "native_protocol_changed_references": [
+    ".github/workflows/diarization-windows-graph-cpu-profile.yml",
+    "docs/research/nemotron-windows-graph-cpu-profile.md"
+  ],
+  "native_job_equal_except_dispatch_guard": true,
+  "all_other_native_protocol_fields_equal": true,
+  "source_bindings": {
+    ".github/workflows/diarization-windows-graph-cpu-profile.yml": {
+      "bytes": 3186,
+      "sha256": "a5e9d68e816dff8fafe9b9568d9e710181d4f7f7d8ee7ba23994810811ea7ddf"
+    },
+    "tools/nemotron-diarization/windows-graph-cpu-profile.protocol.json": {
+      "bytes": 674377,
+      "sha256": "581a25fee8e4cf5191bc9b5d22884cc9429b4d6e8ceada46e954a531f10484fa"
+    },
+    "docs/research/nemotron-windows-graph-cpu-profile.md": {
+      "bytes": 4488,
+      "sha256": "e34d78b5447df22a12edaa5a46c2b624a0b5ce4dd4bd9f9ca2f168d8163f8e1e"
+    },
+    "tools/nemotron-diarization/graph_cpu_source_admission.py": {
+      "bytes": 12718,
+      "sha256": "3ca35824ae88bb1b9b74182a276f7b7e43846de6e8921a53b754c07c632c5ed7"
+    },
+    "tools/nemotron-diarization/graph-cpu-source-admission.protocol.json": {
+      "bytes": 2603,
+      "sha256": "5c662cdd3cea2bbce4013d690ec3cee076cadf4ee2559e2a1ec78b456466bf7d"
+    },
+    "docs/research/nemotron-graph-cpu-source-admission.md": {
+      "bytes": 3428,
+      "sha256": "31ba92b3c770793aad218087552462169f74e98013f11dcf2c426bf0e70cfadd"
+    }
+  },
+  "limits": "Actual push registration only. No manual dispatch, compiler/SDK/graph/model execution, timing, production performance or release qualification. Source/feature CI and artifact return remain separate."
+}

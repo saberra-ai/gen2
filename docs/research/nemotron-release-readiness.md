@@ -98,11 +98,17 @@ The [actual graph source-only result](nemotron-graph-cpu-source-results.md)
 now passes complete 3,425-file composition and nineteen-command ownership
 replay. All 3,049 bindings match, the outer group is gone, and every command
 starts above the original 8 GiB floor. The `ce65591d` feature CI is also 13/13
-successful. This closes source composition only; native execution, registration,
-artifact replay/return and all unmet release requirements remain open.
+successful. This closes source composition only; native execution, artifact
+replay/return and all unmet release requirements remain open. Workflow
+registration was still pending at that historical checkpoint.
 
 The registration-only context `71a27e26` adds a one-message push job while
 guarding native compute for explicit manual dispatch. Native tools, inference
 and observer code remain unchanged. The source receiver now pins the updated
-protocol; actual registration/source checks and artifact return remain pending.
-Registration does not execute the SDK/model diagnostic or qualify a release.
+protocol. The [actual registration result](nemotron-graph-cpu-registration.md)
+now confirms successful push run39094365683, active workflow388152309 and the
+native job skipped with zero steps. The matching source-only run39094365629
+reports success; its updated artifact still needs separate independent replay.
+The native diagnostic remains undispatched and its artifact-return route
+unqualified. Registration does not execute the SDK/model diagnostic or qualify
+a release.
