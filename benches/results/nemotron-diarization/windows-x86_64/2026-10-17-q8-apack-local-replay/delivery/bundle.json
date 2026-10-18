@@ -1,0 +1,43 @@
+{
+  "verifier_source_commit": "cc655ab95f2bb800696f1f5c9a27d69321627b27",
+  "verifier_run_id": "39080172371",
+  "native_source_commit": "3fd41caa862c34134d008d18b0b6b830b736c864",
+  "native_run_id": 39077373013,
+  "native_job_id": 117527216794,
+  "native_archive": {
+    "bytes": 752404322,
+    "sha256": "f036e864269973d71dc069f878f986cca07ce788ca9b26317c32aadc57607269"
+  },
+  "result_commit": "ba5cce755ab7c4673892ccfc9b0bf4992e6fc26f",
+  "result_parent": "cc655ab95f2bb800696f1f5c9a27d69321627b27",
+  "result_roots": [
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack",
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack-loop-inspection"
+  ],
+  "collections": {
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack": {
+      "members": 1502,
+      "bytes_without_manifest": 832326048,
+      "manifest": {
+        "bytes": 224398,
+        "sha256": "cdf28880ef4efed38aa89a5b80f2d4a8c513ea430b44b10ff1ec2aef514724da"
+      }
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack-loop-inspection": {
+      "members": 19,
+      "bytes_without_manifest": 6457545,
+      "manifest": {
+        "bytes": 2745,
+        "sha256": "3675e9212a6dc99dfd8fdcdf4188a3d4a5e5f3e72ca670d8995c28838e34a99a"
+      }
+    }
+  },
+  "bundle": {
+    "bytes": 17070275,
+    "sha256": "0f702b4ae0b54691f9122ab336083cbac1f116d72d37f3d6e4ae0360b656156e"
+  },
+  "original_start_floor_bytes": 8589934592,
+  "new_compiler_sdk_model_calls": 0,
+  "production_or_release_qualified": false,
+  "scope": "Full unchanged artifact replay on independent Linux CI host; no kernel/model rerun. Git bundle contains result-only commit relative to verifier source. Local import/replay/review remains required. Raw native artifact remains in original GitHub artifact; its complete archive is not transferred via this bundle."
+}

@@ -1,0 +1,172 @@
+{
+  "source_commit": "3fd41caa862c34134d008d18b0b6b830b736c864",
+  "run_id": 39077373013,
+  "job_id": 117527216794,
+  "inputs": {
+    "/home/runner/work/_temp/q8-apack-receiver-v1/inspect-q8-apack-loops-v1.py": {
+      "bytes": 7208,
+      "sha256": "b6a7919b9e395a73384d9fb34389698286370b12a914a13e16ae8021edd9bb6e"
+    },
+    "/home/runner/work/gen2/gen2/benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-row-loop-inspection/collection.json": {
+      "bytes": 2409,
+      "sha256": "51dcd2e621769519d5d2d2767125621debfb74f64dc96e845828ffb7f5443d66"
+    },
+    "/home/runner/work/_temp/q8-apack-receiver-v1/inspect-q8-row-loops-v1.py": {
+      "bytes": 6730,
+      "sha256": "bd4894963398a45c04128d3e690e61f0604acd4083a9e7361a588026d2137dbb"
+    },
+    "/home/runner/work/_temp/q8-apack-receiver-v1/windows-q8-apack-receivers-pre-execution-v1.json": {
+      "bytes": 1954,
+      "sha256": "6a56207e07cd3350f3dc947f71ebccea4c79078d3a31ee1861073e946b58bb6d"
+    },
+    "/home/runner/work/_temp/q8-apack-receiver-v1/collect-windows-q8-apack-v1.py": {
+      "bytes": 16896,
+      "sha256": "b2f5ee021adab96577b07c330433b70d6bf047fc52e15fe88344fb70149120b8"
+    },
+    "/home/runner/work/_temp/q8-apack-receiver-v1/windows-q8-apack-ci-v1/collection-replay-v1.json": {
+      "bytes": 1372296,
+      "sha256": "d137ff6048572e3e1332be0bd2494e1c4e0d3b033d33ab3fce1cadbcb629b84b"
+    },
+    "/home/runner/work/_temp/q8-apack-receiver-v1/windows-q8-apack-ci-v1/delivery-admission-v1/qualification.json": {
+      "bytes": 1662,
+      "sha256": "b38f0355b67c4647fd7de6a52cfd562fb735b5fca50d625dd72aec06167c5f3e"
+    },
+    "/home/runner/work/_temp/q8-apack-receiver-v1/windows-q8-apack-ci-v1/delivery-admission-v1/artifact-members.json": {
+      "bytes": 748735,
+      "sha256": "dfc02d6847c0158f16ba4dd87ca2d9dfadb77945054ad3402c976fa3bfeee8ec"
+    },
+    "/home/runner/work/_temp/q8-apack-receiver-v1/windows-q8-apack-ci-v1/delivery-admission-v1/delivered/evidence/kernel-control.obj": {
+      "bytes": 165308,
+      "sha256": "3bcaddba7495ea02eb6b55c758a75015ef0dc5326f4facd3a2b69dc3ab58caca"
+    },
+    "/home/runner/work/_temp/q8-apack-receiver-v1/windows-q8-apack-ci-v1/delivery-admission-v1/delivered/evidence/disasm-control.stdout.log": {
+      "bytes": 1924758,
+      "sha256": "11d81041aecc7cd682e892542fc0ee69eb3c0deb2f61b69c5935507b7aea9d88"
+    },
+    "/home/runner/work/_temp/q8-apack-receiver-v1/windows-q8-apack-ci-v1/delivery-admission-v1/delivered/evidence/kernel-apack.obj": {
+      "bytes": 169223,
+      "sha256": "ca5b8d97d6c7ce6e159768658286b5010a966bd1daeddd3aea214c59fbf6d3ea"
+    },
+    "/home/runner/work/_temp/q8-apack-receiver-v1/windows-q8-apack-ci-v1/delivery-admission-v1/delivered/evidence/disasm-apack.stdout.log": {
+      "bytes": 1972690,
+      "sha256": "2c7945f6c52a3888250898d6119f846b02f03dbe7ef3bcef674b97b439bb50e0"
+    }
+  },
+  "method": "Unchanged admitted row parser: unique Q8/Q8/F32 function and unique innermost backward conditional loop with8control/8candidate FMAs. Explicit RSP vector operand widths only.",
+  "functions": {
+    "control": {
+      "function_header": "??$gemmMx4@$01@?$tinyBLAS_Q0_AVX@Ublock_q8_0@@U1@M@?A0x52213CAE@@AEAAX_J000@Z (private: void __cdecl `anonymous namespace'::tinyBLAS_Q0_AVX<struct block_q8_0,struct block_q8_0,float>::gemmMx4<2>(__int64,__int64,__int64,__int64)):",
+      "function_instructions": 351,
+      "loop_start": "0x3d0",
+      "backedge": "0x5a7",
+      "loop_instruction_count": 95,
+      "fma_instructions": 8,
+      "loop_instructions_sha256": "ae8c8dbc179fc7b2c1d37956e84a96c9ff72f3c381d3dd98af280adcae14872d",
+      "vector_stack_accesses": [
+        {
+          "offset": "0x3d0",
+          "instruction": "vmovups ymmword ptr [rsp+70h],ymm7",
+          "bytes": 32,
+          "access": "store"
+        },
+        {
+          "offset": "0x458",
+          "instruction": "vmovups ymm9,ymmword ptr [rsp+30h]",
+          "bytes": 32,
+          "access": "load"
+        },
+        {
+          "offset": "0x463",
+          "instruction": "vmovups ymmword ptr [rsp+30h],ymm9",
+          "bytes": 32,
+          "access": "store"
+        },
+        {
+          "offset": "0x4b4",
+          "instruction": "vmovups ymm10,ymmword ptr [rsp+50h]",
+          "bytes": 32,
+          "access": "load"
+        },
+        {
+          "offset": "0x4bf",
+          "instruction": "vmovups ymmword ptr [rsp+50h],ymm10",
+          "bytes": 32,
+          "access": "store"
+        },
+        {
+          "offset": "0x4d9",
+          "instruction": "vmovups ymm7,ymmword ptr [rsp+70h]",
+          "bytes": 32,
+          "access": "load"
+        }
+      ],
+      "static_vector_stack_operand_bytes": 192
+    },
+    "apack": {
+      "function_header": "??$gemmPackA@$01@?$tinyBLAS_Q0_AVX@Ublock_q8_0@@U1@M@?A0x9BBA6017@@AEAAX_J000@Z (private: void __cdecl `anonymous namespace'::tinyBLAS_Q0_AVX<struct block_q8_0,struct block_q8_0,float>::gemmPackA<2>(__int64,__int64,__int64,__int64)):",
+      "function_instructions": 528,
+      "loop_start": "0x6d0",
+      "backedge": "0x8c3",
+      "loop_instruction_count": 97,
+      "fma_instructions": 8,
+      "loop_instructions_sha256": "b188d4ce6447d8ada43d7b6cda3c3c78955813757752ed4f5e1751f3dcf786a9",
+      "vector_stack_accesses": [
+        {
+          "offset": "0x6d0",
+          "instruction": "vmovups ymmword ptr [rsp+90h],ymm2",
+          "bytes": 32,
+          "access": "store"
+        },
+        {
+          "offset": "0x711",
+          "instruction": "vmovdqu ymmword ptr [rsp+0B0h],ymm2",
+          "bytes": 32,
+          "access": "store"
+        },
+        {
+          "offset": "0x7ac",
+          "instruction": "vmovups ymm6,ymmword ptr [rsp+70h]",
+          "bytes": 32,
+          "access": "load"
+        },
+        {
+          "offset": "0x7b7",
+          "instruction": "vmovups ymmword ptr [rsp+70h],ymm6",
+          "bytes": 32,
+          "access": "store"
+        },
+        {
+          "offset": "0x84d",
+          "instruction": "vmovdqu ymm2,ymmword ptr [rsp+0B0h]",
+          "bytes": 32,
+          "access": "load"
+        },
+        {
+          "offset": "0x873",
+          "instruction": "vmovups ymm2,ymmword ptr [rsp+90h]",
+          "bytes": 32,
+          "access": "load"
+        },
+        {
+          "offset": "0x881",
+          "instruction": "vmovups ymmword ptr [rsp+90h],ymm2",
+          "bytes": 32,
+          "access": "store"
+        },
+        {
+          "offset": "0x88a",
+          "instruction": "vmovups ymm2,ymmword ptr [rsp+90h]",
+          "bytes": 32,
+          "access": "load"
+        }
+      ],
+      "static_vector_stack_operand_bytes": 256
+    }
+  },
+  "negative_selection_controls": 4,
+  "normalized_candidate_instructions_per8outputs": 97,
+  "normalized_candidate_stack_operand_bytes_per8outputs": 256,
+  "new_native_calls": 0,
+  "production_qualified": false,
+  "limits": "Both helpers produce8outputs per2x4iteration. Static counts exclude tile setup/reduction/scheduling,are not measured traffic/CPUtime/cause,and cannot replace numerical/timing/observer gates. All original flags remain unchanged."
+}

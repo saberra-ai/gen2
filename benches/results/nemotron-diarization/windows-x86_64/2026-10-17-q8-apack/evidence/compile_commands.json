@@ -1,0 +1,86 @@
+[
+{
+  "directory": "D:/a/_temp/windows-q8-apack/build",
+  "command": "C:\\PROGRA~1\\MICROS~2\\2022\\ENTERP~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe  /nologo -TP -DGEN2_Q8_MX4_EXPECTED=1 -DGGML_AVX2 -DGGML_BMI2 -DGGML_F16C -DGGML_FMA -DNOMINMAX -D_CRT_SECURE_NO_WARNINGS -D__BMI2__ -Dllamafile_sgemm=gen2_q8_tile_control_sgemm -ID:\\a\\_temp\\windows-q8-apack\\canonical\\ggml\\include -ID:\\a\\_temp\\windows-q8-apack\\canonical\\ggml\\src -ID:\\a\\_temp\\windows-q8-apack\\canonical\\ggml\\src\\ggml-cpu -ID:\\a\\_temp\\windows-q8-apack\\canonical\\ggml\\src\\ggml-cpu\\llamafile /clang:-ffp-contract=off /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++17 -MD /arch:AVX2 /utf-8 /wd4005 /wd4244 /wd4267 /wd4305 /wd4566 /wd4996 /wd4702 /FoCMakeFiles\\q8_control.dir\\D_\\a\\_temp\\windows-q8-apack\\evidence\\sgemm-control.cpp.obj /FdCMakeFiles\\q8_control.dir\\ -c -- D:\\a\\_temp\\windows-q8-apack\\evidence\\sgemm-control.cpp",
+  "file": "D:\\a\\_temp\\windows-q8-apack\\evidence\\sgemm-control.cpp",
+  "output": "CMakeFiles\\q8_control.dir\\D_\\a\\_temp\\windows-q8-apack\\evidence\\sgemm-control.cpp.obj"
+},
+{
+  "directory": "D:/a/_temp/windows-q8-apack/build",
+  "command": "C:\\PROGRA~1\\MICROS~2\\2022\\ENTERP~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe  /nologo -TP -DGEN2_Q8_APACK_EXPECTED=1 -DGGML_AVX2 -DGGML_BMI2 -DGGML_F16C -DGGML_FMA -DNOMINMAX -D_CRT_SECURE_NO_WARNINGS -D__BMI2__ -Dllamafile_sgemm=gen2_q8_tile_candidate_sgemm -ID:\\a\\_temp\\windows-q8-apack\\canonical\\ggml\\include -ID:\\a\\_temp\\windows-q8-apack\\canonical\\ggml\\src -ID:\\a\\_temp\\windows-q8-apack\\canonical\\ggml\\src\\ggml-cpu -ID:\\a\\_temp\\windows-q8-apack\\canonical\\ggml\\src\\ggml-cpu\\llamafile /clang:-ffp-contract=off /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++17 -MD /arch:AVX2 /utf-8 /wd4005 /wd4244 /wd4267 /wd4305 /wd4566 /wd4996 /wd4702 /FoCMakeFiles\\q8_candidate.dir\\D_\\a\\_temp\\windows-q8-apack\\evidence\\sgemm-apack.cpp.obj /FdCMakeFiles\\q8_candidate.dir\\ -c -- D:\\a\\_temp\\windows-q8-apack\\evidence\\sgemm-apack.cpp",
+  "file": "D:\\a\\_temp\\windows-q8-apack\\evidence\\sgemm-apack.cpp",
+  "output": "CMakeFiles\\q8_candidate.dir\\D_\\a\\_temp\\windows-q8-apack\\evidence\\sgemm-apack.cpp.obj"
+},
+{
+  "directory": "D:/a/_temp/windows-q8-apack/build",
+  "command": "C:\\PROGRA~1\\MICROS~2\\2022\\ENTERP~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe  /nologo -TP -DNOMINMAX -D_CRT_SECURE_NO_WARNINGS -ID:\\a\\_temp\\windows-q8-apack\\canonical\\ggml\\include -ID:\\a\\_temp\\windows-q8-apack\\canonical\\ggml\\src -ID:\\a\\_temp\\windows-q8-apack\\canonical\\ggml\\src\\ggml-cpu -ID:\\a\\_temp\\windows-q8-apack\\canonical\\ggml\\src\\ggml-cpu\\llamafile -ID:\\a\\_temp\\windows-q8-apack\\canonical\\ggml\\src\\..\\include /clang:-ffp-contract=off /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++17 -MD /arch:AVX2 /utf-8 /FoCMakeFiles\\q8_tile_benchmark.dir\\D_\\a\\gen2\\gen2\\tools\\nemotron-diarization\\q8_apack_benchmark.cpp.obj /FdCMakeFiles\\q8_tile_benchmark.dir\\ -c -- D:\\a\\gen2\\gen2\\tools\\nemotron-diarization\\q8_apack_benchmark.cpp",
+  "file": "D:\\a\\gen2\\gen2\\tools\\nemotron-diarization\\q8_apack_benchmark.cpp",
+  "output": "CMakeFiles\\q8_tile_benchmark.dir\\D_\\a\\gen2\\gen2\\tools\\nemotron-diarization\\q8_apack_benchmark.cpp.obj"
+},
+{
+  "directory": "D:/a/_temp/windows-q8-apack/build",
+  "command": "C:\\PROGRA~1\\MICROS~2\\2022\\ENTERP~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe  /nologo -DGGML_SCHED_MAX_COPIES=4 -D_CRT_SECURE_NO_WARNINGS -D_XOPEN_SOURCE=600 -ID:\\a\\_temp\\windows-q8-apack\\canonical\\ggml\\src\\. -ID:\\a\\_temp\\windows-q8-apack\\build\\ggml\\src -ID:\\a\\_temp\\windows-q8-apack\\canonical\\ggml\\src\\..\\include /clang:-ffp-contract=off /DWIN32 /D_WINDOWS /O2 /Ob2 /DNDEBUG /std:c11 -MD /wd4005 /wd4244 /wd4267 /wd4305 /wd4566 /wd4996 /wd4702 /utf-8 /Foggml\\src\\CMakeFiles\\ggml-base.dir\\ggml.c.obj /Fdggml\\src\\CMakeFiles\\ggml-base.dir\\ggml-base.pdb -c -- D:\\a\\_temp\\windows-q8-apack\\canonical\\ggml\\src\\ggml.c",
+  "file": "D:\\a\\_temp\\windows-q8-apack\\canonical\\ggml\\src\\ggml.c",
+  "output": "ggml\\src\\CMakeFiles\\ggml-base.dir\\ggml.c.obj"
+},
+{
+  "directory": "D:/a/_temp/windows-q8-apack/build",
+  "command": "C:\\PROGRA~1\\MICROS~2\\2022\\ENTERP~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe  /nologo -TP -DGGML_SCHED_MAX_COPIES=4 -D_CRT_SECURE_NO_WARNINGS -D_XOPEN_SOURCE=600 -ID:\\a\\_temp\\windows-q8-apack\\canonical\\ggml\\src\\. -ID:\\a\\_temp\\windows-q8-apack\\build\\ggml\\src -ID:\\a\\_temp\\windows-q8-apack\\canonical\\ggml\\src\\..\\include /clang:-ffp-contract=off /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++17 -MD /wd4005 /wd4244 /wd4267 /wd4305 /wd4566 /wd4996 /wd4702 /utf-8 /Foggml\\src\\CMakeFiles\\ggml-base.dir\\ggml.cpp.obj /Fdggml\\src\\CMakeFiles\\ggml-base.dir\\ggml-base.pdb -c -- D:\\a\\_temp\\windows-q8-apack\\canonical\\ggml\\src\\ggml.cpp",
+  "file": "D:\\a\\_temp\\windows-q8-apack\\canonical\\ggml\\src\\ggml.cpp",
+  "output": "ggml\\src\\CMakeFiles\\ggml-base.dir\\ggml.cpp.obj"
+},
+{
+  "directory": "D:/a/_temp/windows-q8-apack/build",
+  "command": "C:\\PROGRA~1\\MICROS~2\\2022\\ENTERP~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe  /nologo -DGGML_SCHED_MAX_COPIES=4 -D_CRT_SECURE_NO_WARNINGS -D_XOPEN_SOURCE=600 -ID:\\a\\_temp\\windows-q8-apack\\canonical\\ggml\\src\\. -ID:\\a\\_temp\\windows-q8-apack\\build\\ggml\\src -ID:\\a\\_temp\\windows-q8-apack\\canonical\\ggml\\src\\..\\include /clang:-ffp-contract=off /DWIN32 /D_WINDOWS /O2 /Ob2 /DNDEBUG /std:c11 -MD /wd4005 /wd4244 /wd4267 /wd4305 /wd4566 /wd4996 /wd4702 /utf-8 /Foggml\\src\\CMakeFiles\\ggml-base.dir\\ggml-alloc.c.obj /Fdggml\\src\\CMakeFiles\\ggml-base.dir\\ggml-base.pdb -c -- D:\\a\\_temp\\windows-q8-apack\\canonical\\ggml\\src\\ggml-alloc.c",
+  "file": "D:\\a\\_temp\\windows-q8-apack\\canonical\\ggml\\src\\ggml-alloc.c",
+  "output": "ggml\\src\\CMakeFiles\\ggml-base.dir\\ggml-alloc.c.obj"
+},
+{
+  "directory": "D:/a/_temp/windows-q8-apack/build",
+  "command": "C:\\PROGRA~1\\MICROS~2\\2022\\ENTERP~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe  /nologo -TP -DGGML_SCHED_MAX_COPIES=4 -D_CRT_SECURE_NO_WARNINGS -D_XOPEN_SOURCE=600 -ID:\\a\\_temp\\windows-q8-apack\\canonical\\ggml\\src\\. -ID:\\a\\_temp\\windows-q8-apack\\build\\ggml\\src -ID:\\a\\_temp\\windows-q8-apack\\canonical\\ggml\\src\\..\\include /clang:-ffp-contract=off /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++17 -MD /wd4005 /wd4244 /wd4267 /wd4305 /wd4566 /wd4996 /wd4702 /utf-8 /Foggml\\src\\CMakeFiles\\ggml-base.dir\\ggml-backend.cpp.obj /Fdggml\\src\\CMakeFiles\\ggml-base.dir\\ggml-base.pdb -c -- D:\\a\\_temp\\windows-q8-apack\\canonical\\ggml\\src\\ggml-backend.cpp",
+  "file": "D:\\a\\_temp\\windows-q8-apack\\canonical\\ggml\\src\\ggml-backend.cpp",
+  "output": "ggml\\src\\CMakeFiles\\ggml-base.dir\\ggml-backend.cpp.obj"
+},
+{
+  "directory": "D:/a/_temp/windows-q8-apack/build",
+  "command": "C:\\PROGRA~1\\MICROS~2\\2022\\ENTERP~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe  /nologo -TP -DGGML_SCHED_MAX_COPIES=4 -D_CRT_SECURE_NO_WARNINGS -D_XOPEN_SOURCE=600 -ID:\\a\\_temp\\windows-q8-apack\\canonical\\ggml\\src\\. -ID:\\a\\_temp\\windows-q8-apack\\build\\ggml\\src -ID:\\a\\_temp\\windows-q8-apack\\canonical\\ggml\\src\\..\\include /clang:-ffp-contract=off /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++17 -MD /wd4005 /wd4244 /wd4267 /wd4305 /wd4566 /wd4996 /wd4702 /utf-8 /Foggml\\src\\CMakeFiles\\ggml-base.dir\\ggml-backend-meta.cpp.obj /Fdggml\\src\\CMakeFiles\\ggml-base.dir\\ggml-base.pdb -c -- D:\\a\\_temp\\windows-q8-apack\\canonical\\ggml\\src\\ggml-backend-meta.cpp",
+  "file": "D:\\a\\_temp\\windows-q8-apack\\canonical\\ggml\\src\\ggml-backend-meta.cpp",
+  "output": "ggml\\src\\CMakeFiles\\ggml-base.dir\\ggml-backend-meta.cpp.obj"
+},
+{
+  "directory": "D:/a/_temp/windows-q8-apack/build",
+  "command": "C:\\PROGRA~1\\MICROS~2\\2022\\ENTERP~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe  /nologo -TP -DGGML_SCHED_MAX_COPIES=4 -D_CRT_SECURE_NO_WARNINGS -D_XOPEN_SOURCE=600 -ID:\\a\\_temp\\windows-q8-apack\\canonical\\ggml\\src\\. -ID:\\a\\_temp\\windows-q8-apack\\build\\ggml\\src -ID:\\a\\_temp\\windows-q8-apack\\canonical\\ggml\\src\\..\\include /clang:-ffp-contract=off /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++17 -MD /wd4005 /wd4244 /wd4267 /wd4305 /wd4566 /wd4996 /wd4702 /utf-8 /Foggml\\src\\CMakeFiles\\ggml-base.dir\\ggml-opt.cpp.obj /Fdggml\\src\\CMakeFiles\\ggml-base.dir\\ggml-base.pdb -c -- D:\\a\\_temp\\windows-q8-apack\\canonical\\ggml\\src\\ggml-opt.cpp",
+  "file": "D:\\a\\_temp\\windows-q8-apack\\canonical\\ggml\\src\\ggml-opt.cpp",
+  "output": "ggml\\src\\CMakeFiles\\ggml-base.dir\\ggml-opt.cpp.obj"
+},
+{
+  "directory": "D:/a/_temp/windows-q8-apack/build",
+  "command": "C:\\PROGRA~1\\MICROS~2\\2022\\ENTERP~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe  /nologo -TP -DGGML_SCHED_MAX_COPIES=4 -D_CRT_SECURE_NO_WARNINGS -D_XOPEN_SOURCE=600 -ID:\\a\\_temp\\windows-q8-apack\\canonical\\ggml\\src\\. -ID:\\a\\_temp\\windows-q8-apack\\build\\ggml\\src -ID:\\a\\_temp\\windows-q8-apack\\canonical\\ggml\\src\\..\\include /clang:-ffp-contract=off /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++17 -MD /wd4005 /wd4244 /wd4267 /wd4305 /wd4566 /wd4996 /wd4702 /utf-8 /Foggml\\src\\CMakeFiles\\ggml-base.dir\\ggml-threading.cpp.obj /Fdggml\\src\\CMakeFiles\\ggml-base.dir\\ggml-base.pdb -c -- D:\\a\\_temp\\windows-q8-apack\\canonical\\ggml\\src\\ggml-threading.cpp",
+  "file": "D:\\a\\_temp\\windows-q8-apack\\canonical\\ggml\\src\\ggml-threading.cpp",
+  "output": "ggml\\src\\CMakeFiles\\ggml-base.dir\\ggml-threading.cpp.obj"
+},
+{
+  "directory": "D:/a/_temp/windows-q8-apack/build",
+  "command": "C:\\PROGRA~1\\MICROS~2\\2022\\ENTERP~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe  /nologo -DGGML_SCHED_MAX_COPIES=4 -D_CRT_SECURE_NO_WARNINGS -D_XOPEN_SOURCE=600 -ID:\\a\\_temp\\windows-q8-apack\\canonical\\ggml\\src\\. -ID:\\a\\_temp\\windows-q8-apack\\build\\ggml\\src -ID:\\a\\_temp\\windows-q8-apack\\canonical\\ggml\\src\\..\\include /clang:-ffp-contract=off /DWIN32 /D_WINDOWS /O2 /Ob2 /DNDEBUG /std:c11 -MD /wd4005 /wd4244 /wd4267 /wd4305 /wd4566 /wd4996 /wd4702 /utf-8 /Foggml\\src\\CMakeFiles\\ggml-base.dir\\ggml-quants.c.obj /Fdggml\\src\\CMakeFiles\\ggml-base.dir\\ggml-base.pdb -c -- D:\\a\\_temp\\windows-q8-apack\\canonical\\ggml\\src\\ggml-quants.c",
+  "file": "D:\\a\\_temp\\windows-q8-apack\\canonical\\ggml\\src\\ggml-quants.c",
+  "output": "ggml\\src\\CMakeFiles\\ggml-base.dir\\ggml-quants.c.obj"
+},
+{
+  "directory": "D:/a/_temp/windows-q8-apack/build",
+  "command": "C:\\PROGRA~1\\MICROS~2\\2022\\ENTERP~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe  /nologo -TP -DGGML_SCHED_MAX_COPIES=4 -D_CRT_SECURE_NO_WARNINGS -D_XOPEN_SOURCE=600 -ID:\\a\\_temp\\windows-q8-apack\\canonical\\ggml\\src\\. -ID:\\a\\_temp\\windows-q8-apack\\build\\ggml\\src -ID:\\a\\_temp\\windows-q8-apack\\canonical\\ggml\\src\\..\\include /clang:-ffp-contract=off /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++17 -MD /wd4005 /wd4244 /wd4267 /wd4305 /wd4566 /wd4996 /wd4702 /utf-8 /Foggml\\src\\CMakeFiles\\ggml-base.dir\\gguf.cpp.obj /Fdggml\\src\\CMakeFiles\\ggml-base.dir\\ggml-base.pdb -c -- D:\\a\\_temp\\windows-q8-apack\\canonical\\ggml\\src\\gguf.cpp",
+  "file": "D:\\a\\_temp\\windows-q8-apack\\canonical\\ggml\\src\\gguf.cpp",
+  "output": "ggml\\src\\CMakeFiles\\ggml-base.dir\\gguf.cpp.obj"
+},
+{
+  "directory": "D:/a/_temp/windows-q8-apack/build",
+  "command": "C:\\PROGRA~1\\MICROS~2\\2022\\ENTERP~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe  /nologo -TP -DGGML_SCHED_MAX_COPIES=4 -D_CRT_SECURE_NO_WARNINGS -D_XOPEN_SOURCE=600 -ID:\\a\\_temp\\windows-q8-apack\\canonical\\ggml\\src\\..\\include /clang:-ffp-contract=off /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++17 -MD /wd4005 /wd4244 /wd4267 /wd4305 /wd4566 /wd4996 /wd4702 /utf-8 /Foggml\\src\\CMakeFiles\\ggml.dir\\ggml-backend-dl.cpp.obj /Fdggml\\src\\CMakeFiles\\ggml.dir\\ggml.pdb -c -- D:\\a\\_temp\\windows-q8-apack\\canonical\\ggml\\src\\ggml-backend-dl.cpp",
+  "file": "D:\\a\\_temp\\windows-q8-apack\\canonical\\ggml\\src\\ggml-backend-dl.cpp",
+  "output": "ggml\\src\\CMakeFiles\\ggml.dir\\ggml-backend-dl.cpp.obj"
+},
+{
+  "directory": "D:/a/_temp/windows-q8-apack/build",
+  "command": "C:\\PROGRA~1\\MICROS~2\\2022\\ENTERP~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe  /nologo -TP -DGGML_SCHED_MAX_COPIES=4 -D_CRT_SECURE_NO_WARNINGS -D_XOPEN_SOURCE=600 -ID:\\a\\_temp\\windows-q8-apack\\canonical\\ggml\\src\\..\\include /clang:-ffp-contract=off /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++17 -MD /wd4005 /wd4244 /wd4267 /wd4305 /wd4566 /wd4996 /wd4702 /utf-8 /Foggml\\src\\CMakeFiles\\ggml.dir\\ggml-backend-reg.cpp.obj /Fdggml\\src\\CMakeFiles\\ggml.dir\\ggml.pdb -c -- D:\\a\\_temp\\windows-q8-apack\\canonical\\ggml\\src\\ggml-backend-reg.cpp",
+  "file": "D:\\a\\_temp\\windows-q8-apack\\canonical\\ggml\\src\\ggml-backend-reg.cpp",
+  "output": "ggml\\src\\CMakeFiles\\ggml.dir\\ggml-backend-reg.cpp.obj"
+}
+]

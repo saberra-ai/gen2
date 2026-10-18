@@ -280,6 +280,22 @@ Git isolation plus mutated path/link/data rejection. Local transfer/admission,
 raw numerical/timing interpretation and review remain pending; no speed or
 production/release/main pass follows the workflow conclusion.
 
+The [actual A-packing result](../research/nemotron-windows-q8-apack-results.md)
+now independently passes remote full4,721-member archive admission and local
+replay of1,056 exact vectors, twelve half/packing pairs,36 guards and all95
+saved Windows command cleanups. None of48 required four-worker comparisons
+passes the original speedup predicate;42/48 observer comparisons pass both
+bounds, and all three prediction/observer flags remain false. The actual packed
+loop has97 instructions/eight FMAs/256 explicit vector stack operand bytes,
+versus production95/eight/192. Preserve production and this negative result;
+static counts do not establish a causal bottleneck or full-model speed.
+The1,502-member main and19-member static/CI collections remain byte-exact to
+the admitted result commit. A separate77-member local proof retains the bounded
+transfer and independent original-AST replay. All13 native-source feature jobs
+and600 local tool tests pass (seven platform skips). Original accuracy,
+deferred human review, physical desktop, fresh-machine/platform and release
+gates remain open; no main promotion is established.
+
 Remaining release work as of 2026-10-17:
 
 - Meet the original 20% DER target on every required meeting slice. The two AMI

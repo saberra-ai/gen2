@@ -1,0 +1,58 @@
+{
+  "source_commit": "3fd41caa862c34134d008d18b0b6b830b736c864",
+  "run_id": 39077373013,
+  "job_id": 117527216794,
+  "verifier_source_commit": "cc655ab95f2bb800696f1f5c9a27d69321627b27",
+  "verifier_run_id": "39080172371",
+  "preparer": {
+    "bytes": 22591,
+    "sha256": "6b7f4c6d3a9a672ad0a89c790fa0d51608adad4c3667395c2da1329c68e48b08"
+  },
+  "parent_manifest": {
+    "bytes": 6091,
+    "sha256": "352e64a11fc41e5f02fc66dd802b4e70cc0db7ab8ec9815981cbdb10ee0a6b7e"
+  },
+  "outputs": {
+    "fetch-windows-q8-apack-artifact-v1.py": {
+      "bytes": 5890,
+      "sha256": "31f33a626ba8ecea772c30e249528240f74a39e212812cd4de84fcd18bab7d69"
+    },
+    "admit-windows-q8-apack-delivery-v1.py": {
+      "bytes": 9004,
+      "sha256": "36cdd8fa1c31e15baa6d7ceed7941ea88dd77e272994032f70da623ae42ec81f"
+    },
+    "replay-windows-q8-apack-supervision-v1.py": {
+      "bytes": 8073,
+      "sha256": "240bd2729446144f030245b17b7ae03f73777be2b04f426b3f95a2b100e11297"
+    },
+    "collect-windows-q8-apack-v1.py": {
+      "bytes": 16896,
+      "sha256": "b2f5ee021adab96577b07c330433b70d6bf047fc52e15fe88344fb70149120b8"
+    },
+    "publish-windows-q8-apack-v1.py": {
+      "bytes": 9666,
+      "sha256": "ddc6ba9e415ebe4e3abbd0a09f6489b4253addd1d38f4478f3fd27e15b266bf9"
+    },
+    "test-q8-apack-receiver-controls-v1.py": {
+      "bytes": 8799,
+      "sha256": "e2d4e5fe0f0facaa4c3aa0b83d87ee9715b93da57701c4b1d5b30176278a625a"
+    },
+    "inspect-q8-apack-loops-v1.py": {
+      "bytes": 7208,
+      "sha256": "b6a7919b9e395a73384d9fb34389698286370b12a914a13e16ae8021edd9bb6e"
+    },
+    "publish-q8-apack-static-v1.py": {
+      "bytes": 6077,
+      "sha256": "fdf58fb438b640780cadc8b369befc32800e1a70750a488ef682e2f549123eb4"
+    }
+  },
+  "raw_api_transport": {
+    "flag_supported": true,
+    "changed_command_lists": 2,
+    "scope": "Only raw log/ZIP transport opt-in; complete bytes, all original admission gates retained"
+  },
+  "receivers_invoked": false,
+  "artifact_consumed": false,
+  "new_compiler_sdk_model_calls": 0,
+  "scope": "Literal path prefixes relocated; two raw-transport arguments added only if advertised by CLI help. Original validation AST/gates retained. Original Mac preparations preserved in Git."
+}

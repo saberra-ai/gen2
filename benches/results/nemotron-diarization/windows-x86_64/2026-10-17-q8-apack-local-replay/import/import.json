@@ -1,0 +1,98 @@
+{
+  "commands": [
+    {
+      "command": [
+        "git",
+        "-c",
+        "core.hooksPath=/dev/null",
+        "-c",
+        "gc.auto=0",
+        "-c",
+        "core.autocrlf=false",
+        "bundle",
+        "verify",
+        "/Users/victor/.cache/gen2-nemotron3-n0/q8-apack-local-bundle-admission-v1/delivery/receiver-result.bundle"
+      ],
+      "cwd": "/Users/victor/workspace/gen2-nemotron3-n0",
+      "stdout_bytes": 190,
+      "stderr_bytes": 114,
+      "leader_reaped": true,
+      "group_gone": true,
+      "completed": true,
+      "pid": 42656,
+      "returncode": 0,
+      "elapsed_seconds": 0.022191125026438385
+    },
+    {
+      "command": [
+        "git",
+        "-c",
+        "core.hooksPath=/dev/null",
+        "-c",
+        "gc.auto=0",
+        "-c",
+        "core.autocrlf=false",
+        "bundle",
+        "unbundle",
+        "/Users/victor/.cache/gen2-nemotron3-n0/q8-apack-local-bundle-admission-v1/delivery/receiver-result.bundle"
+      ],
+      "cwd": "/Users/victor/workspace/gen2-nemotron3-n0",
+      "stdout_bytes": 46,
+      "stderr_bytes": 0,
+      "leader_reaped": true,
+      "group_gone": true,
+      "completed": true,
+      "pid": 42658,
+      "returncode": 0,
+      "elapsed_seconds": 0.2628590000094846
+    },
+    {
+      "command": [
+        "git",
+        "-c",
+        "core.hooksPath=/dev/null",
+        "-c",
+        "gc.auto=0",
+        "-c",
+        "core.autocrlf=false",
+        "cherry-pick",
+        "--no-commit",
+        "ba5cce755ab7c4673892ccfc9b0bf4992e6fc26f"
+      ],
+      "cwd": "/Users/victor/workspace/gen2-nemotron3-n0",
+      "stdout_bytes": 0,
+      "stderr_bytes": 0,
+      "leader_reaped": true,
+      "group_gone": true,
+      "completed": true,
+      "pid": 42661,
+      "returncode": 0,
+      "elapsed_seconds": 2.159388875006698
+    }
+  ],
+  "bundle": {
+    "bytes": 17070275,
+    "sha256": "0f702b4ae0b54691f9122ab336083cbac1f116d72d37f3d6e4ae0360b656156e"
+  },
+  "result_commit": "ba5cce755ab7c4673892ccfc9b0bf4992e6fc26f",
+  "collections": {
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack": {
+      "members": 1502,
+      "bytes_without_manifest": 832326048,
+      "manifest": {
+        "bytes": 224398,
+        "sha256": "cdf28880ef4efed38aa89a5b80f2d4a8c513ea430b44b10ff1ec2aef514724da"
+      }
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack-loop-inspection": {
+      "members": 19,
+      "bytes_without_manifest": 6457545,
+      "manifest": {
+        "bytes": 2745,
+        "sha256": "3675e9212a6dc99dfd8fdcdf4188a3d4a5e5f3e72ca670d8995c28838e34a99a"
+      }
+    }
+  },
+  "source_index_staged_results": true,
+  "main_promoted": false
+}

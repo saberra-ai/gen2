@@ -1,0 +1,32 @@
+{
+  "command": [
+    "git",
+    "--git-dir=/Users/victor/.cache/gen2-nemotron3-n0/q8-apack-local-bundle-admission-v1/quarantine.git",
+    "-c",
+    "core.hooksPath=/dev/null",
+    "-c",
+    "gc.auto=0",
+    "-c",
+    "maintenance.auto=false",
+    "-c",
+    "core.deltaBaseCacheLimit=16m",
+    "-c",
+    "pack.threads=1",
+    "ls-tree",
+    "-r",
+    "--name-only",
+    "cc655ab95f2bb800696f1f5c9a27d69321627b27",
+    "--",
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack",
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack-loop-inspection"
+  ],
+  "cwd": "/Users/victor/workspace/gen2-nemotron3-n0",
+  "stdout_bytes": 0,
+  "stderr_bytes": 0,
+  "leader_reaped": true,
+  "group_gone": true,
+  "completed": true,
+  "pid": 40180,
+  "returncode": 0,
+  "elapsed_seconds": 0.011790082964580506
+}
