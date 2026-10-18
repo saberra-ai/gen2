@@ -309,6 +309,17 @@ four full-model calls, complete delivery and interpretation remain pending.
 CPU cycles are not converted to time; successful profiling would supply no
 speed, accuracy, public runtime, packaging or release pass.
 
+The first actual Windows producer at `d52c8947` (run39082865483,
+job117543280323) failed before SDK construction/model acquisition. Five fake
+clock-adapter/parser/source tests passed, while three emission methods produced
+eight assertions because Windows CRT streams emit CRLF and the harness expected
+LF. The [nine-member failed-run receipt](../../benches/results/nemotron-diarization/windows-x86_64/2026-10-17-thread-cpu-control-failure/receipt.json)
+retains terminal metadata, the complete job log and original protocol/test/workflow.
+There is no native artifact or actual Windows CPU-counter inference result.
+Only harness newline expectations were corrected to the exact platform newline;
+native counters, numerical work, admission and performance gates stay unchanged.
+The corrected producer requires a new frozen test-source identity and actual run.
+
 Remaining release work as of 2026-10-17:
 
 - Meet the original 20% DER target on every required meeting slice. The two AMI

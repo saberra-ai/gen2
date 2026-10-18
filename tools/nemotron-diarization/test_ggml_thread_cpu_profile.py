@@ -1,5 +1,6 @@
 """Actual C API-adapter/error paths and full wall/counter identity admission."""
 from pathlib import Path
+import os
 import shutil
 import subprocess
 import tempfile
@@ -142,16 +143,16 @@ class ThreadCPUEmissionTest(unittest.TestCase):
         self.assertEqual(len(result.stderr.splitlines()),512)
         self.assertEqual(result.stderr.count(b'kernel_cycles=18446744073709551615'),256)
         self.assertLess(len(result.stderr),256*4096)
-        self.assertEqual(result.stdout,b'allocations=1 frees=1 writes=1\n')
+        self.assertEqual(result.stdout,b'allocations=1 frees=1 writes=1'+os.linesep.encode())
     def test_all_old_and_new_emission_failures_reject_without_partial_flush(self):
         for failure in range(1,7):
             with self.subTest(failure=failure):
                 result=self.execute(failure)
-                self.assertEqual(result.stderr,b'[DEBUG-matrix-paths-v1] emission-error\n')
+                self.assertEqual(result.stderr,b'[DEBUG-matrix-paths-v1] emission-error'+os.linesep.encode())
     def test_disabled_and_empty_emission_avoid_allocation_and_output(self):
         for count,enabled in [(0,True),(256,False)]:
             result=self.execute(0,count,enabled)
-            self.assertEqual(result.stderr,b'');self.assertEqual(result.stdout,b'allocations=0 frees=0 writes=0\n')
+            self.assertEqual(result.stderr,b'');self.assertEqual(result.stdout,b'allocations=0 frees=0 writes=0'+os.linesep.encode())
 
 
 if __name__=='__main__':unittest.main()

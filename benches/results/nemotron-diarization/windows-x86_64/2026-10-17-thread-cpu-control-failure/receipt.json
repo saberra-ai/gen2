@@ -1,0 +1,32 @@
+{
+  "source_commit": "d52c89478e575d2ff6707f83c8316201a9cffb91",
+  "run_id": 39082865483,
+  "job_id": 117543280323,
+  "terminal_conclusion": "failure",
+  "reason": "Three emission test methods produce eight assertion failures because Windows CRT text streams emit CRLF while the harness expects LF. Five clock/parser/source methods pass. This tests the fake Win32 adapter only, not actual Windows CPU-clock behavior.",
+  "actual_sdk_build_invoked": false,
+  "actual_graph_controller_invoked": false,
+  "actual_model_calls": 0,
+  "artifacts": 0,
+  "unchanged_native_arithmetic_and_counter_code": true,
+  "next": "Change only expected CRT line endings in the test, refreeze the test-source identity, and run a new producer. Preserve this failed producer and original protocol. All original quality/performance/release gates remain open.",
+  "inputs_first_bound": {
+    "thread-cpu-windows-run-v1.json": {
+      "bytes": 11837,
+      "sha256": "a8e3df338146f1a1c5853db4d8a73106b2146a0b9a534dced12879b006e8dff5"
+    },
+    "thread-cpu-windows-job-v1.json": {
+      "bytes": 3943,
+      "sha256": "50d6bcb2204c217bcb6609b9d663017f08cb6cc9d3c93135e54761442b7032bc"
+    },
+    "thread-cpu-windows-artifacts-v1.json": {
+      "bytes": 32,
+      "sha256": "244563f989470892c537c9a4622920af0d228ee4528f7d00c64a06d6cd95856c"
+    },
+    "thread-cpu-windows-job-v1.log": {
+      "bytes": 53085,
+      "sha256": "1bbb330a041672a7ba44cb0d450c88910b40025d52fad39cd2804959b9df58dd"
+    }
+  },
+  "source_retrieved_from_commit": "d52c89478e575d2ff6707f83c8316201a9cffb91"
+}

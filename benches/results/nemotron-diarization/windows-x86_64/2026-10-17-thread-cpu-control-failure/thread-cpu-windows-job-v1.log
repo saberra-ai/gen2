@@ -1,0 +1,638 @@
+﻿2026-10-18T00:28:19.2113045Z Current runner version: '2.337.0'
+2026-10-18T00:28:19.2294505Z ##[group]Runner Image Provisioner
+2026-10-18T00:28:19.2295292Z Hosted Compute Agent
+2026-10-18T00:28:19.2295831Z Version: 20261012.601
+2026-10-18T00:28:19.2296422Z Commit: f3dc54e1fb89da6852db922499a0233137369e1d
+2026-10-18T00:28:19.2297085Z Build Date: 2026-10-12T17:48:21Z
+2026-10-18T00:28:19.2297760Z Worker ID: {0fe9e452-ae50-402c-904c-098118abb2cc}
+2026-10-18T00:28:19.2298440Z Region: eastus
+2026-10-18T00:28:19.2299023Z Cloud: Azure
+2026-10-18T00:28:19.2299522Z ##[endgroup]
+2026-10-18T00:28:19.2300890Z ##[group]Operating System
+2026-10-18T00:28:19.2301510Z Microsoft Windows Server 2022
+2026-10-18T00:28:19.2302061Z 10.0.20348
+2026-10-18T00:28:19.2302508Z Datacenter
+2026-10-18T00:28:19.2302960Z ##[endgroup]
+2026-10-18T00:28:19.2303427Z ##[group]Runner Image
+2026-10-18T00:28:19.2303991Z Image: windows-2022
+2026-10-18T00:28:19.2304551Z Version: 20261012.333.1
+2026-10-18T00:28:19.2305856Z Included Software: https://github.com/actions/runner-images/blob/win22/20261012.333/images/windows/Windows2022-Readme.md
+2026-10-18T00:28:19.2307411Z Image Release: https://github.com/actions/runner-images/releases/tag/win22%2F20261012.333
+2026-10-18T00:28:19.2308372Z ##[endgroup]
+2026-10-18T00:28:19.2309401Z ##[group]GITHUB_TOKEN Permissions
+2026-10-18T00:28:19.2311715Z Contents: read
+2026-10-18T00:28:19.2312256Z Metadata: read
+2026-10-18T00:28:19.2312748Z ##[endgroup]
+2026-10-18T00:28:19.2314871Z Secret source: Actions
+2026-10-18T00:28:19.2315665Z Cache mode: write
+2026-10-18T00:28:19.2316512Z Prepare workflow directory
+2026-10-18T00:28:19.3247396Z Prepare all required actions
+2026-10-18T00:28:19.3296076Z Getting action download info
+2026-10-18T00:28:19.5030359Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+2026-10-18T00:28:19.6949948Z Download action repository 'actions/setup-python@v5' (SHA:a26af69be951a213d495a4c3e4e4022e16d87065)
+2026-10-18T00:28:19.9342942Z Download action repository 'actions/cache@v4' (SHA:0057852bfaa89a56745cba8c7296529d2fc39830)
+2026-10-18T00:28:20.1469606Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+2026-10-18T00:28:20.6802843Z Complete job name: compilers
+2026-10-18T00:28:20.8540297Z ##[group]Run actions/checkout@v4
+2026-10-18T00:28:20.8541999Z with:
+2026-10-18T00:28:20.8542901Z   persist-credentials: false
+2026-10-18T00:28:20.8543997Z   repository: saberra-ai/gen2
+2026-10-18T00:28:20.8554044Z   token: ***
+2026-10-18T00:28:20.8554761Z   ssh-strict: true
+2026-10-18T00:28:20.8555499Z   ssh-user: git
+2026-10-18T00:28:20.8556212Z   clean: true
+2026-10-18T00:28:20.8556963Z   sparse-checkout-cone-mode: true
+2026-10-18T00:28:20.8557860Z   fetch-depth: 1
+2026-10-18T00:28:20.8558584Z   fetch-tags: false
+2026-10-18T00:28:20.8559335Z   show-progress: true
+2026-10-18T00:28:20.8560088Z   lfs: false
+2026-10-18T00:28:20.8560768Z   submodules: false
+2026-10-18T00:28:20.8561526Z   set-safe-directory: true
+2026-10-18T00:28:20.8562415Z   allow-unsafe-pr-checkout: false
+2026-10-18T00:28:20.8563496Z env:
+2026-10-18T00:28:20.8564152Z   GIT_CONFIG_COUNT: 2
+2026-10-18T00:28:20.8564934Z   GIT_CONFIG_KEY_0: core.autocrlf
+2026-10-18T00:28:20.8565840Z   GIT_CONFIG_VALUE_0: false
+2026-10-18T00:28:20.8566710Z   GIT_CONFIG_KEY_1: core.eol
+2026-10-18T00:28:20.8567523Z   GIT_CONFIG_VALUE_1: lf
+2026-10-18T00:28:20.8568302Z   GIT_LFS_SKIP_SMUDGE: 1
+2026-10-18T00:28:20.8569064Z ##[endgroup]
+2026-10-18T00:28:20.9981947Z Syncing repository: saberra-ai/gen2
+2026-10-18T00:28:20.9984317Z ##[group]Getting Git version info
+2026-10-18T00:28:20.9985339Z Working directory is 'D:\a\gen2\gen2'
+2026-10-18T00:28:21.2568369Z [command]"C:\Program Files\Git\bin\git.exe" version
+2026-10-18T00:28:21.9460002Z git version 2.56.0.windows.2
+2026-10-18T00:28:21.9502169Z ##[endgroup]
+2026-10-18T00:28:21.9520062Z Temporarily overriding HOME='D:\a\_temp\a591b8cb-900b-473e-9ad3-6cfc2f4bc8f6' before making global git config changes
+2026-10-18T00:28:21.9523272Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-18T00:28:21.9531837Z [command]"C:\Program Files\Git\bin\git.exe" config --global --add safe.directory D:\a\gen2\gen2
+2026-10-18T00:28:22.0405304Z Deleting the contents of 'D:\a\gen2\gen2'
+2026-10-18T00:28:22.0410620Z ##[group]Initializing the repository
+2026-10-18T00:28:22.0419543Z [command]"C:\Program Files\Git\bin\git.exe" init D:\a\gen2\gen2
+2026-10-18T00:28:22.3317235Z Initialized empty Git repository in D:/a/gen2/gen2/.git/
+2026-10-18T00:28:22.3358808Z [command]"C:\Program Files\Git\bin\git.exe" remote add origin https://github.com/saberra-ai/gen2
+2026-10-18T00:28:22.4231669Z ##[endgroup]
+2026-10-18T00:28:22.4232677Z ##[group]Disabling automatic garbage collection
+2026-10-18T00:28:22.4241678Z [command]"C:\Program Files\Git\bin\git.exe" config --local gc.auto 0
+2026-10-18T00:28:22.4531442Z ##[endgroup]
+2026-10-18T00:28:22.4531996Z ##[group]Setting up auth
+2026-10-18T00:28:22.4544363Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+2026-10-18T00:28:22.4844309Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+2026-10-18T00:28:25.0866528Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-18T00:28:25.1173868Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+2026-10-18T00:28:25.5843560Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-18T00:28:25.6145115Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "git config --local --show-origin --name-only --get-regexp remote.origin.url"
+2026-10-18T00:28:26.0844262Z [command]"C:\Program Files\Git\bin\git.exe" config --local http.https://github.com/.extraheader "AUTHORIZATION: basic ***"
+2026-10-18T00:28:26.1154286Z ##[endgroup]
+2026-10-18T00:28:26.1155192Z ##[group]Fetching the repository
+2026-10-18T00:28:26.1169901Z [command]"C:\Program Files\Git\bin\git.exe" -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +d52c89478e575d2ff6707f83c8316201a9cffb91:refs/remotes/origin/codex/nemotron3-n0
+2026-10-18T00:28:32.4079443Z From https://github.com/saberra-ai/gen2
+2026-10-18T00:28:32.4080595Z  * [new ref]         d52c89478e575d2ff6707f83c8316201a9cffb91 -> origin/codex/nemotron3-n0
+2026-10-18T00:28:32.4112999Z ##[endgroup]
+2026-10-18T00:28:32.4113907Z ##[group]Determining the checkout info
+2026-10-18T00:28:32.4116325Z ##[endgroup]
+2026-10-18T00:28:32.4131109Z [command]"C:\Program Files\Git\bin\git.exe" sparse-checkout disable
+2026-10-18T00:28:32.4539978Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset-all extensions.worktreeConfig
+2026-10-18T00:28:32.4827746Z ##[group]Checking out the ref
+2026-10-18T00:28:32.4840268Z [command]"C:\Program Files\Git\bin\git.exe" checkout --progress --force -B codex/nemotron3-n0 refs/remotes/origin/codex/nemotron3-n0
+2026-10-18T00:28:33.5823660Z Updating files:  12% (3381/26208)
+2026-10-18T00:28:33.6213545Z Updating files:  13% (3408/26208)
+2026-10-18T00:28:33.7116258Z Updating files:  14% (3670/26208)
+2026-10-18T00:28:33.8489826Z Updating files:  15% (3932/26208)
+2026-10-18T00:28:33.9534757Z Updating files:  16% (4194/26208)
+2026-10-18T00:28:34.0130628Z Updating files:  17% (4456/26208)
+2026-10-18T00:28:34.1190111Z Updating files:  18% (4718/26208)
+2026-10-18T00:28:34.1827521Z Updating files:  19% (4980/26208)
+2026-10-18T00:28:34.2335631Z Updating files:  20% (5242/26208)
+2026-10-18T00:28:34.2815262Z Updating files:  21% (5504/26208)
+2026-10-18T00:28:34.3240421Z Updating files:  22% (5766/26208)
+2026-10-18T00:28:34.3663246Z Updating files:  23% (6028/26208)
+2026-10-18T00:28:34.4094534Z Updating files:  24% (6290/26208)
+2026-10-18T00:28:34.4797522Z Updating files:  25% (6552/26208)
+2026-10-18T00:28:34.5406440Z Updating files:  26% (6815/26208)
+2026-10-18T00:28:34.5704591Z Updating files:  27% (7077/26208)
+2026-10-18T00:28:34.5918261Z Updating files:  27% (7220/26208)
+2026-10-18T00:28:34.6536759Z Updating files:  28% (7339/26208)
+2026-10-18T00:28:34.7039806Z Updating files:  29% (7601/26208)
+2026-10-18T00:28:34.7490355Z Updating files:  30% (7863/26208)
+2026-10-18T00:28:34.8027672Z Updating files:  31% (8125/26208)
+2026-10-18T00:28:34.8578031Z Updating files:  32% (8387/26208)
+2026-10-18T00:28:34.9161666Z Updating files:  33% (8649/26208)
+2026-10-18T00:28:34.9712849Z Updating files:  34% (8911/26208)
+2026-10-18T00:28:35.0258565Z Updating files:  35% (9173/26208)
+2026-10-18T00:28:35.0885091Z Updating files:  36% (9435/26208)
+2026-10-18T00:28:35.1581881Z Updating files:  37% (9697/26208)
+2026-10-18T00:28:35.2219016Z Updating files:  38% (9960/26208)
+2026-10-18T00:28:35.3003559Z Updating files:  39% (10222/26208)
+2026-10-18T00:28:35.3621695Z Updating files:  40% (10484/26208)
+2026-10-18T00:28:35.4324322Z Updating files:  41% (10746/26208)
+2026-10-18T00:28:35.4813114Z Updating files:  42% (11008/26208)
+2026-10-18T00:28:35.5493262Z Updating files:  43% (11270/26208)
+2026-10-18T00:28:35.5717600Z Updating files:  44% (11532/26208)
+2026-10-18T00:28:35.6000603Z Updating files:  44% (11653/26208)
+2026-10-18T00:28:35.6793694Z Updating files:  45% (11794/26208)
+2026-10-18T00:28:35.7516195Z Updating files:  46% (12056/26208)
+2026-10-18T00:28:35.8213313Z Updating files:  47% (12318/26208)
+2026-10-18T00:28:35.9944942Z Updating files:  48% (12580/26208)
+2026-10-18T00:28:36.1713219Z Updating files:  49% (12842/26208)
+2026-10-18T00:28:36.2333815Z Updating files:  50% (13104/26208)
+2026-10-18T00:28:36.3847073Z Updating files:  51% (13367/26208)
+2026-10-18T00:28:36.5873509Z Updating files:  52% (13629/26208)
+2026-10-18T00:28:37.1992442Z Updating files:  52% (13739/26208)
+2026-10-18T00:28:37.5986196Z Updating files:  53% (13891/26208)
+2026-10-18T00:28:38.0297457Z Updating files:  53% (14038/26208)
+2026-10-18T00:28:38.5922868Z Updating files:  54% (14153/26208)
+2026-10-18T00:28:38.8905419Z Updating files:  54% (14327/26208)
+2026-10-18T00:28:39.5895255Z Updating files:  55% (14415/26208)
+2026-10-18T00:28:39.8639110Z Updating files:  55% (14620/26208)
+2026-10-18T00:28:40.4112291Z Updating files:  56% (14677/26208)
+2026-10-18T00:28:40.4840693Z Updating files:  57% (14939/26208)
+2026-10-18T00:28:40.5563118Z Updating files:  58% (15201/26208)
+2026-10-18T00:28:40.5926341Z Updating files:  59% (15463/26208)
+2026-10-18T00:28:40.6067255Z Updating files:  59% (15630/26208)
+2026-10-18T00:28:40.8206724Z Updating files:  60% (15725/26208)
+2026-10-18T00:28:41.5980920Z Updating files:  61% (15987/26208)
+2026-10-18T00:28:41.6617158Z Updating files:  61% (16234/26208)
+2026-10-18T00:28:42.5754327Z Updating files:  62% (16249/26208)
+2026-10-18T00:28:42.5913086Z Updating files:  63% (16512/26208)
+2026-10-18T00:28:43.5134363Z Updating files:  63% (16515/26208)
+2026-10-18T00:28:43.5983270Z Updating files:  64% (16774/26208)
+2026-10-18T00:28:44.3541881Z Updating files:  64% (16814/26208)
+2026-10-18T00:28:44.5951487Z Updating files:  65% (17036/26208)
+2026-10-18T00:28:44.7015521Z Updating files:  65% (17107/26208)
+2026-10-18T00:28:45.1362388Z Updating files:  66% (17298/26208)
+2026-10-18T00:28:45.6002468Z Updating files:  67% (17560/26208)
+2026-10-18T00:28:45.9248432Z Updating files:  67% (17663/26208)
+2026-10-18T00:28:46.1267174Z Updating files:  68% (17822/26208)
+2026-10-18T00:28:46.5964203Z Updating files:  69% (18084/26208)
+2026-10-18T00:28:47.1531541Z Updating files:  69% (18210/26208)
+2026-10-18T00:28:47.6071259Z Updating files:  70% (18346/26208)
+2026-10-18T00:28:47.9908562Z Updating files:  70% (18499/26208)
+2026-10-18T00:28:48.6039515Z Updating files:  71% (18608/26208)
+2026-10-18T00:28:48.8409607Z Updating files:  71% (18789/26208)
+2026-10-18T00:28:49.6111041Z Updating files:  72% (18870/26208)
+2026-10-18T00:28:49.9108464Z Updating files:  72% (19061/26208)
+2026-10-18T00:28:50.1441536Z Updating files:  73% (19132/26208)
+2026-10-18T00:28:50.6034452Z Updating files:  74% (19394/26208)
+2026-10-18T00:28:50.8241103Z Updating files:  74% (19588/26208)
+2026-10-18T00:28:51.6112799Z Updating files:  75% (19656/26208)
+2026-10-18T00:28:51.8055399Z Updating files:  75% (19848/26208)
+2026-10-18T00:28:52.6003834Z Updating files:  76% (19919/26208)
+2026-10-18T00:28:53.0323109Z Updating files:  76% (20066/26208)
+2026-10-18T00:28:53.6063984Z Updating files:  77% (20181/26208)
+2026-10-18T00:28:53.8585931Z Updating files:  77% (20362/26208)
+2026-10-18T00:28:54.5239230Z Updating files:  78% (20443/26208)
+2026-10-18T00:28:54.5974940Z Updating files:  79% (20705/26208)
+2026-10-18T00:28:54.7216005Z Updating files:  79% (20937/26208)
+2026-10-18T00:28:55.6022545Z Updating files:  80% (20967/26208)
+2026-10-18T00:28:55.9136637Z Updating files:  80% (21137/26208)
+2026-10-18T00:28:56.5999905Z Updating files:  81% (21229/26208)
+2026-10-18T00:28:56.7504221Z Updating files:  81% (21430/26208)
+2026-10-18T00:28:57.6086781Z Updating files:  82% (21491/26208)
+2026-10-18T00:28:57.6847488Z Updating files:  82% (21726/26208)
+2026-10-18T00:28:58.5618843Z Updating files:  83% (21753/26208)
+2026-10-18T00:28:58.6027277Z Updating files:  84% (22015/26208)
+2026-10-18T00:28:58.9072101Z Updating files:  84% (22019/26208)
+2026-10-18T00:28:58.9614604Z Updating files:  85% (22277/26208)
+2026-10-18T00:28:59.3780434Z Updating files:  86% (22539/26208)
+2026-10-18T00:28:59.5566097Z Updating files:  87% (22801/26208)
+2026-10-18T00:28:59.6007706Z Updating files:  88% (23064/26208)
+2026-10-18T00:29:00.7447506Z Updating files:  88% (23090/26208)
+2026-10-18T00:29:00.7757587Z Updating files:  88% (23324/26208)
+2026-10-18T00:29:01.6202792Z Updating files:  89% (23326/26208)
+2026-10-18T00:29:01.6406897Z Updating files:  89% (23587/26208)
+2026-10-18T00:29:02.6141896Z Updating files:  90% (23588/26208)
+2026-10-18T00:29:02.7104671Z Updating files:  90% (23808/26208)
+2026-10-18T00:29:03.6067586Z Updating files:  91% (23850/26208)
+2026-10-18T00:29:03.7088774Z Updating files:  91% (24096/26208)
+2026-10-18T00:29:03.9519563Z Updating files:  92% (24112/26208)
+2026-10-18T00:29:04.0014566Z Updating files:  93% (24374/26208)
+2026-10-18T00:29:04.0519888Z Updating files:  94% (24636/26208)
+2026-10-18T00:29:04.1105243Z Updating files:  95% (24898/26208)
+2026-10-18T00:29:04.1776135Z Updating files:  96% (25160/26208)
+2026-10-18T00:29:04.2509580Z Updating files:  97% (25422/26208)
+2026-10-18T00:29:04.3028398Z Updating files:  98% (25684/26208)
+2026-10-18T00:29:04.3626286Z Updating files:  99% (25946/26208)
+2026-10-18T00:29:04.3626833Z Updating files: 100% (26208/26208)
+2026-10-18T00:29:04.3627232Z Updating files: 100% (26208/26208), done.
+2026-10-18T00:29:04.4065520Z Switched to a new branch 'codex/nemotron3-n0'
+2026-10-18T00:29:04.4078889Z branch 'codex/nemotron3-n0' set up to track 'origin/codex/nemotron3-n0'.
+2026-10-18T00:29:04.4251589Z ##[endgroup]
+2026-10-18T00:29:04.4567014Z [command]"C:\Program Files\Git\bin\git.exe" log -1 --format=%H
+2026-10-18T00:29:04.4828780Z d52c89478e575d2ff6707f83c8316201a9cffb91
+2026-10-18T00:29:04.4866417Z ##[group]Removing auth
+2026-10-18T00:29:04.4879528Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+2026-10-18T00:29:04.5179305Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+2026-10-18T00:29:05.0295812Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-18T00:29:05.0552541Z http.https://github.com/.extraheader
+2026-10-18T00:29:05.0586859Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset-all http.https://github.com/.extraheader
+2026-10-18T00:29:05.0883162Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+2026-10-18T00:29:05.5410052Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-18T00:29:05.5705388Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "git config --local --show-origin --name-only --get-regexp remote.origin.url"
+2026-10-18T00:29:06.0572987Z ##[endgroup]
+2026-10-18T00:29:06.0955421Z ##[group]Run actions/checkout@v4
+2026-10-18T00:29:06.0955828Z with:
+2026-10-18T00:29:06.0956086Z   repository: NVIDIA/NeMo-Speech.cpp
+2026-10-18T00:29:06.0956452Z   ref: 083861c241061562b8ec29eb06d7f6cdc3af8775
+2026-10-18T00:29:06.0956800Z   path: native-source
+2026-10-18T00:29:06.0957104Z   persist-credentials: false
+2026-10-18T00:29:06.0960740Z   token: ***
+2026-10-18T00:29:06.0960964Z   ssh-strict: true
+2026-10-18T00:29:06.0961193Z   ssh-user: git
+2026-10-18T00:29:06.0961398Z   clean: true
+2026-10-18T00:29:06.0961623Z   sparse-checkout-cone-mode: true
+2026-10-18T00:29:06.0961906Z   fetch-depth: 1
+2026-10-18T00:29:06.0962134Z   fetch-tags: false
+2026-10-18T00:29:06.0962359Z   show-progress: true
+2026-10-18T00:29:06.0962584Z   lfs: false
+2026-10-18T00:29:06.0962782Z   submodules: false
+2026-10-18T00:29:06.0963011Z   set-safe-directory: true
+2026-10-18T00:29:06.0963300Z   allow-unsafe-pr-checkout: false
+2026-10-18T00:29:06.0963587Z env:
+2026-10-18T00:29:06.0963826Z   GIT_CONFIG_COUNT: 2
+2026-10-18T00:29:06.0964069Z   GIT_CONFIG_KEY_0: core.autocrlf
+2026-10-18T00:29:06.0964345Z   GIT_CONFIG_VALUE_0: false
+2026-10-18T00:29:06.0964601Z   GIT_CONFIG_KEY_1: core.eol
+2026-10-18T00:29:06.0964861Z   GIT_CONFIG_VALUE_1: lf
+2026-10-18T00:29:06.0965105Z   GIT_LFS_SKIP_SMUDGE: 1
+2026-10-18T00:29:06.0965351Z ##[endgroup]
+2026-10-18T00:29:06.2015842Z Syncing repository: NVIDIA/NeMo-Speech.cpp
+2026-10-18T00:29:06.2023989Z ##[group]Getting Git version info
+2026-10-18T00:29:06.2024837Z Working directory is 'D:\a\gen2\gen2\native-source'
+2026-10-18T00:29:06.2918104Z [command]"C:\Program Files\Git\bin\git.exe" version
+2026-10-18T00:29:06.3187936Z git version 2.56.0.windows.2
+2026-10-18T00:29:06.3226308Z ##[endgroup]
+2026-10-18T00:29:06.3242523Z Temporarily overriding HOME='D:\a\_temp\dc0cab1a-9979-4670-a2da-daed0fb4070b' before making global git config changes
+2026-10-18T00:29:06.3243273Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-18T00:29:06.3254739Z [command]"C:\Program Files\Git\bin\git.exe" config --global --add safe.directory D:\a\gen2\gen2\native-source
+2026-10-18T00:29:06.3547733Z ##[group]Initializing the repository
+2026-10-18T00:29:06.3559138Z [command]"C:\Program Files\Git\bin\git.exe" init D:\a\gen2\gen2\native-source
+2026-10-18T00:29:06.3883287Z Initialized empty Git repository in D:/a/gen2/gen2/native-source/.git/
+2026-10-18T00:29:06.3931261Z [command]"C:\Program Files\Git\bin\git.exe" remote add origin https://github.com/NVIDIA/NeMo-Speech.cpp
+2026-10-18T00:29:06.4268463Z ##[endgroup]
+2026-10-18T00:29:06.4269199Z ##[group]Disabling automatic garbage collection
+2026-10-18T00:29:06.4280059Z [command]"C:\Program Files\Git\bin\git.exe" config --local gc.auto 0
+2026-10-18T00:29:06.4729032Z ##[endgroup]
+2026-10-18T00:29:06.4729389Z ##[group]Setting up auth
+2026-10-18T00:29:06.4748189Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+2026-10-18T00:29:06.5180386Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+2026-10-18T00:29:07.0251152Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-18T00:29:07.0547487Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+2026-10-18T00:29:07.5389834Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-18T00:29:07.5696448Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "git config --local --show-origin --name-only --get-regexp remote.origin.url"
+2026-10-18T00:29:08.0919005Z [command]"C:\Program Files\Git\bin\git.exe" config --local http.https://github.com/.extraheader "AUTHORIZATION: basic ***"
+2026-10-18T00:29:08.1237216Z ##[endgroup]
+2026-10-18T00:29:08.1237864Z ##[group]Fetching the repository
+2026-10-18T00:29:08.1251110Z [command]"C:\Program Files\Git\bin\git.exe" -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin 083861c241061562b8ec29eb06d7f6cdc3af8775
+2026-10-18T00:29:08.5684176Z From https://github.com/NVIDIA/NeMo-Speech.cpp
+2026-10-18T00:29:08.5684898Z  * branch            083861c241061562b8ec29eb06d7f6cdc3af8775 -> FETCH_HEAD
+2026-10-18T00:29:08.5719301Z ##[endgroup]
+2026-10-18T00:29:08.5719826Z ##[group]Determining the checkout info
+2026-10-18T00:29:08.5722435Z ##[endgroup]
+2026-10-18T00:29:08.5735364Z [command]"C:\Program Files\Git\bin\git.exe" sparse-checkout disable
+2026-10-18T00:29:08.6179165Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset-all extensions.worktreeConfig
+2026-10-18T00:29:08.6552783Z ##[group]Checking out the ref
+2026-10-18T00:29:08.6562968Z [command]"C:\Program Files\Git\bin\git.exe" checkout --progress --force 083861c241061562b8ec29eb06d7f6cdc3af8775
+2026-10-18T00:29:11.1381207Z Updating files:  79% (373/471)
+2026-10-18T00:29:11.1396258Z Updating files:  80% (377/471)
+2026-10-18T00:29:11.1515546Z Updating files:  81% (382/471)
+2026-10-18T00:29:11.1523219Z Updating files:  82% (387/471)
+2026-10-18T00:29:11.1533991Z Updating files:  83% (391/471)
+2026-10-18T00:29:11.1546517Z Updating files:  84% (396/471)
+2026-10-18T00:29:11.1556174Z Updating files:  85% (401/471)
+2026-10-18T00:29:11.1566158Z Updating files:  86% (406/471)
+2026-10-18T00:29:11.1577328Z Updating files:  87% (410/471)
+2026-10-18T00:29:11.1588915Z Updating files:  88% (415/471)
+2026-10-18T00:29:11.1602310Z Updating files:  89% (420/471)
+2026-10-18T00:29:11.1613034Z Updating files:  90% (424/471)
+2026-10-18T00:29:11.1622602Z Updating files:  91% (429/471)
+2026-10-18T00:29:11.1632359Z Updating files:  92% (434/471)
+2026-10-18T00:29:11.1643796Z Updating files:  93% (439/471)
+2026-10-18T00:29:11.1653652Z Updating files:  94% (443/471)
+2026-10-18T00:29:11.1667412Z Updating files:  95% (448/471)
+2026-10-18T00:29:11.1676074Z Updating files:  96% (453/471)
+2026-10-18T00:29:11.1685788Z Updating files:  97% (457/471)
+2026-10-18T00:29:11.1692668Z Updating files:  98% (462/471)
+2026-10-18T00:29:11.1701489Z Updating files:  99% (467/471)
+2026-10-18T00:29:11.1702400Z Updating files: 100% (471/471)
+2026-10-18T00:29:11.1702748Z Updating files: 100% (471/471), done.
+2026-10-18T00:29:11.1778205Z Note: switching to '083861c241061562b8ec29eb06d7f6cdc3af8775'.
+2026-10-18T00:29:11.1778690Z 
+2026-10-18T00:29:11.1779063Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-10-18T00:29:11.1779883Z changes and commit them, and you can discard any commits you make in this
+2026-10-18T00:29:11.1780710Z state without impacting any branches by switching back to a branch.
+2026-10-18T00:29:11.1781200Z 
+2026-10-18T00:29:11.1781537Z If you want to create a new branch to retain commits you create, you may
+2026-10-18T00:29:11.1782299Z do so (now or later) by using -c with the switch command. Example:
+2026-10-18T00:29:11.1782750Z 
+2026-10-18T00:29:11.1782940Z   git switch -c <new-branch-name>
+2026-10-18T00:29:11.1783235Z 
+2026-10-18T00:29:11.1783675Z Or undo this operation with:
+2026-10-18T00:29:11.1783953Z 
+2026-10-18T00:29:11.1784093Z   git switch -
+2026-10-18T00:29:11.1784279Z 
+2026-10-18T00:29:11.1784644Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-10-18T00:29:11.1785546Z 
+2026-10-18T00:29:11.1785976Z HEAD is now at 083861c Fix issue with magpie v2607 speakers being mapped to wrong id (#66)
+2026-10-18T00:29:11.4390831Z ##[endgroup]
+2026-10-18T00:29:11.4695712Z [command]"C:\Program Files\Git\bin\git.exe" log -1 --format=%H
+2026-10-18T00:29:11.4948465Z 083861c241061562b8ec29eb06d7f6cdc3af8775
+2026-10-18T00:29:11.4982263Z ##[group]Removing auth
+2026-10-18T00:29:11.4990918Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+2026-10-18T00:29:11.5271293Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+2026-10-18T00:29:11.9718483Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-18T00:29:11.9968085Z http.https://github.com/.extraheader
+2026-10-18T00:29:12.0000149Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset-all http.https://github.com/.extraheader
+2026-10-18T00:29:12.0280172Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+2026-10-18T00:29:12.5032833Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-18T00:29:12.5323516Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "git config --local --show-origin --name-only --get-regexp remote.origin.url"
+2026-10-18T00:29:13.0001355Z ##[endgroup]
+2026-10-18T00:29:13.0315083Z ##[group]Run git -C native-source submodule update --init --depth 1 llama.cpp
+2026-10-18T00:29:13.0315888Z [36;1mgit -C native-source submodule update --init --depth 1 llama.cpp[0m
+2026-10-18T00:29:13.0420551Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+2026-10-18T00:29:13.0420909Z env:
+2026-10-18T00:29:13.0421088Z   GIT_CONFIG_COUNT: 2
+2026-10-18T00:29:13.0421309Z   GIT_CONFIG_KEY_0: core.autocrlf
+2026-10-18T00:29:13.0421559Z   GIT_CONFIG_VALUE_0: false
+2026-10-18T00:29:13.0421777Z   GIT_CONFIG_KEY_1: core.eol
+2026-10-18T00:29:13.0421997Z   GIT_CONFIG_VALUE_1: lf
+2026-10-18T00:29:13.0422200Z   GIT_LFS_SKIP_SMUDGE: 1
+2026-10-18T00:29:13.0422410Z ##[endgroup]
+2026-10-18T00:29:13.7777433Z Submodule 'llama.cpp' (https://github.com/ggml-org/llama.cpp.git) registered for path 'llama.cpp'
+2026-10-18T00:29:13.8055810Z Cloning into 'D:/a/gen2/gen2/native-source/llama.cpp'...
+2026-10-18T00:29:17.6460341Z From https://github.com/ggml-org/llama.cpp
+2026-10-18T00:29:17.6460933Z  * branch            bd4f514db14d87fded667787a7a963bfbaa98e89 -> FETCH_HEAD
+2026-10-18T00:29:18.9150894Z Submodule path 'llama.cpp': checked out 'bd4f514db14d87fded667787a7a963bfbaa98e89'
+2026-10-18T00:29:19.0531352Z ##[group]Run actions/setup-python@v5
+2026-10-18T00:29:19.0531677Z with:
+2026-10-18T00:29:19.0531872Z   python-version: 3.12
+2026-10-18T00:29:19.0532085Z   check-latest: false
+2026-10-18T00:29:19.0534854Z   token: ***
+2026-10-18T00:29:19.0535053Z   update-environment: true
+2026-10-18T00:29:19.0535278Z   allow-prereleases: false
+2026-10-18T00:29:19.0535486Z   freethreaded: false
+2026-10-18T00:29:19.0535668Z env:
+2026-10-18T00:29:19.0535840Z   GIT_CONFIG_COUNT: 2
+2026-10-18T00:29:19.0536038Z   GIT_CONFIG_KEY_0: core.autocrlf
+2026-10-18T00:29:19.0536267Z   GIT_CONFIG_VALUE_0: false
+2026-10-18T00:29:19.0536483Z   GIT_CONFIG_KEY_1: core.eol
+2026-10-18T00:29:19.0536697Z   GIT_CONFIG_VALUE_1: lf
+2026-10-18T00:29:19.0536902Z   GIT_LFS_SKIP_SMUDGE: 1
+2026-10-18T00:29:19.0537340Z ##[endgroup]
+2026-10-18T00:29:19.2111939Z ##[group]Installed versions
+2026-10-18T00:29:19.2257565Z (node:2468) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-18T00:29:19.2258349Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-18T00:29:19.2259295Z Successfully set up CPython (3.12.10)
+2026-10-18T00:29:19.2260303Z ##[endgroup]
+2026-10-18T00:29:19.2522509Z ##[group]Run actions/cache/restore@v4
+2026-10-18T00:29:19.2522835Z with:
+2026-10-18T00:29:19.2523029Z   path: ~\AppData\Local\vcpkg\archives
+2026-10-18T00:29:19.2523438Z   key: nemo-diar-vcpkg-9e593bb18ea69cc5095e012465dcd675a822ed0d-x64-static-md
+2026-10-18T00:29:19.2523845Z   enableCrossOsArchive: false
+2026-10-18T00:29:19.2524085Z   fail-on-cache-miss: false
+2026-10-18T00:29:19.2524301Z   lookup-only: false
+2026-10-18T00:29:19.2524484Z env:
+2026-10-18T00:29:19.2524647Z   GIT_CONFIG_COUNT: 2
+2026-10-18T00:29:19.2524850Z   GIT_CONFIG_KEY_0: core.autocrlf
+2026-10-18T00:29:19.2525091Z   GIT_CONFIG_VALUE_0: false
+2026-10-18T00:29:19.2525299Z   GIT_CONFIG_KEY_1: core.eol
+2026-10-18T00:29:19.2525506Z   GIT_CONFIG_VALUE_1: lf
+2026-10-18T00:29:19.2525712Z   GIT_LFS_SKIP_SMUDGE: 1
+2026-10-18T00:29:19.2525992Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-18T00:29:19.2526492Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+2026-10-18T00:29:19.2526928Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-18T00:29:19.2527313Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-18T00:29:19.2527702Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-18T00:29:19.2528003Z ##[endgroup]
+2026-10-18T00:29:19.3798511Z (node:5540) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-18T00:29:19.3799383Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-18T00:29:19.6172919Z Cache hit for: nemo-diar-vcpkg-9e593bb18ea69cc5095e012465dcd675a822ed0d-x64-static-md
+2026-10-18T00:29:19.6297345Z (node:5540) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-10-18T00:29:20.6679927Z Received 218103808 of 302024786 (72.2%), 206.3 MBs/sec
+2026-10-18T00:29:21.2134670Z Received 302024786 of 302024786 (100.0%), 184.5 MBs/sec
+2026-10-18T00:29:21.2139549Z Cache Size: ~288 MB (302024786 B)
+2026-10-18T00:29:21.2234245Z [command]"C:\Program Files\Git\usr\bin\tar.exe" -xf D:/a/_temp/77d611fd-10da-4e81-88bd-c02ffd2b0de4/cache.tzst -P -C D:/a/gen2/gen2 --force-local --use-compress-program "zstd -d"
+2026-10-18T00:29:21.8018949Z Cache restored successfully
+2026-10-18T00:29:21.8263355Z Cache restored from key: nemo-diar-vcpkg-9e593bb18ea69cc5095e012465dcd675a822ed0d-x64-static-md
+2026-10-18T00:29:21.8536176Z ##[group]Run python -m unittest discover -s tools/nemotron-diarization -p 'test_windows_compiler*.py'
+2026-10-18T00:29:21.8537004Z [36;1mpython -m unittest discover -s tools/nemotron-diarization -p 'test_windows_compiler*.py'[0m
+2026-10-18T00:29:21.8577417Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+2026-10-18T00:29:21.8577756Z env:
+2026-10-18T00:29:21.8577929Z   GIT_CONFIG_COUNT: 2
+2026-10-18T00:29:21.8578139Z   GIT_CONFIG_KEY_0: core.autocrlf
+2026-10-18T00:29:21.8578372Z   GIT_CONFIG_VALUE_0: false
+2026-10-18T00:29:21.8578580Z   GIT_CONFIG_KEY_1: core.eol
+2026-10-18T00:29:21.8578788Z   GIT_CONFIG_VALUE_1: lf
+2026-10-18T00:29:21.8578998Z   GIT_LFS_SKIP_SMUDGE: 1
+2026-10-18T00:29:21.8579290Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-18T00:29:21.8579746Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+2026-10-18T00:29:21.8580222Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-18T00:29:21.8580765Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-18T00:29:21.8581157Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-18T00:29:21.8581469Z ##[endgroup]
+2026-10-18T00:29:24.2998573Z START msvc fixture-command
+2026-10-18T00:29:24.3217319Z START msvc fixture-command
+2026-10-18T00:29:24.3375785Z START msvc fixture-command
+2026-10-18T00:29:24.3533769Z START msvc fixture-command
+2026-10-18T00:29:24.3665883Z START msvc fixture-command
+2026-10-18T00:29:24.3877584Z START msvc fixture-command
+2026-10-18T00:29:24.6969818Z ...............
+2026-10-18T00:29:24.6970283Z ----------------------------------------------------------------------
+2026-10-18T00:29:24.6970757Z Ran 15 tests in 0.446s
+2026-10-18T00:29:24.6970932Z 
+2026-10-18T00:29:24.6971021Z OK
+2026-10-18T00:29:24.8204666Z ##[group]Run python -B -m unittest discover -s tools/nemotron-diarization -p 'test_*matrix_profile*.py'
+2026-10-18T00:29:24.8205593Z [36;1mpython -B -m unittest discover -s tools/nemotron-diarization -p 'test_*matrix_profile*.py'[0m
+2026-10-18T00:29:24.8245948Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+2026-10-18T00:29:24.8246380Z env:
+2026-10-18T00:29:24.8257107Z   GIT_CONFIG_COUNT: 2
+2026-10-18T00:29:24.8257355Z   GIT_CONFIG_KEY_0: core.autocrlf
+2026-10-18T00:29:24.8257665Z   GIT_CONFIG_VALUE_0: false
+2026-10-18T00:29:24.8257903Z   GIT_CONFIG_KEY_1: core.eol
+2026-10-18T00:29:24.8258203Z   GIT_CONFIG_VALUE_1: lf
+2026-10-18T00:29:24.8258578Z   GIT_LFS_SKIP_SMUDGE: 1
+2026-10-18T00:29:24.8259058Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-18T00:29:24.8259799Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+2026-10-18T00:29:24.8260582Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-18T00:29:24.8261010Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-18T00:29:24.8261403Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-18T00:29:24.8261732Z ##[endgroup]
+2026-10-18T00:29:28.3484115Z .....................
+2026-10-18T00:29:28.3484676Z ----------------------------------------------------------------------
+2026-10-18T00:29:28.3485229Z Ran 21 tests in 3.076s
+2026-10-18T00:29:28.3485452Z 
+2026-10-18T00:29:28.3485559Z OK
+2026-10-18T00:29:28.4652214Z ##[group]Run python -B -m unittest discover -s tools/nemotron-diarization -p 'test_windows_thread_cpu_profile.py'
+2026-10-18T00:29:28.4653097Z [36;1mpython -B -m unittest discover -s tools/nemotron-diarization -p 'test_windows_thread_cpu_profile.py'[0m
+2026-10-18T00:29:28.4695368Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+2026-10-18T00:29:28.4695711Z env:
+2026-10-18T00:29:28.4695882Z   GIT_CONFIG_COUNT: 2
+2026-10-18T00:29:28.4696097Z   GIT_CONFIG_KEY_0: core.autocrlf
+2026-10-18T00:29:28.4696329Z   GIT_CONFIG_VALUE_0: false
+2026-10-18T00:29:28.4696543Z   GIT_CONFIG_KEY_1: core.eol
+2026-10-18T00:29:28.4696753Z   GIT_CONFIG_VALUE_1: lf
+2026-10-18T00:29:28.4696978Z   GIT_LFS_SKIP_SMUDGE: 1
+2026-10-18T00:29:28.4697272Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-18T00:29:28.4697728Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+2026-10-18T00:29:28.4698195Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-18T00:29:28.4698587Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-18T00:29:28.4698975Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-18T00:29:28.4699296Z ##[endgroup]
+2026-10-18T00:29:31.9633793Z ..........
+2026-10-18T00:29:31.9634294Z ----------------------------------------------------------------------
+2026-10-18T00:29:31.9634812Z Ran 10 tests in 3.104s
+2026-10-18T00:29:31.9635012Z 
+2026-10-18T00:29:31.9635112Z OK
+2026-10-18T00:29:32.0833823Z ##[group]Run python -B -m unittest discover -s tools/nemotron-diarization -p test_ggml_thread_cpu_profile.py
+2026-10-18T00:29:32.0835417Z [36;1mpython -B -m unittest discover -s tools/nemotron-diarization -p test_ggml_thread_cpu_profile.py[0m
+2026-10-18T00:29:32.0876562Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+2026-10-18T00:29:32.0876899Z env:
+2026-10-18T00:29:32.0877075Z   GIT_CONFIG_COUNT: 2
+2026-10-18T00:29:32.0877286Z   GIT_CONFIG_KEY_0: core.autocrlf
+2026-10-18T00:29:32.0877519Z   GIT_CONFIG_VALUE_0: false
+2026-10-18T00:29:32.0877746Z   GIT_CONFIG_KEY_1: core.eol
+2026-10-18T00:29:32.0877961Z   GIT_CONFIG_VALUE_1: lf
+2026-10-18T00:29:32.0878173Z   GIT_LFS_SKIP_SMUDGE: 1
+2026-10-18T00:29:32.0878462Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-18T00:29:32.0878926Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+2026-10-18T00:29:32.0879611Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-18T00:29:32.0880030Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-18T00:29:32.0880424Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-18T00:29:32.0880749Z ##[endgroup]
+2026-10-18T00:29:42.4339633Z FFFFFFFF.....
+2026-10-18T00:29:42.4340336Z ======================================================================
+2026-10-18T00:29:42.4343004Z FAIL: test_256_extreme_rows_retain_both_complete_records_in_one_write (test_ggml_thread_cpu_profile.ThreadCPUEmissionTest.test_256_extreme_rows_retain_both_complete_records_in_one_write)
+2026-10-18T00:29:42.4344563Z ----------------------------------------------------------------------
+2026-10-18T00:29:42.4345182Z Traceback (most recent call last):
+2026-10-18T00:29:42.4354382Z   File "D:\a\gen2\gen2\tools\nemotron-diarization\test_ggml_thread_cpu_profile.py", line 145, in test_256_extreme_rows_retain_both_complete_records_in_one_write
+2026-10-18T00:29:42.4355852Z     self.assertEqual(result.stdout,b'allocations=1 frees=1 writes=1\n')
+2026-10-18T00:29:42.4356818Z AssertionError: b'allocations=1 frees=1 writes=1\r\n' != b'allocations=1 frees=1 writes=1\n'
+2026-10-18T00:29:42.4357484Z 
+2026-10-18T00:29:42.4357675Z ======================================================================
+2026-10-18T00:29:42.4359269Z FAIL: test_all_old_and_new_emission_failures_reject_without_partial_flush (test_ggml_thread_cpu_profile.ThreadCPUEmissionTest.test_all_old_and_new_emission_failures_reject_without_partial_flush) (failure=1)
+2026-10-18T00:29:42.4360905Z ----------------------------------------------------------------------
+2026-10-18T00:29:42.4361488Z Traceback (most recent call last):
+2026-10-18T00:29:42.4362765Z   File "D:\a\gen2\gen2\tools\nemotron-diarization\test_ggml_thread_cpu_profile.py", line 150, in test_all_old_and_new_emission_failures_reject_without_partial_flush
+2026-10-18T00:29:42.4364228Z     self.assertEqual(result.stderr,b'[DEBUG-matrix-paths-v1] emission-error\n')
+2026-10-18T00:29:42.4365353Z AssertionError: b'[DEBUG-matrix-paths-v1] emission-error\r\n' != b'[DEBUG-matrix-paths-v1] emission-error\n'
+2026-10-18T00:29:42.4366115Z 
+2026-10-18T00:29:42.4366296Z ======================================================================
+2026-10-18T00:29:42.4367904Z FAIL: test_all_old_and_new_emission_failures_reject_without_partial_flush (test_ggml_thread_cpu_profile.ThreadCPUEmissionTest.test_all_old_and_new_emission_failures_reject_without_partial_flush) (failure=2)
+2026-10-18T00:29:42.4369538Z ----------------------------------------------------------------------
+2026-10-18T00:29:42.4370137Z Traceback (most recent call last):
+2026-10-18T00:29:42.4371444Z   File "D:\a\gen2\gen2\tools\nemotron-diarization\test_ggml_thread_cpu_profile.py", line 150, in test_all_old_and_new_emission_failures_reject_without_partial_flush
+2026-10-18T00:29:42.4372878Z     self.assertEqual(result.stderr,b'[DEBUG-matrix-paths-v1] emission-error\n')
+2026-10-18T00:29:42.4376770Z AssertionError: b'[DEBUG-matrix-paths-v1] emission-error\r\n' != b'[DEBUG-matrix-paths-v1] emission-error\n'
+2026-10-18T00:29:42.4377610Z 
+2026-10-18T00:29:42.4377820Z ======================================================================
+2026-10-18T00:29:42.4380392Z FAIL: test_all_old_and_new_emission_failures_reject_without_partial_flush (test_ggml_thread_cpu_profile.ThreadCPUEmissionTest.test_all_old_and_new_emission_failures_reject_without_partial_flush) (failure=3)
+2026-10-18T00:29:42.4382031Z ----------------------------------------------------------------------
+2026-10-18T00:29:42.4382405Z Traceback (most recent call last):
+2026-10-18T00:29:42.4383150Z   File "D:\a\gen2\gen2\tools\nemotron-diarization\test_ggml_thread_cpu_profile.py", line 150, in test_all_old_and_new_emission_failures_reject_without_partial_flush
+2026-10-18T00:29:42.4383947Z     self.assertEqual(result.stderr,b'[DEBUG-matrix-paths-v1] emission-error\n')
+2026-10-18T00:29:42.4384584Z AssertionError: b'[DEBUG-matrix-paths-v1] emission-error\r\n' != b'[DEBUG-matrix-paths-v1] emission-error\n'
+2026-10-18T00:29:42.4385003Z 
+2026-10-18T00:29:42.4385140Z ======================================================================
+2026-10-18T00:29:42.4385994Z FAIL: test_all_old_and_new_emission_failures_reject_without_partial_flush (test_ggml_thread_cpu_profile.ThreadCPUEmissionTest.test_all_old_and_new_emission_failures_reject_without_partial_flush) (failure=4)
+2026-10-18T00:29:42.4386868Z ----------------------------------------------------------------------
+2026-10-18T00:29:42.4387186Z Traceback (most recent call last):
+2026-10-18T00:29:42.4387872Z   File "D:\a\gen2\gen2\tools\nemotron-diarization\test_ggml_thread_cpu_profile.py", line 150, in test_all_old_and_new_emission_failures_reject_without_partial_flush
+2026-10-18T00:29:42.4388650Z     self.assertEqual(result.stderr,b'[DEBUG-matrix-paths-v1] emission-error\n')
+2026-10-18T00:29:42.4389256Z AssertionError: b'[DEBUG-matrix-paths-v1] emission-error\r\n' != b'[DEBUG-matrix-paths-v1] emission-error\n'
+2026-10-18T00:29:42.4389667Z 
+2026-10-18T00:29:42.4389769Z ======================================================================
+2026-10-18T00:29:42.4390608Z FAIL: test_all_old_and_new_emission_failures_reject_without_partial_flush (test_ggml_thread_cpu_profile.ThreadCPUEmissionTest.test_all_old_and_new_emission_failures_reject_without_partial_flush) (failure=5)
+2026-10-18T00:29:42.4391485Z ----------------------------------------------------------------------
+2026-10-18T00:29:42.4391800Z Traceback (most recent call last):
+2026-10-18T00:29:42.4392471Z   File "D:\a\gen2\gen2\tools\nemotron-diarization\test_ggml_thread_cpu_profile.py", line 150, in test_all_old_and_new_emission_failures_reject_without_partial_flush
+2026-10-18T00:29:42.4393240Z     self.assertEqual(result.stderr,b'[DEBUG-matrix-paths-v1] emission-error\n')
+2026-10-18T00:29:42.4393844Z AssertionError: b'[DEBUG-matrix-paths-v1] emission-error\r\n' != b'[DEBUG-matrix-paths-v1] emission-error\n'
+2026-10-18T00:29:42.4394257Z 
+2026-10-18T00:29:42.4394358Z ======================================================================
+2026-10-18T00:29:42.4395199Z FAIL: test_all_old_and_new_emission_failures_reject_without_partial_flush (test_ggml_thread_cpu_profile.ThreadCPUEmissionTest.test_all_old_and_new_emission_failures_reject_without_partial_flush) (failure=6)
+2026-10-18T00:29:42.4396058Z ----------------------------------------------------------------------
+2026-10-18T00:29:42.4396365Z Traceback (most recent call last):
+2026-10-18T00:29:42.4397087Z   File "D:\a\gen2\gen2\tools\nemotron-diarization\test_ggml_thread_cpu_profile.py", line 150, in test_all_old_and_new_emission_failures_reject_without_partial_flush
+2026-10-18T00:29:42.4397860Z     self.assertEqual(result.stderr,b'[DEBUG-matrix-paths-v1] emission-error\n')
+2026-10-18T00:29:42.4398477Z AssertionError: b'[DEBUG-matrix-paths-v1] emission-error\r\n' != b'[DEBUG-matrix-paths-v1] emission-error\n'
+2026-10-18T00:29:42.4398887Z 
+2026-10-18T00:29:42.4399732Z ======================================================================
+2026-10-18T00:29:42.4400541Z FAIL: test_disabled_and_empty_emission_avoid_allocation_and_output (test_ggml_thread_cpu_profile.ThreadCPUEmissionTest.test_disabled_and_empty_emission_avoid_allocation_and_output)
+2026-10-18T00:29:42.4401451Z ----------------------------------------------------------------------
+2026-10-18T00:29:42.4401780Z Traceback (most recent call last):
+2026-10-18T00:29:42.4402455Z   File "D:\a\gen2\gen2\tools\nemotron-diarization\test_ggml_thread_cpu_profile.py", line 154, in test_disabled_and_empty_emission_avoid_allocation_and_output
+2026-10-18T00:29:42.4403296Z     self.assertEqual(result.stderr,b'');self.assertEqual(result.stdout,b'allocations=0 frees=0 writes=0\n')
+2026-10-18T00:29:42.4403825Z                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-10-18T00:29:42.4404315Z AssertionError: b'allocations=0 frees=0 writes=0\r\n' != b'allocations=0 frees=0 writes=0\n'
+2026-10-18T00:29:42.4404658Z 
+2026-10-18T00:29:42.4404795Z ----------------------------------------------------------------------
+2026-10-18T00:29:42.4405096Z Ran 8 tests in 10.024s
+2026-10-18T00:29:42.4405227Z 
+2026-10-18T00:29:42.4405302Z FAILED (failures=8)
+2026-10-18T00:29:42.5378101Z ##[error]Process completed with exit code 1.
+2026-10-18T00:29:42.5557677Z ##[group]Run actions/upload-artifact@v4
+2026-10-18T00:29:42.5558020Z with:
+2026-10-18T00:29:42.5558253Z   name: nemotron-windows-thread-cpu-profile
+2026-10-18T00:29:42.5559237Z   path: D:\a\_temp/windows-thread-cpu-profile/qualification.json
+D:\a\_temp/windows-thread-cpu-profile/protocol.json
+D:\a\_temp/windows-thread-cpu-profile/evidence/
+D:\a\_temp/windows-thread-cpu-profile/sdk/
+
+2026-10-18T00:29:42.5560109Z   include-hidden-files: true
+2026-10-18T00:29:42.5560338Z   retention-days: 30
+2026-10-18T00:29:42.5560545Z   if-no-files-found: warn
+2026-10-18T00:29:42.5560752Z   compression-level: 6
+2026-10-18T00:29:42.5560946Z   overwrite: false
+2026-10-18T00:29:42.5561128Z env:
+2026-10-18T00:29:42.5561285Z   GIT_CONFIG_COUNT: 2
+2026-10-18T00:29:42.5561486Z   GIT_CONFIG_KEY_0: core.autocrlf
+2026-10-18T00:29:42.5561733Z   GIT_CONFIG_VALUE_0: false
+2026-10-18T00:29:42.5561950Z   GIT_CONFIG_KEY_1: core.eol
+2026-10-18T00:29:42.5562158Z   GIT_CONFIG_VALUE_1: lf
+2026-10-18T00:29:42.5562384Z   GIT_LFS_SKIP_SMUDGE: 1
+2026-10-18T00:29:42.5562675Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-18T00:29:42.5563129Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+2026-10-18T00:29:42.5563575Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-18T00:29:42.5563968Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-18T00:29:42.5564356Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-18T00:29:42.5564664Z ##[endgroup]
+2026-10-18T00:29:42.7406579Z (node:7568) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-18T00:29:42.7407444Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-18T00:29:42.7466800Z Multiple search paths detected. Calculating the least common ancestor of all paths
+2026-10-18T00:29:42.7471073Z The least common ancestor is D:\a\_temp\windows-thread-cpu-profile. This will be the root directory of the artifact
+2026-10-18T00:29:42.7484209Z ##[warning]No files were found with the provided path: D:\a\_temp/windows-thread-cpu-profile/qualification.json
+D:\a\_temp/windows-thread-cpu-profile/protocol.json
+D:\a\_temp/windows-thread-cpu-profile/evidence/
+D:\a\_temp/windows-thread-cpu-profile/sdk/. No artifacts will be uploaded.
+2026-10-18T00:29:42.7770764Z Post job cleanup.
+2026-10-18T00:29:42.9684168Z [command]"C:\Program Files\Git\bin\git.exe" version
+2026-10-18T00:29:42.9980799Z git version 2.56.0.windows.2
+2026-10-18T00:29:43.0038685Z Temporarily overriding HOME='D:\a\_temp\d9a04627-2c34-4b9d-85ef-6770b7eab6c0' before making global git config changes
+2026-10-18T00:29:43.0039965Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-18T00:29:43.0050310Z [command]"C:\Program Files\Git\bin\git.exe" config --global --add safe.directory D:\a\gen2\gen2\native-source
+2026-10-18T00:29:43.0344465Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+2026-10-18T00:29:43.0634857Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+2026-10-18T00:29:43.7269577Z Entering 'llama.cpp'
+2026-10-18T00:29:43.8115108Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-18T00:29:43.8422985Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+2026-10-18T00:29:44.2940911Z Entering 'llama.cpp'
+2026-10-18T00:29:44.3744607Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-18T00:29:44.4028284Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "git config --local --show-origin --name-only --get-regexp remote.origin.url"
+2026-10-18T00:29:44.8558770Z Entering 'llama.cpp'
+2026-10-18T00:29:44.8831674Z file:D:/a/gen2/gen2/native-source/.git/modules/llama.cpp/config	remote.origin.url
+2026-10-18T00:29:44.9061436Z [command]"C:\Program Files\Git\bin\git.exe" config --file D:/a/gen2/gen2/native-source/.git/modules/llama.cpp/config --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-18T00:29:44.9615219Z Post job cleanup.
+2026-10-18T00:29:45.1544182Z [command]"C:\Program Files\Git\bin\git.exe" version
+2026-10-18T00:29:45.1807242Z git version 2.56.0.windows.2
+2026-10-18T00:29:45.1865357Z Temporarily overriding HOME='D:\a\_temp\2c2068c7-16a7-45f9-802d-a8bea3816802' before making global git config changes
+2026-10-18T00:29:45.1866268Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-18T00:29:45.1876846Z [command]"C:\Program Files\Git\bin\git.exe" config --global --add safe.directory D:\a\gen2\gen2
+2026-10-18T00:29:45.2170236Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+2026-10-18T00:29:45.2460574Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+2026-10-18T00:29:45.6963625Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-18T00:29:45.7248466Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+2026-10-18T00:29:46.1967377Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-18T00:29:46.2252887Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "git config --local --show-origin --name-only --get-regexp remote.origin.url"
+2026-10-18T00:29:46.7117823Z Cleaning up orphan processes
+2026-10-18T00:29:46.7590815Z Terminate orphan process: pid (6272) (vctip)
+2026-10-18T00:29:46.7605551Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/cache/restore@v4, actions/checkout@v4, actions/setup-python@v5, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
