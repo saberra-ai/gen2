@@ -69,3 +69,11 @@ passes all 13 feature-check jobs at `f421e960`. The four Windows jobs each verif
 checkout regression caused by retained evidence paths; it supplies no new
 model-quality, Windows real-time or release qualification. The unmet gates in
 the table remain unchanged.
+
+A distinct [graph-only CPU observer prototype](nemotron-windows-graph-cpu-observer.md)
+now removes the prior per-region cycle instrumentation while preserving the
+batched wall observer. Its source/adapter/parser controls pass in the local
+648-test model-free suite (eight Windows-only skips). The real Windows API
+control is wired into feature CI and awaits execution; actual GGML parity,
+observer timing bounds and production performance remain unqualified. This
+does not select an optimization or close the Windows real-time gate.

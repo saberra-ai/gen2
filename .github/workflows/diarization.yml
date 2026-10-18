@@ -36,6 +36,9 @@ jobs:
           for path in long_paths:
               assert path.is_file(), f'long tracked path was not checked out: {path}'
           print(f'Verified {len(long_paths)} tracked paths at least 260 characters long.')
+      - name: Windows graph CPU API control
+        if: runner.os == 'Windows' && matrix.features == ''
+        run: python -B -m unittest discover -s tools/nemotron-diarization -p test_ggml_graph_cpu_windows.py -v
       - uses: dtolnay/rust-toolchain@stable
         with:
           components: clippy, rustfmt

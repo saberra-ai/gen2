@@ -19,6 +19,12 @@ configurations and their actual 22-file long-path checks. This restores
 checkout/feature compatibility; it does not change the failed accuracy or
 Windows real-time results, or close N4/N5 release gates.
 
+The distinct [graph-only CPU observer prototype](../research/nemotron-windows-graph-cpu-observer.md)
+preserves the batched wall observer and removes detailed cycle instrumentation.
+Its local model-free suite passes 648 tests with eight Windows-only skips.
+The real Windows API control is wired into feature CI and awaits execution;
+actual graph parity, timing bounds and all production/release gates remain open.
+
 The separate [batched matrix observer control](../research/nemotron-matrix-batch-results.md)
 now passes all twelve fresh native Mac graph processes, 144 byte-exact vectors
 against the earlier observer, and complete dispatch/fusion coverage. Only
