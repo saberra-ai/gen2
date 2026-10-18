@@ -1,0 +1,389 @@
+evidence-tools	Set up job	﻿2026-10-18T02:47:58.2657437Z Current runner version: '2.337.0'
+evidence-tools	Set up job	2026-10-18T02:47:58.2693544Z ##[group]Runner Image Provisioner
+evidence-tools	Set up job	2026-10-18T02:47:58.2695687Z Hosted Compute Agent
+evidence-tools	Set up job	2026-10-18T02:47:58.2696699Z Version: 20261012.601
+evidence-tools	Set up job	2026-10-18T02:47:58.2697786Z Commit: f3dc54e1fb89da6852db922499a0233137369e1d
+evidence-tools	Set up job	2026-10-18T02:47:58.2699078Z Build Date: 2026-10-12T17:48:21Z
+evidence-tools	Set up job	2026-10-18T02:47:58.2700219Z Worker ID: {f8113a4f-b12b-4941-806f-c598e28628e6}
+evidence-tools	Set up job	2026-10-18T02:47:58.2701510Z Region: eastus
+evidence-tools	Set up job	2026-10-18T02:47:58.2702393Z Cloud: Azure
+evidence-tools	Set up job	2026-10-18T02:47:58.2703464Z ##[endgroup]
+evidence-tools	Set up job	2026-10-18T02:47:58.2706274Z ##[group]Operating System
+evidence-tools	Set up job	2026-10-18T02:47:58.2707300Z Ubuntu
+evidence-tools	Set up job	2026-10-18T02:47:58.2708333Z 24.04.5
+evidence-tools	Set up job	2026-10-18T02:47:58.2709148Z LTS
+evidence-tools	Set up job	2026-10-18T02:47:58.2710103Z ##[endgroup]
+evidence-tools	Set up job	2026-10-18T02:47:58.2711016Z ##[group]Runner Image
+evidence-tools	Set up job	2026-10-18T02:47:58.2712076Z Image: ubuntu-24.04
+evidence-tools	Set up job	2026-10-18T02:47:58.2713034Z Version: 20261012.334.1
+evidence-tools	Set up job	2026-10-18T02:47:58.2715154Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261012.334/images/ubuntu/Ubuntu2404-Readme.md
+evidence-tools	Set up job	2026-10-18T02:47:58.2718177Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261012.334
+evidence-tools	Set up job	2026-10-18T02:47:58.2719995Z ##[endgroup]
+evidence-tools	Set up job	2026-10-18T02:47:58.2722094Z ##[group]GITHUB_TOKEN Permissions
+evidence-tools	Set up job	2026-10-18T02:47:58.2725748Z Contents: read
+evidence-tools	Set up job	2026-10-18T02:47:58.2726668Z Metadata: read
+evidence-tools	Set up job	2026-10-18T02:47:58.2727550Z Packages: read
+evidence-tools	Set up job	2026-10-18T02:47:58.2728647Z ##[endgroup]
+evidence-tools	Set up job	2026-10-18T02:47:58.2731515Z Secret source: Actions
+evidence-tools	Set up job	2026-10-18T02:47:58.2733099Z Cache mode: write
+evidence-tools	Set up job	2026-10-18T02:47:58.2734920Z Prepare workflow directory
+evidence-tools	Set up job	2026-10-18T02:47:58.3200833Z Prepare all required actions
+evidence-tools	Set up job	2026-10-18T02:47:58.3271219Z Getting action download info
+evidence-tools	Set up job	2026-10-18T02:47:58.5295733Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+evidence-tools	Set up job	2026-10-18T02:47:58.6439193Z Download action repository 'actions/setup-python@v5' (SHA:a26af69be951a213d495a4c3e4e4022e16d87065)
+evidence-tools	Set up job	2026-10-18T02:47:58.7190972Z Download action repository 'actions/setup-node@v4' (SHA:49933ea5288caeca8642d1e84afbd3f7d6820020)
+evidence-tools	Set up job	2026-10-18T02:47:58.9516340Z Complete job name: evidence-tools
+evidence-tools	Run actions/checkout@v4	﻿2026-10-18T02:47:59.0280192Z ##[group]Run actions/checkout@v4
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:47:59.0281068Z with:
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:47:59.0281501Z   repository: saberra-ai/gen2
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:47:59.0285426Z   token: ***
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:47:59.0285856Z   ssh-strict: true
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:47:59.0286282Z   ssh-user: git
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:47:59.0286713Z   persist-credentials: true
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:47:59.0287187Z   clean: true
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:47:59.0287610Z   sparse-checkout-cone-mode: true
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:47:59.0288111Z   fetch-depth: 1
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:47:59.0288524Z   fetch-tags: false
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:47:59.0288952Z   show-progress: true
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:47:59.0289393Z   lfs: false
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:47:59.0289793Z   submodules: false
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:47:59.0290228Z   set-safe-directory: true
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:47:59.0290718Z   allow-unsafe-pr-checkout: false
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:47:59.0291477Z ##[endgroup]
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:47:59.1275109Z Syncing repository: saberra-ai/gen2
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:47:59.1277611Z ##[group]Getting Git version info
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:47:59.1278679Z Working directory is '/home/runner/work/gen2/gen2'
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:47:59.1280264Z [command]/usr/bin/git version
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:47:59.1344879Z git version 2.55.0
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:47:59.1366263Z ##[endgroup]
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:47:59.1381148Z Temporarily overriding HOME='/home/runner/work/_temp/d9681f3c-1232-498c-a6da-18940a183a46' before making global git config changes
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:47:59.1383516Z Adding repository directory to the temporary git global config as a safe directory
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:47:59.1386232Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/gen2/gen2
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:47:59.1451110Z Deleting the contents of '/home/runner/work/gen2/gen2'
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:47:59.1458593Z ##[group]Initializing the repository
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:47:59.1461390Z [command]/usr/bin/git init /home/runner/work/gen2/gen2
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:47:59.1589245Z hint: Using 'master' as the name for the initial branch. This default branch name
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:47:59.1591589Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:47:59.1593193Z hint: to use in all of your new repositories, which will suppress this warning,
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:47:59.1594713Z hint: call:
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:47:59.1595729Z hint:
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:47:59.1596621Z hint: 	git config --global init.defaultBranch <name>
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:47:59.1597716Z hint:
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:47:59.1598336Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:47:59.1599573Z hint: 'development'. The just-created branch can be renamed via this command:
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:47:59.1600822Z hint:
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:47:59.1601492Z hint: 	git branch -m <name>
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:47:59.1602306Z hint:
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:47:59.1603349Z hint: Disable this message with "git config set advice.defaultBranchName false"
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:47:59.1605240Z Initialized empty Git repository in /home/runner/work/gen2/gen2/.git/
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:47:59.1607722Z [command]/usr/bin/git remote add origin https://github.com/saberra-ai/gen2
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:47:59.1659826Z ##[endgroup]
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:47:59.1661138Z ##[group]Disabling automatic garbage collection
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:47:59.1663111Z [command]/usr/bin/git config --local gc.auto 0
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:47:59.1696371Z ##[endgroup]
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:47:59.1697529Z ##[group]Setting up auth
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:47:59.1702964Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:47:59.1737240Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:47:59.2111750Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:47:59.2152822Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:47:59.2404492Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:47:59.2441601Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:47:59.2687817Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:47:59.2732539Z ##[endgroup]
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:47:59.2734256Z ##[group]Fetching the repository
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:47:59.2744743Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +8db9c0e5100de91a8e18b431e72359d586ed16bd:refs/remotes/origin/codex/nemotron3-n0
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:07.9300933Z From https://github.com/saberra-ai/gen2
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:07.9302343Z  * [new ref]         8db9c0e5100de91a8e18b431e72359d586ed16bd -> origin/codex/nemotron3-n0
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:07.9306819Z ##[endgroup]
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:07.9308769Z ##[group]Determining the checkout info
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:07.9310415Z ##[endgroup]
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:07.9319468Z [command]/usr/bin/git sparse-checkout disable
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:07.9379277Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:07.9415379Z ##[group]Checking out the ref
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:07.9420937Z [command]/usr/bin/git checkout --progress --force -B codex/nemotron3-n0 refs/remotes/origin/codex/nemotron3-n0
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:08.9678784Z Updating files:  23% (6798/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:08.9957878Z Updating files:  24% (6800/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:09.0252775Z Updating files:  25% (7083/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:09.0505193Z Updating files:  26% (7367/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:09.0663876Z Updating files:  27% (7650/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:09.0837011Z Updating files:  28% (7933/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:09.1030149Z Updating files:  29% (8216/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:09.1277928Z Updating files:  30% (8500/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:09.1472405Z Updating files:  31% (8783/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:09.1760793Z Updating files:  32% (9066/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:09.1971286Z Updating files:  33% (9350/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:09.2211516Z Updating files:  34% (9633/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:09.2433862Z Updating files:  35% (9916/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:09.2711352Z Updating files:  36% (10200/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:09.2892034Z Updating files:  37% (10483/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:09.3176338Z Updating files:  38% (10766/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:09.3435391Z Updating files:  39% (11050/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:09.3830361Z Updating files:  40% (11333/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:09.4004312Z Updating files:  41% (11616/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:09.4780705Z Updating files:  42% (11900/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:09.5209978Z Updating files:  43% (12183/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:09.5478433Z Updating files:  44% (12466/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:09.6525093Z Updating files:  45% (12749/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:09.7546084Z Updating files:  46% (13033/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:09.7798212Z Updating files:  47% (13316/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:09.9687984Z Updating files:  48% (13599/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:09.9804353Z Updating files:  48% (13867/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:10.9331946Z Updating files:  49% (13883/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:10.9709742Z Updating files:  50% (14166/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:11.7726876Z Updating files:  50% (14208/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:11.9834236Z Updating files:  51% (14449/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:12.6104055Z Updating files:  51% (14518/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:12.9728828Z Updating files:  52% (14733/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:13.5053205Z Updating files:  52% (14845/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:13.5415061Z Updating files:  53% (15016/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:13.5747168Z Updating files:  54% (15299/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:13.5969363Z Updating files:  55% (15583/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:13.6715615Z Updating files:  56% (15866/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:13.9687067Z Updating files:  57% (16149/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:14.5300056Z Updating files:  57% (16246/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:14.9681965Z Updating files:  58% (16432/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:15.4175861Z Updating files:  58% (16590/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:15.9684952Z Updating files:  59% (16716/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:16.3070977Z Updating files:  59% (16898/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:16.9758531Z Updating files:  60% (16999/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:17.1074575Z Updating files:  60% (17218/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:17.2354557Z Updating files:  61% (17282/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:17.8719289Z Updating files:  62% (17566/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:17.9699526Z Updating files:  63% (17849/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:18.1604935Z Updating files:  63% (17889/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:18.8351902Z Updating files:  64% (18132/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:18.9702820Z Updating files:  65% (18416/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:19.6714248Z Updating files:  65% (18480/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:19.9695447Z Updating files:  66% (18699/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:20.5656059Z Updating files:  66% (18777/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:20.9666685Z Updating files:  67% (18982/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:21.4902549Z Updating files:  67% (19097/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:21.8054886Z Updating files:  68% (19266/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:21.9667816Z Updating files:  69% (19549/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:22.3760006Z Updating files:  69% (19718/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:22.9676490Z Updating files:  70% (19832/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:23.1835595Z Updating files:  70% (20026/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:23.9781521Z Updating files:  71% (20116/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:24.0472011Z Updating files:  71% (20347/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:24.9295464Z Updating files:  72% (20399/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:24.9737632Z Updating files:  73% (20682/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:25.4039006Z Updating files:  73% (20700/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:25.8492409Z Updating files:  74% (20965/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:25.9790624Z Updating files:  75% (21249/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:26.7479192Z Updating files:  75% (21286/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:26.9693242Z Updating files:  76% (21532/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:27.6211368Z Updating files:  76% (21609/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:27.9680642Z Updating files:  77% (21815/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:28.4618892Z Updating files:  77% (21958/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:28.9703415Z Updating files:  78% (22099/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:29.0273499Z Updating files:  78% (22266/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:29.0445673Z Updating files:  79% (22382/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:29.1100110Z Updating files:  80% (22665/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:29.2580331Z Updating files:  81% (22949/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:29.9668183Z Updating files:  82% (23232/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:30.1476304Z Updating files:  82% (23472/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:30.9808282Z Updating files:  83% (23515/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:31.0111709Z Updating files:  83% (23793/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:31.8468021Z Updating files:  84% (23799/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:31.9698433Z Updating files:  85% (24082/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:32.7119282Z Updating files:  85% (24139/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:32.7405676Z Updating files:  86% (24365/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:32.7531105Z Updating files:  87% (24648/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:32.7645679Z Updating files:  88% (24932/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:32.7739181Z Updating files:  89% (25215/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:32.7878252Z Updating files:  90% (25498/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:32.8136375Z Updating files:  91% (25782/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:33.0013602Z Updating files:  92% (26065/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:33.0111918Z Updating files:  92% (26109/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:33.0571723Z Updating files:  93% (26348/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:33.0725224Z Updating files:  94% (26632/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:33.0955421Z Updating files:  95% (26915/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:33.1234419Z Updating files:  96% (27198/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:33.1602629Z Updating files:  97% (27482/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:33.1818037Z Updating files:  98% (27765/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:33.2223693Z Updating files:  99% (28048/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:33.2224916Z Updating files: 100% (28331/28331)
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:33.2225531Z Updating files: 100% (28331/28331), done.
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:33.2502777Z Switched to a new branch 'codex/nemotron3-n0'
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:33.2506729Z branch 'codex/nemotron3-n0' set up to track 'origin/codex/nemotron3-n0'.
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:33.2599278Z ##[endgroup]
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:33.2651466Z [command]/usr/bin/git log -1 --format=%H
+evidence-tools	Run actions/checkout@v4	2026-10-18T02:48:33.2677997Z 8db9c0e5100de91a8e18b431e72359d586ed16bd
+evidence-tools	Fetch frozen SDK producer source for offline historical admission tests	﻿2026-10-18T02:48:33.2900895Z ##[group]Run git fetch --no-tags --depth=1 origin 618d7969b112d1e923e15db19fe81eb2c0b892f4
+evidence-tools	Fetch frozen SDK producer source for offline historical admission tests	2026-10-18T02:48:33.2901570Z [36;1mgit fetch --no-tags --depth=1 origin 618d7969b112d1e923e15db19fe81eb2c0b892f4[0m
+evidence-tools	Fetch frozen SDK producer source for offline historical admission tests	2026-10-18T02:48:33.2902137Z [36;1mgit fetch --no-tags --depth=1 origin dfdede8e74709a0c89be01d53aad92d346b50b99[0m
+evidence-tools	Fetch frozen SDK producer source for offline historical admission tests	2026-10-18T02:48:33.2902684Z [36;1mgit fetch --no-tags --depth=1 origin fee2177adcd7b75b488c67bea5a593ea17df65de[0m
+evidence-tools	Fetch frozen SDK producer source for offline historical admission tests	2026-10-18T02:48:33.3156709Z shell: /usr/bin/bash -e {0}
+evidence-tools	Fetch frozen SDK producer source for offline historical admission tests	2026-10-18T02:48:33.3157020Z ##[endgroup]
+evidence-tools	Fetch frozen SDK producer source for offline historical admission tests	2026-10-18T02:48:33.5596087Z From https://github.com/saberra-ai/gen2
+evidence-tools	Fetch frozen SDK producer source for offline historical admission tests	2026-10-18T02:48:33.5596789Z  * branch            618d7969b112d1e923e15db19fe81eb2c0b892f4 -> FETCH_HEAD
+evidence-tools	Fetch frozen SDK producer source for offline historical admission tests	2026-10-18T02:48:33.8189861Z From https://github.com/saberra-ai/gen2
+evidence-tools	Fetch frozen SDK producer source for offline historical admission tests	2026-10-18T02:48:33.8190341Z  * branch            dfdede8e74709a0c89be01d53aad92d346b50b99 -> FETCH_HEAD
+evidence-tools	Fetch frozen SDK producer source for offline historical admission tests	2026-10-18T02:48:34.0403939Z From https://github.com/saberra-ai/gen2
+evidence-tools	Fetch frozen SDK producer source for offline historical admission tests	2026-10-18T02:48:34.0404878Z  * branch            fee2177adcd7b75b488c67bea5a593ea17df65de -> FETCH_HEAD
+evidence-tools	Run actions/setup-python@v5	﻿2026-10-18T02:48:34.0532047Z ##[group]Run actions/setup-python@v5
+evidence-tools	Run actions/setup-python@v5	2026-10-18T02:48:34.0532355Z with:
+evidence-tools	Run actions/setup-python@v5	2026-10-18T02:48:34.0532555Z   python-version: 3.12
+evidence-tools	Run actions/setup-python@v5	2026-10-18T02:48:34.0532796Z   check-latest: false
+evidence-tools	Run actions/setup-python@v5	2026-10-18T02:48:34.0535676Z   token: ***
+evidence-tools	Run actions/setup-python@v5	2026-10-18T02:48:34.0535902Z   update-environment: true
+evidence-tools	Run actions/setup-python@v5	2026-10-18T02:48:34.0536173Z   allow-prereleases: false
+evidence-tools	Run actions/setup-python@v5	2026-10-18T02:48:34.0536435Z   freethreaded: false
+evidence-tools	Run actions/setup-python@v5	2026-10-18T02:48:34.0536651Z ##[endgroup]
+evidence-tools	Run actions/setup-python@v5	2026-10-18T02:48:34.1831083Z ##[group]Installed versions
+evidence-tools	Run actions/setup-python@v5	2026-10-18T02:48:34.1939772Z (node:2349) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+evidence-tools	Run actions/setup-python@v5	2026-10-18T02:48:34.1940734Z (Use `node --trace-deprecation ...` to show where the warning was created)
+evidence-tools	Run actions/setup-python@v5	2026-10-18T02:48:34.1941544Z Successfully set up CPython (3.12.15)
+evidence-tools	Run actions/setup-python@v5	2026-10-18T02:48:34.1942068Z ##[endgroup]
+evidence-tools	Run python -m pip install --require-hashes -r tools/nemotron-diarization/evidence-requirements.txt	﻿2026-10-18T02:48:34.2052351Z ##[group]Run python -m pip install --require-hashes -r tools/nemotron-diarization/evidence-requirements.txt
+evidence-tools	Run python -m pip install --require-hashes -r tools/nemotron-diarization/evidence-requirements.txt	2026-10-18T02:48:34.2053950Z [36;1mpython -m pip install --require-hashes -r tools/nemotron-diarization/evidence-requirements.txt[0m
+evidence-tools	Run python -m pip install --require-hashes -r tools/nemotron-diarization/evidence-requirements.txt	2026-10-18T02:48:34.2155592Z shell: /usr/bin/bash -e {0}
+evidence-tools	Run python -m pip install --require-hashes -r tools/nemotron-diarization/evidence-requirements.txt	2026-10-18T02:48:34.2155988Z env:
+evidence-tools	Run python -m pip install --require-hashes -r tools/nemotron-diarization/evidence-requirements.txt	2026-10-18T02:48:34.2156422Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.15/x64
+evidence-tools	Run python -m pip install --require-hashes -r tools/nemotron-diarization/evidence-requirements.txt	2026-10-18T02:48:34.2157164Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib/pkgconfig
+evidence-tools	Run python -m pip install --require-hashes -r tools/nemotron-diarization/evidence-requirements.txt	2026-10-18T02:48:34.2157901Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+evidence-tools	Run python -m pip install --require-hashes -r tools/nemotron-diarization/evidence-requirements.txt	2026-10-18T02:48:34.2158546Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+evidence-tools	Run python -m pip install --require-hashes -r tools/nemotron-diarization/evidence-requirements.txt	2026-10-18T02:48:34.2159199Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+evidence-tools	Run python -m pip install --require-hashes -r tools/nemotron-diarization/evidence-requirements.txt	2026-10-18T02:48:34.2159859Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib
+evidence-tools	Run python -m pip install --require-hashes -r tools/nemotron-diarization/evidence-requirements.txt	2026-10-18T02:48:34.2160421Z ##[endgroup]
+evidence-tools	Run python -m pip install --require-hashes -r tools/nemotron-diarization/evidence-requirements.txt	2026-10-18T02:48:35.3870183Z Collecting numpy==2.2.6 (from -r tools/nemotron-diarization/evidence-requirements.txt (line 3))
+evidence-tools	Run python -m pip install --require-hashes -r tools/nemotron-diarization/evidence-requirements.txt	2026-10-18T02:48:35.4891619Z   Downloading numpy-2.2.6-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (16.5 MB)
+evidence-tools	Run python -m pip install --require-hashes -r tools/nemotron-diarization/evidence-requirements.txt	2026-10-18T02:48:35.7976507Z      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.5/16.5 MB 66.8 MB/s  0:00:00
+evidence-tools	Run python -m pip install --require-hashes -r tools/nemotron-diarization/evidence-requirements.txt	2026-10-18T02:48:35.8665769Z Installing collected packages: numpy
+evidence-tools	Run python -m pip install --require-hashes -r tools/nemotron-diarization/evidence-requirements.txt	2026-10-18T02:48:37.7923925Z Successfully installed numpy-2.2.6
+evidence-tools	Run python -m unittest discover -s tools/nemotron-diarization -p 'test_*.py'	﻿2026-10-18T02:48:37.8411485Z ##[group]Run python -m unittest discover -s tools/nemotron-diarization -p 'test_*.py'
+evidence-tools	Run python -m unittest discover -s tools/nemotron-diarization -p 'test_*.py'	2026-10-18T02:48:37.8412144Z [36;1mpython -m unittest discover -s tools/nemotron-diarization -p 'test_*.py'[0m
+evidence-tools	Run python -m unittest discover -s tools/nemotron-diarization -p 'test_*.py'	2026-10-18T02:48:37.8475644Z shell: /usr/bin/bash -e {0}
+evidence-tools	Run python -m unittest discover -s tools/nemotron-diarization -p 'test_*.py'	2026-10-18T02:48:37.8475903Z env:
+evidence-tools	Run python -m unittest discover -s tools/nemotron-diarization -p 'test_*.py'	2026-10-18T02:48:37.8476166Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.15/x64
+evidence-tools	Run python -m unittest discover -s tools/nemotron-diarization -p 'test_*.py'	2026-10-18T02:48:37.8476604Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib/pkgconfig
+evidence-tools	Run python -m unittest discover -s tools/nemotron-diarization -p 'test_*.py'	2026-10-18T02:48:37.8477041Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+evidence-tools	Run python -m unittest discover -s tools/nemotron-diarization -p 'test_*.py'	2026-10-18T02:48:37.8477414Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+evidence-tools	Run python -m unittest discover -s tools/nemotron-diarization -p 'test_*.py'	2026-10-18T02:48:37.8477798Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+evidence-tools	Run python -m unittest discover -s tools/nemotron-diarization -p 'test_*.py'	2026-10-18T02:48:37.8478179Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib
+evidence-tools	Run python -m unittest discover -s tools/nemotron-diarization -p 'test_*.py'	2026-10-18T02:48:37.8478498Z ##[endgroup]
+evidence-tools	Run python -m unittest discover -s tools/nemotron-diarization -p 'test_*.py'	2026-10-18T02:48:49.3009202Z START docker-json
+evidence-tools	Run python -m unittest discover -s tools/nemotron-diarization -p 'test_*.py'	2026-10-18T02:48:49.3170933Z PASS docker-json
+evidence-tools	Run python -m unittest discover -s tools/nemotron-diarization -p 'test_*.py'	2026-10-18T02:49:15.9905866Z START msvc fixture-command
+evidence-tools	Run python -m unittest discover -s tools/nemotron-diarization -p 'test_*.py'	2026-10-18T02:49:15.9922761Z START msvc fixture-command
+evidence-tools	Run python -m unittest discover -s tools/nemotron-diarization -p 'test_*.py'	2026-10-18T02:49:15.9938757Z START msvc fixture-command
+evidence-tools	Run python -m unittest discover -s tools/nemotron-diarization -p 'test_*.py'	2026-10-18T02:49:15.9964774Z START msvc fixture-command
+evidence-tools	Run python -m unittest discover -s tools/nemotron-diarization -p 'test_*.py'	2026-10-18T02:49:15.9981041Z START msvc fixture-command
+evidence-tools	Run python -m unittest discover -s tools/nemotron-diarization -p 'test_*.py'	2026-10-18T02:49:15.9996999Z START msvc fixture-command
+evidence-tools	Run python -m unittest discover -s tools/nemotron-diarization -p 'test_*.py'	2026-10-18T02:49:25.8861968Z START controlled-failure
+evidence-tools	Run python -m unittest discover -s tools/nemotron-diarization -p 'test_*.py'	2026-10-18T02:49:55.5446520Z ........................................................................s..............................................s................................ss.s.......................................................................................................................................s.s..s.......s...............s............................................................................................................................................s.ss.s..ss...s...........................................................................................................................................................................s.
+evidence-tools	Run python -m unittest discover -s tools/nemotron-diarization -p 'test_*.py'	2026-10-18T02:49:55.5448472Z ----------------------------------------------------------------------
+evidence-tools	Run python -m unittest discover -s tools/nemotron-diarization -p 'test_*.py'	2026-10-18T02:49:55.5448895Z Ran 648 tests in 76.710s
+evidence-tools	Run python -m unittest discover -s tools/nemotron-diarization -p 'test_*.py'	2026-10-18T02:49:55.5449060Z 
+evidence-tools	Run python -m unittest discover -s tools/nemotron-diarization -p 'test_*.py'	2026-10-18T02:49:55.5449161Z OK (skipped=18)
+evidence-tools	Run python -m unittest discover -s integrations/pnola -p 'test_*.py'	﻿2026-10-18T02:49:55.5889036Z ##[group]Run python -m unittest discover -s integrations/pnola -p 'test_*.py'
+evidence-tools	Run python -m unittest discover -s integrations/pnola -p 'test_*.py'	2026-10-18T02:49:55.5889620Z [36;1mpython -m unittest discover -s integrations/pnola -p 'test_*.py'[0m
+evidence-tools	Run python -m unittest discover -s integrations/pnola -p 'test_*.py'	2026-10-18T02:49:55.5953373Z shell: /usr/bin/bash -e {0}
+evidence-tools	Run python -m unittest discover -s integrations/pnola -p 'test_*.py'	2026-10-18T02:49:55.5953828Z env:
+evidence-tools	Run python -m unittest discover -s integrations/pnola -p 'test_*.py'	2026-10-18T02:49:55.5954100Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.15/x64
+evidence-tools	Run python -m unittest discover -s integrations/pnola -p 'test_*.py'	2026-10-18T02:49:55.5954539Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib/pkgconfig
+evidence-tools	Run python -m unittest discover -s integrations/pnola -p 'test_*.py'	2026-10-18T02:49:55.5954967Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+evidence-tools	Run python -m unittest discover -s integrations/pnola -p 'test_*.py'	2026-10-18T02:49:55.5955355Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+evidence-tools	Run python -m unittest discover -s integrations/pnola -p 'test_*.py'	2026-10-18T02:49:55.5955738Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+evidence-tools	Run python -m unittest discover -s integrations/pnola -p 'test_*.py'	2026-10-18T02:49:55.5956127Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib
+evidence-tools	Run python -m unittest discover -s integrations/pnola -p 'test_*.py'	2026-10-18T02:49:55.5956446Z ##[endgroup]
+evidence-tools	Run python -m unittest discover -s integrations/pnola -p 'test_*.py'	2026-10-18T02:49:55.6798866Z ...
+evidence-tools	Run python -m unittest discover -s integrations/pnola -p 'test_*.py'	2026-10-18T02:49:55.6799434Z ----------------------------------------------------------------------
+evidence-tools	Run python -m unittest discover -s integrations/pnola -p 'test_*.py'	2026-10-18T02:49:55.6800100Z Ran 3 tests in 0.023s
+evidence-tools	Run python -m unittest discover -s integrations/pnola -p 'test_*.py'	2026-10-18T02:49:55.6800319Z 
+evidence-tools	Run python -m unittest discover -s integrations/pnola -p 'test_*.py'	2026-10-18T02:49:55.6800443Z OK
+evidence-tools	Run actions/setup-node@v4	﻿2026-10-18T02:49:55.6987088Z ##[group]Run actions/setup-node@v4
+evidence-tools	Run actions/setup-node@v4	2026-10-18T02:49:55.6987386Z with:
+evidence-tools	Run actions/setup-node@v4	2026-10-18T02:49:55.6987590Z   node-version: 22
+evidence-tools	Run actions/setup-node@v4	2026-10-18T02:49:55.6987797Z   always-auth: false
+evidence-tools	Run actions/setup-node@v4	2026-10-18T02:49:55.6988012Z   check-latest: false
+evidence-tools	Run actions/setup-node@v4	2026-10-18T02:49:55.6990593Z   token: ***
+evidence-tools	Run actions/setup-node@v4	2026-10-18T02:49:55.6990789Z env:
+evidence-tools	Run actions/setup-node@v4	2026-10-18T02:49:55.6991045Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.15/x64
+evidence-tools	Run actions/setup-node@v4	2026-10-18T02:49:55.6991480Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib/pkgconfig
+evidence-tools	Run actions/setup-node@v4	2026-10-18T02:49:55.6991905Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+evidence-tools	Run actions/setup-node@v4	2026-10-18T02:49:55.6992277Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+evidence-tools	Run actions/setup-node@v4	2026-10-18T02:49:55.6992646Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+evidence-tools	Run actions/setup-node@v4	2026-10-18T02:49:55.6993026Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib
+evidence-tools	Run actions/setup-node@v4	2026-10-18T02:49:55.6993341Z ##[endgroup]
+evidence-tools	Run actions/setup-node@v4	2026-10-18T02:49:55.8459579Z Found in cache @ /opt/hostedtoolcache/node/22.23.3/x64
+evidence-tools	Run actions/setup-node@v4	2026-10-18T02:49:55.8464017Z (node:4658) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+evidence-tools	Run actions/setup-node@v4	2026-10-18T02:49:55.8465111Z (Use `node --trace-deprecation ...` to show where the warning was created)
+evidence-tools	Run actions/setup-node@v4	2026-10-18T02:49:55.8467160Z ##[group]Environment details
+evidence-tools	Run actions/setup-node@v4	2026-10-18T02:49:58.0899139Z node: v22.23.3
+evidence-tools	Run actions/setup-node@v4	2026-10-18T02:49:58.0899709Z npm: 10.9.9
+evidence-tools	Run actions/setup-node@v4	2026-10-18T02:49:58.0900122Z yarn: 1.22.22
+evidence-tools	Run actions/setup-node@v4	2026-10-18T02:49:58.0900912Z ##[endgroup]
+evidence-tools	Run node --test integrations/pnola/overlay/tests/desktop-assets.test.mjs	﻿2026-10-18T02:49:58.1029407Z ##[group]Run node --test integrations/pnola/overlay/tests/desktop-assets.test.mjs
+evidence-tools	Run node --test integrations/pnola/overlay/tests/desktop-assets.test.mjs	2026-10-18T02:49:58.1030037Z [36;1mnode --test integrations/pnola/overlay/tests/desktop-assets.test.mjs[0m
+evidence-tools	Run node --test integrations/pnola/overlay/tests/desktop-assets.test.mjs	2026-10-18T02:49:58.1167623Z shell: /usr/bin/bash -e {0}
+evidence-tools	Run node --test integrations/pnola/overlay/tests/desktop-assets.test.mjs	2026-10-18T02:49:58.1167876Z env:
+evidence-tools	Run node --test integrations/pnola/overlay/tests/desktop-assets.test.mjs	2026-10-18T02:49:58.1168143Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.15/x64
+evidence-tools	Run node --test integrations/pnola/overlay/tests/desktop-assets.test.mjs	2026-10-18T02:49:58.1168583Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib/pkgconfig
+evidence-tools	Run node --test integrations/pnola/overlay/tests/desktop-assets.test.mjs	2026-10-18T02:49:58.1169043Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+evidence-tools	Run node --test integrations/pnola/overlay/tests/desktop-assets.test.mjs	2026-10-18T02:49:58.1169445Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+evidence-tools	Run node --test integrations/pnola/overlay/tests/desktop-assets.test.mjs	2026-10-18T02:49:58.1169859Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+evidence-tools	Run node --test integrations/pnola/overlay/tests/desktop-assets.test.mjs	2026-10-18T02:49:58.1170255Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib
+evidence-tools	Run node --test integrations/pnola/overlay/tests/desktop-assets.test.mjs	2026-10-18T02:49:58.1170582Z ##[endgroup]
+evidence-tools	Run node --test integrations/pnola/overlay/tests/desktop-assets.test.mjs	2026-10-18T02:49:58.1886082Z TAP version 13
+evidence-tools	Run node --test integrations/pnola/overlay/tests/desktop-assets.test.mjs	2026-10-18T02:49:58.2424675Z # Subtest: speaker staging selects the exact native profile lock and rejects identity mismatches
+evidence-tools	Run node --test integrations/pnola/overlay/tests/desktop-assets.test.mjs	2026-10-18T02:49:58.2436618Z ok 1 - speaker staging selects the exact native profile lock and rejects identity mismatches
+evidence-tools	Run node --test integrations/pnola/overlay/tests/desktop-assets.test.mjs	2026-10-18T02:49:58.2437153Z   ---
+evidence-tools	Run node --test integrations/pnola/overlay/tests/desktop-assets.test.mjs	2026-10-18T02:49:58.2437381Z   duration_ms: 11.860361
+evidence-tools	Run node --test integrations/pnola/overlay/tests/desktop-assets.test.mjs	2026-10-18T02:49:58.2437630Z   type: 'test'
+evidence-tools	Run node --test integrations/pnola/overlay/tests/desktop-assets.test.mjs	2026-10-18T02:49:58.2437835Z   ...
+evidence-tools	Run node --test integrations/pnola/overlay/tests/desktop-assets.test.mjs	2026-10-18T02:49:58.2445453Z # Subtest: speaker tooling follows the actual Cargo checkout and requires an explicit ASR-only selection
+evidence-tools	Run node --test integrations/pnola/overlay/tests/desktop-assets.test.mjs	2026-10-18T02:49:58.2449764Z ok 2 - speaker tooling follows the actual Cargo checkout and requires an explicit ASR-only selection
+evidence-tools	Run node --test integrations/pnola/overlay/tests/desktop-assets.test.mjs	2026-10-18T02:49:58.2452760Z   ---
+evidence-tools	Run node --test integrations/pnola/overlay/tests/desktop-assets.test.mjs	2026-10-18T02:49:58.2453271Z   duration_ms: 2.730348
+evidence-tools	Run node --test integrations/pnola/overlay/tests/desktop-assets.test.mjs	2026-10-18T02:49:58.2454310Z   type: 'test'
+evidence-tools	Run node --test integrations/pnola/overlay/tests/desktop-assets.test.mjs	2026-10-18T02:49:58.2454680Z   ...
+evidence-tools	Run node --test integrations/pnola/overlay/tests/desktop-assets.test.mjs	2026-10-18T02:49:58.2547694Z # Subtest: desktop staging rejects changed model bytes and missing notice files
+evidence-tools	Run node --test integrations/pnola/overlay/tests/desktop-assets.test.mjs	2026-10-18T02:49:58.2551872Z ok 3 - desktop staging rejects changed model bytes and missing notice files
+evidence-tools	Run node --test integrations/pnola/overlay/tests/desktop-assets.test.mjs	2026-10-18T02:49:58.2553085Z   ---
+evidence-tools	Run node --test integrations/pnola/overlay/tests/desktop-assets.test.mjs	2026-10-18T02:49:58.2553973Z   duration_ms: 8.448224
+evidence-tools	Run node --test integrations/pnola/overlay/tests/desktop-assets.test.mjs	2026-10-18T02:49:58.2554485Z   type: 'test'
+evidence-tools	Run node --test integrations/pnola/overlay/tests/desktop-assets.test.mjs	2026-10-18T02:49:58.2554873Z   ...
+evidence-tools	Run node --test integrations/pnola/overlay/tests/desktop-assets.test.mjs	2026-10-18T02:49:58.2557385Z # Subtest: speaker bundle declares the actual native macOS floor and preserves base resources
+evidence-tools	Run node --test integrations/pnola/overlay/tests/desktop-assets.test.mjs	2026-10-18T02:49:58.2559546Z ok 4 - speaker bundle declares the actual native macOS floor and preserves base resources
+evidence-tools	Run node --test integrations/pnola/overlay/tests/desktop-assets.test.mjs	2026-10-18T02:49:58.2560559Z   ---
+evidence-tools	Run node --test integrations/pnola/overlay/tests/desktop-assets.test.mjs	2026-10-18T02:49:58.2560803Z   duration_ms: 1.551806
+evidence-tools	Run node --test integrations/pnola/overlay/tests/desktop-assets.test.mjs	2026-10-18T02:49:58.2561087Z   type: 'test'
+evidence-tools	Run node --test integrations/pnola/overlay/tests/desktop-assets.test.mjs	2026-10-18T02:49:58.2561485Z   ...
+evidence-tools	Run node --test integrations/pnola/overlay/tests/desktop-assets.test.mjs	2026-10-18T02:49:58.3935648Z # Subtest: desktop preparation uses explicit artifacts in an isolated checkout and preserves staged assets on invalid input
+evidence-tools	Run node --test integrations/pnola/overlay/tests/desktop-assets.test.mjs	2026-10-18T02:49:58.3937933Z ok 5 - desktop preparation uses explicit artifacts in an isolated checkout and preserves staged assets on invalid input
+evidence-tools	Run node --test integrations/pnola/overlay/tests/desktop-assets.test.mjs	2026-10-18T02:49:58.3939019Z   ---
+evidence-tools	Run node --test integrations/pnola/overlay/tests/desktop-assets.test.mjs	2026-10-18T02:49:58.3944502Z   duration_ms: 138.695548
+evidence-tools	Run node --test integrations/pnola/overlay/tests/desktop-assets.test.mjs	2026-10-18T02:49:58.3945140Z   type: 'test'
+evidence-tools	Run node --test integrations/pnola/overlay/tests/desktop-assets.test.mjs	2026-10-18T02:49:58.3945677Z   ...
+evidence-tools	Run node --test integrations/pnola/overlay/tests/desktop-assets.test.mjs	2026-10-18T02:49:58.4031798Z 1..5
+evidence-tools	Run node --test integrations/pnola/overlay/tests/desktop-assets.test.mjs	2026-10-18T02:49:58.4032458Z # tests 5
+evidence-tools	Run node --test integrations/pnola/overlay/tests/desktop-assets.test.mjs	2026-10-18T02:49:58.4032759Z # suites 0
+evidence-tools	Run node --test integrations/pnola/overlay/tests/desktop-assets.test.mjs	2026-10-18T02:49:58.4033225Z # pass 5
+evidence-tools	Run node --test integrations/pnola/overlay/tests/desktop-assets.test.mjs	2026-10-18T02:49:58.4033863Z # fail 0
+evidence-tools	Run node --test integrations/pnola/overlay/tests/desktop-assets.test.mjs	2026-10-18T02:49:58.4034719Z # cancelled 0
+evidence-tools	Run node --test integrations/pnola/overlay/tests/desktop-assets.test.mjs	2026-10-18T02:49:58.4035265Z # skipped 0
+evidence-tools	Run node --test integrations/pnola/overlay/tests/desktop-assets.test.mjs	2026-10-18T02:49:58.4035868Z # todo 0
+evidence-tools	Run node --test integrations/pnola/overlay/tests/desktop-assets.test.mjs	2026-10-18T02:49:58.4036511Z # duration_ms 238.567543
+evidence-tools	Post Run actions/setup-node@v4	﻿2026-10-18T02:49:58.4162661Z Post job cleanup.
+evidence-tools	Post Run actions/setup-node@v4	2026-10-18T02:49:58.5375386Z (node:4741) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+evidence-tools	Post Run actions/setup-node@v4	2026-10-18T02:49:58.5377172Z (Use `node --trace-deprecation ...` to show where the warning was created)
+evidence-tools	Post Run actions/setup-python@v5	﻿2026-10-18T02:49:58.5535483Z Post job cleanup.
+evidence-tools	Post Run actions/setup-python@v5	2026-10-18T02:49:58.6852457Z (node:4749) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+evidence-tools	Post Run actions/setup-python@v5	2026-10-18T02:49:58.6854444Z (Use `node --trace-deprecation ...` to show where the warning was created)
+evidence-tools	Post Run actions/checkout@v4	﻿2026-10-18T02:49:58.7073970Z Post job cleanup.
+evidence-tools	Post Run actions/checkout@v4	2026-10-18T02:49:58.7982693Z [command]/usr/bin/git version
+evidence-tools	Post Run actions/checkout@v4	2026-10-18T02:49:58.8029101Z git version 2.55.0
+evidence-tools	Post Run actions/checkout@v4	2026-10-18T02:49:58.8074016Z Temporarily overriding HOME='/home/runner/work/_temp/139bb9d8-40f5-40db-9277-7f93acaf03c0' before making global git config changes
+evidence-tools	Post Run actions/checkout@v4	2026-10-18T02:49:58.8075580Z Adding repository directory to the temporary git global config as a safe directory
+evidence-tools	Post Run actions/checkout@v4	2026-10-18T02:49:58.8079939Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/gen2/gen2
+evidence-tools	Post Run actions/checkout@v4	2026-10-18T02:49:58.8121545Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+evidence-tools	Post Run actions/checkout@v4	2026-10-18T02:49:58.8155915Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+evidence-tools	Post Run actions/checkout@v4	2026-10-18T02:49:58.8443843Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+evidence-tools	Post Run actions/checkout@v4	2026-10-18T02:49:58.8471961Z http.https://github.com/.extraheader
+evidence-tools	Post Run actions/checkout@v4	2026-10-18T02:49:58.8484725Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+evidence-tools	Post Run actions/checkout@v4	2026-10-18T02:49:58.8525443Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+evidence-tools	Post Run actions/checkout@v4	2026-10-18T02:49:58.8832365Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+evidence-tools	Post Run actions/checkout@v4	2026-10-18T02:49:58.8872717Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+evidence-tools	Complete job	﻿2026-10-18T02:49:58.9303345Z Cleaning up orphan processes
+evidence-tools	Complete job	2026-10-18T02:49:58.9720140Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-node@v4, actions/setup-python@v5. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

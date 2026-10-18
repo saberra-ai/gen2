@@ -56,15 +56,33 @@ compiles the exact new insertion blocks against the installed Windows headers
 and Kernel32 using the installed clang-cl and a child-only MSVC environment.
 It runs a short activity loop with a 40 ms deadline, verifies the actual current-thread ID and
 successful monotonic kernel/user counters, and preserves possible zero deltas.
-It supplies no fake API definition. The existing featureless Windows CI job now
-runs this control once. At this checkpoint that Windows invocation is pending;
-a skipped Mac test does not establish Windows execution. It is also separate
-from actual GGML graph parity and observer-overhead controls.
+It supplies no fake API definition. The featureless Windows CI job runs this
+control once. The actual invocation now passes at source
+`8db9c0e5100de91a8e18b431e72359d586ed16bd` in
+[run 39091355966](https://github.com/saberra-ai/gen2/actions/runs/39091355966).
+The [retained raw job log](../../benches/results/nemotron-diarization/windows-x86_64/2026-10-17-graph-cpu-api-ci/windows-api-job.log)
+records one executed test, thread ID8648, kernel312500/user0 in 100 ns units,
+and zero errors/error bits/first error. The genuine zero user delta is retained;
+it supplies no resource-share or timer-resolution interpretation. Actual GGML
+graph parity and observer-overhead controls remain separate and unexecuted.
 
 The complete model-free suite passes locally: 648 tests in 47.815 seconds,
 with eight Windows-only skips. This includes seven passing focused prototype
 tests; the additional real-Windows API control is one of the skips. No native
 GGML or model execution is represented by this result.
+
+All thirteen feature CI jobs pass in that same run. The Linux evidence-tools
+job records648 tests in76.710 seconds with18 platform-dependent skips; the
+separate Windows job above executes the API control rather than skipping it.
+The [six-payload receipt and manifest](../../benches/results/nemotron-diarization/windows-x86_64/2026-10-17-graph-cpu-api-ci/collection.json)
+retain terminal run metadata, both complete job logs, the local test log and
+the stdlib-only collector. Collection verifies the exact thirteen job names,
+statuses, source commit, selected job IDs and single successful API step. It
+checks five source files against the CI commit before and after reading logs,
+and parses the raw row without executing project imports. Review caught and
+fixed an initially unbound evidence-tools job ID and transitive parser imports
+before collection. An early log request was refused while CI was active;
+the subsequent terminal log requests were sequential, with no CI rerun.
 
 Before any model execution, the next stage must freeze a separate diagnostic
 runtime identity, complete source/compiler/import bindings and actual Windows

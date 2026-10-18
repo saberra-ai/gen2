@@ -22,8 +22,10 @@ Windows real-time results, or close N4/N5 release gates.
 The distinct [graph-only CPU observer prototype](../research/nemotron-windows-graph-cpu-observer.md)
 preserves the batched wall observer and removes detailed cycle instrumentation.
 Its local model-free suite passes 648 tests with eight Windows-only skips.
-The real Windows API control is wired into feature CI and awaits execution;
-actual graph parity, timing bounds and all production/release gates remain open.
+The real Windows API control now executes successfully at `8db9c0e5`, with a
+genuine zero user CPU delta and zero API errors. All thirteen feature CI jobs
+pass in run39091355966. Actual graph parity, timing bounds and all
+production/release gates remain open.
 
 The separate [batched matrix observer control](../research/nemotron-matrix-batch-results.md)
 now passes all twelve fresh native Mac graph processes, 144 byte-exact vectors

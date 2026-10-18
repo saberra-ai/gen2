@@ -74,6 +74,8 @@ A distinct [graph-only CPU observer prototype](nemotron-windows-graph-cpu-observ
 now removes the prior per-region cycle instrumentation while preserving the
 batched wall observer. Its source/adapter/parser controls pass in the local
 648-test model-free suite (eight Windows-only skips). The real Windows API
-control is wired into feature CI and awaits execution; actual GGML parity,
-observer timing bounds and production performance remain unqualified. This
+control now executes successfully at `8db9c0e5`, and all thirteen feature CI
+jobs pass in run39091355966. The raw row preserves a zero user CPU delta and
+zero API errors. Actual GGML parity, observer timing bounds and production
+performance remain unqualified. This
 does not select an optimization or close the Windows real-time gate.

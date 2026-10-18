@@ -1,0 +1,62 @@
+{
+  "source_commit": "8db9c0e5100de91a8e18b431e72359d586ed16bd",
+  "run_id": 39091355966,
+  "url": "https://github.com/saberra-ai/gen2/actions/runs/39091355966",
+  "source_files": {
+    ".github/workflows/diarization.yml": {
+      "bytes": 3926,
+      "sha256": "1ad5d30be6c7a1da8576980e7978eba52902c86fc765321e8fc8873211d86cc4"
+    },
+    "tools/nemotron-diarization/ggml_graph_cpu_profile.py": {
+      "bytes": 3785,
+      "sha256": "63cb8c6ebfebc47fe8118a31bb70d2c00651a8ef91233696ba86e715600668a1"
+    },
+    "tools/nemotron-diarization/ggml_graph_cpu_profile_source.py": {
+      "bytes": 3556,
+      "sha256": "1b8827354c42052c2fdb065d215eab815dcba0ef6447777a2f78061786939d62"
+    },
+    "tools/nemotron-diarization/test_ggml_graph_cpu_profile.py": {
+      "bytes": 8353,
+      "sha256": "25861d64137b3701b1f17104ff272899d5699554f80e0ff58936534b5ef1c9ac"
+    },
+    "tools/nemotron-diarization/test_ggml_graph_cpu_windows.py": {
+      "bytes": 3612,
+      "sha256": "ade3432089297feaf8641d899905d23a95077c6ceef33a0e33ecb4bc16661c67"
+    }
+  },
+  "successful_jobs": 13,
+  "api_job_id": 117568618848,
+  "actual_api_row": "[DEBUG-graph-cpu-v1] graph pool=0000000000000001 generation=1 thread=0 tid=8648 kernel_100ns=312500 user_100ns=0 errors=0 error_bits=0 first_error=0",
+  "actual_api_values": {
+    "tid": 8648,
+    "kernel_100ns": 312500,
+    "user_100ns": 0,
+    "errors": 0,
+    "error_bits": 0,
+    "first_error": 0
+  },
+  "inputs": {
+    "run.json": {
+      "bytes": 33353,
+      "sha256": "f528dd5c661eb43df6298128215688f7c652455647108c470ff89c673c8ed041"
+    },
+    "windows-api-job.log": {
+      "bytes": 413723,
+      "sha256": "98f3d7882c37f449e873850ebd6ccd1e8c5457312e0b0b3bd2580d793ece1716"
+    },
+    "evidence-tools-job.log": {
+      "bytes": 50363,
+      "sha256": "7c98ba1ff3516a470fd4da8092ac66a9d4e49383f5d81666195e393606436aac"
+    },
+    "local-model-free.log": {
+      "bytes": 983,
+      "sha256": "e69b5bc355621f5191f16a751ffa5c9eb1032b4576a111b2d50cb189cebf7656"
+    },
+    "collector.py": {
+      "bytes": 7076,
+      "sha256": "b106c03475f813d47c05aa08861195123a612a1c2c1c669aa1f76d62eb2bb5d6"
+    }
+  },
+  "limits": "Actual Windows API adapter and model-free feature CI only. No GGML graph, native/model parity, observer timing, performance, package or release qualification.",
+  "acquisition_note": "An earlier gh log request while the run was active was refused; its empty placeholder is excluded. These terminal log requests are sequential."
+}
