@@ -100,3 +100,9 @@ replay. All 3,049 bindings match, the outer group is gone, and every command
 starts above the original 8 GiB floor. The `ce65591d` feature CI is also 13/13
 successful. This closes source composition only; native execution, registration,
 artifact replay/return and all unmet release requirements remain open.
+
+The registration-only context `71a27e26` adds a one-message push job while
+guarding native compute for explicit manual dispatch. Native tools, inference
+and observer code remain unchanged. The source receiver now pins the updated
+protocol; actual registration/source checks and artifact return remain pending.
+Registration does not execute the SDK/model diagnostic or qualify a release.

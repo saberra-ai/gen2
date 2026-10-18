@@ -1,9 +1,14 @@
 # Graph CPU source-only admission
 
-The [native diagnostic preparation](nemotron-windows-graph-cpu-profile.md) is
-committed at `ce65591dffd22e387416f0950a88f607b1761d44`. This separate check
-prepares its eventual artifact receiver by independently reconstructing its
-source composition. The old receiver is bound to different run IDs, protocol
+The [native diagnostic preparation](nemotron-windows-graph-cpu-profile.md) was
+originally committed at `ce65591dffd22e387416f0950a88f607b1761d44`. The registration-only
+context is now `71a27e26a6285adf393f4b7d5862b21a5302efc4`: only the native workflow
+and explanatory document descriptors change, with all native tools, observer
+code and inference fields unchanged. The receiver pins the new native protocol
+before its next execution. The earlier source proof remains a historical result
+for the preceding context. This separate check prepares its eventual artifact
+receiver by independently reconstructing its source composition. The old
+receiver is bound to different run IDs, protocol
 and per-region cycle fields; it cannot admit this observer unchanged.
 
 The new controller runs only on a fresh Linux CI receiver with the original
@@ -36,8 +41,9 @@ Windows-only skips). Existing actual nested-child ownership/timeout/cancellation
 controls are included. These checks do not establish source materialization;
 the Linux stage remains unexecuted at this checkpoint.
 
-At preregistration the source-only workflow has not run. This check neither
-dispatches the manual Windows native diagnostic nor downloads its future
+At this updated preregistration checkpoint the source-only workflow has not
+run against the registration context. This check neither dispatches the manual
+Windows native diagnostic nor downloads its future
 artifact. A separate frozen artifact identity, extraction/semantic replay and
 bounded return still need implementation. Full-native artifact acquisition
 retains its 8 GiB floor and the separately bounded local return retains 4 GiB.

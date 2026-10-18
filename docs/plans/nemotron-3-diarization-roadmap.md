@@ -48,6 +48,13 @@ The `ce65591d` preparation also passes all thirteen feature CI jobs. The native
 graph/model diagnostic remains undispatched; its registration, artifact replay
 and bounded return still need qualification. N4/N5 and main remain open.
 
+The native workflow now has a push-only registration job and a separate
+manual-only compute guard in context `71a27e26`. All native tools and inference
+fields remain unchanged; only workflow/document protocol descriptors change.
+The source-only receiver is rebound to that exact context before publication.
+Actual registration, the matching source check and the artifact-return route
+remain pending; no native diagnostic or model is dispatched by registration.
+
 The separate [batched matrix observer control](../research/nemotron-matrix-batch-results.md)
 now passes all twelve fresh native Mac graph processes, 144 byte-exact vectors
 against the earlier observer, and complete dispatch/fusion coverage. Only
