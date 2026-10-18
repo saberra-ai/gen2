@@ -1,0 +1,100 @@
+{
+  "schema_version": 1,
+  "native_protocol": {
+    "bytes": 674377,
+    "sha256": "581a25fee8e4cf5191bc9b5d22884cc9429b4d6e8ceada46e954a531f10484fa"
+  },
+  "native_tools": 149,
+  "native_repository_references": 2889,
+  "linux_full_native_start_floor_bytes": 8589934592,
+  "local_bounded_result_start_floor_bytes": 4294967296,
+  "native_zip_cap_bytes": 134217728,
+  "native_expansion_cap_bytes": 1073741824,
+  "result_bundle_cap_bytes": 134217728,
+  "files": {
+    ".github/workflows/diarization-graph-cpu-source.yml": {
+      "bytes": 2313,
+      "sha256": "8b370cecd131e7fe2ec053b2995f3e3e8059e06094783ec9fd45bed08a54848e"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-thread-cpu-admission-preparation/collection.json": {
+      "bytes": 3837,
+      "sha256": "b293c9b4dec3a1ed503dc0ae48c7859a11077dbe6b07e5540f0b6868f62ebfd3"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-thread-cpu-admission-preparation/prepared/admit-windows-thread-cpu-profile-delivery-v1.py": {
+      "bytes": 6720,
+      "sha256": "2e66fa2eeb099214044456d4dbf367306b9f6f91934e65220fb517f699b0ede3"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-thread-cpu-admission-preparation/prepared/collect-windows-thread-cpu-profile-v1.py": {
+      "bytes": 30461,
+      "sha256": "60f38bc5cfd875985de70c56b4e521c666532fc63787ec5ba9412120b4e26906"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-thread-cpu-admission-preparation/prepared/replay-windows-thread-cpu-profile-supervision-v1.py": {
+      "bytes": 6156,
+      "sha256": "7e4f2aaf3c00b547314374c6018f290579ad1ea2b860a6708412b11379d9df66"
+    },
+    "docs/research/nemotron-graph-cpu-receiver-preparation.md": {
+      "bytes": 4628,
+      "sha256": "6be5858931ab55eeeaf3efc9d3f97edbbcec3bc4dbe537a8746bb6a172cbfb48"
+    },
+    "docs/research/nemotron-graph-cpu-source-admission.md": {
+      "bytes": 3428,
+      "sha256": "31ba92b3c770793aad218087552462169f74e98013f11dcf2c426bf0e70cfadd"
+    },
+    "tools/nemotron-diarization/freeze_graph_cpu_receiver_sources.py": {
+      "bytes": 3649,
+      "sha256": "082c7bae1a37910dd7f800a739dfb4839be30b2e51860f2c859d0911db59eb50"
+    },
+    "tools/nemotron-diarization/freeze_graph_cpu_source_admission.py": {
+      "bytes": 3102,
+      "sha256": "c78325b79b10073656cf461fe29753a1da0144536021845899350f93a04a0e60"
+    },
+    "tools/nemotron-diarization/graph-cpu-source-admission.protocol.json": {
+      "bytes": 2603,
+      "sha256": "5c662cdd3cea2bbce4013d690ec3cee076cadf4ee2559e2a1ec78b456466bf7d"
+    },
+    "tools/nemotron-diarization/graph_cpu_receiver_sources.py": {
+      "bytes": 15061,
+      "sha256": "000300ed5511121b48e2ca43dbdd5fda7bcf4c426cafb680294e578bfd1d3967"
+    },
+    "tools/nemotron-diarization/graph_cpu_source_admission.py": {
+      "bytes": 12718,
+      "sha256": "3ca35824ae88bb1b9b74182a276f7b7e43846de6e8921a53b754c07c632c5ed7"
+    },
+    "tools/nemotron-diarization/remote_q8_apack_replay.py": {
+      "bytes": 22591,
+      "sha256": "6b7f4c6d3a9a672ad0a89c790fa0d51608adad4c3667395c2da1329c68e48b08"
+    },
+    "tools/nemotron-diarization/remote_thread_cpu_replay.py": {
+      "bytes": 20063,
+      "sha256": "3b58c3c8c320c6bacf45b2e0b7a9649da9b382ffed6b5af890a6795408b1a14c"
+    },
+    "tools/nemotron-diarization/test_graph_cpu_receiver_sources.py": {
+      "bytes": 13680,
+      "sha256": "38f1e91ca40b60b510157a4472a33353a93a38885608c36a61c682a8b5983731"
+    },
+    "tools/nemotron-diarization/test_graph_cpu_source_admission.py": {
+      "bytes": 2625,
+      "sha256": "972895b4a426c775fec7844cd54cc3acd306b88f77f9109ec6333cb8512c3625"
+    },
+    "tools/nemotron-diarization/test_remote_q8_apack_replay.py": {
+      "bytes": 17633,
+      "sha256": "76721c5809e5f25acbe2a90da7ff19f9892d241c49815da7480028ec4bae9eb7"
+    },
+    "tools/nemotron-diarization/test_remote_thread_cpu_replay.py": {
+      "bytes": 13638,
+      "sha256": "994fcbd8f5b1601eeda48cddc10f861cdea396bab08d0a059c68eb328d3a3e7f"
+    }
+  },
+  "native_identity": null,
+  "artifact_consumed": false,
+  "receivers_invoked": false,
+  "limits": [
+    "Source preparation only. No native dispatch, download, SDK/model execution or saved-artifact replay.",
+    "Actual full native source/run/job/API/archive and feature CI identities must be frozen before consumption.",
+    "The original Windows command supervision, 3425 source files, 97 compiler commands, private PE/66 SDK files and all three retained import libraries remain mandatory.",
+    "All twelve graph processes/144 vectors precede four complete 6000x8 histories, 58 pushes and exact turns. Replay raw graph-only CPU and wall traces, compact profiles and both original 10 percent observer bounds.",
+    "Graph CPU values retain 100ns units and genuine zero values. No per-region CPU attribution, cycle conversion, exact descheduled-time or pure-arithmetic claim.",
+    "Owned-process remote acquisition, original floors, actual API/archive binding, bounded result-only return, independent local replay and review remain separately required before native execution.",
+    "All original quality, physical desktop, human-review, fresh-machine, platform and signing gates remain open. No main or release promotion."
+  ]
+}

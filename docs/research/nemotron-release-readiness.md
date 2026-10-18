@@ -112,3 +112,11 @@ reports success; its updated artifact still needs separate independent replay.
 The native diagnostic remains undispatched and its artifact-return route
 unqualified. Registration does not execute the SDK/model diagnostic or qualify
 a release.
+
+The [graph-only saved-data receiver preparation](nemotron-graph-cpu-receiver-preparation.md)
+now supplies the matching source-derived admission, supervision and semantic
+replay programs. Eight focused controls pass, including actual graph-only CPU
+aggregation and closed publication checks. Native identities remain unset and
+no artifact is consumed. Owned acquisition, bounded result return and
+independent local replay remain required before native dispatch; the unmet
+requirements in the table remain unchanged.

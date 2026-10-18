@@ -26,6 +26,9 @@ also reports success at the same source. Its artifact still needs a separate
 capture and independent replay; the retained source-composition proof remains
 the earlier context documented in [source results](nemotron-graph-cpu-source-results.md).
 Feature run39094365701 was still in progress when this receipt was collected.
+Its [terminal API status](https://github.com/saberra-ai/gen2/actions/runs/39094365701)
+subsequently reports success for all13 jobs at the same source. This later
+observation is separate from the registration-only receipt.
 
 Registration closes the workflow-discovery prerequisite only. The native
 diagnostic still needs its separately qualified artifact replay and bounded

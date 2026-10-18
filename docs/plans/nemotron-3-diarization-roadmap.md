@@ -60,6 +60,14 @@ reports success; its new-context artifact replay remains separate. The native
 diagnostic is still undispatched, and its artifact replay/return route remains
 unqualified. No original release gate closes.
 
+The [graph-only saved-data receiver preparation](../research/nemotron-graph-cpu-receiver-preparation.md)
+now derives the matching admission, supervision and semantic replay programs
+from fixed retained receiver sources. Eight focused controls pass, preserving
+the original source/compiler/graph/output gates and adding a closed publication
+namespace. Actual native identities remain unset, no artifact is consumed, and
+the owned acquisition/bounded return/local replay route still needs completion
+before dispatch. No production, N4/N5 or main gate closes.
+
 The separate [batched matrix observer control](../research/nemotron-matrix-batch-results.md)
 now passes all twelve fresh native Mac graph processes, 144 byte-exact vectors
 against the earlier observer, and complete dispatch/fusion coverage. Only
