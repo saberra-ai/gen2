@@ -3,10 +3,14 @@
 Status: N0–N3 implemented and verified on macOS arm64 CPU; N4/N5 remain open. Development receipts do not establish a supported desktop release.
 
 The [bounded CPU full-corpus requalification](../research/nemotron-bounded-corpus.md)
-now passes static admission with the original eight slices, cached FP32 outputs,
-scoring environment and quality gates. The fresh 16-process native/public run is
-in progress; no completed corpus result is claimed yet. Human word annotation
-and independent review remain documented as deferred at the user's request.
+now completes all eight fresh native/public pairs with the original cached FP32
+outputs, scoring environment and quality gates. Every pair is byte-exact and
+passes the Q8 degradation bound. Six slices pass every quality gate; AMI
+production DER remains 33.214572%/43.840741%, above the original 20% target.
+All 19 commands and 17 strict private-image audits pass. The independent saved
+output replay makes no additional model calls. Human word annotation and
+independent review remain documented as deferred at the user's request; N4/N5
+and main promotion remain open.
 
 The separate [batched matrix observer control](../research/nemotron-matrix-batch-results.md)
 now passes all twelve fresh native Mac graph processes, 144 byte-exact vectors

@@ -42,10 +42,13 @@ The [complete corpus results](../../benches/results/nemotron-diarization/apple-m
 identify the earlier valid-Mel runtime. They do not by
 itself qualify the subsequent `gen2-valid-mel-pool-cpu-v2` profile across all
 eight slices. The [separately frozen bounded-profile corpus check](nemotron-bounded-corpus.md)
-now passes static input/package/oracle admission, with no model calls during
-that admission. Its full eight-pair run is in progress; no completed result is
-claimed here. It retains the original references, FP32 arrays and failed
-accuracy gate rather than inheriting a result across runtime identities.
+now completes static input/package/oracle admission and all eight fresh CPU
+native/public pairs. The independently replayed outputs are byte-exact and stay
+within the original Q8 degradation bound. Six slices pass every quality gate;
+both AMI channels still fail at production DER 33.214572%/43.840741%. The run
+retains the original references, FP32 arrays and failed accuracy gate. This
+closes the bounded-profile corpus identity gap for these CPU slices and leaves
+every unmet requirement in the table above open.
 
 The [quality investigation](nemotron-quality-next-diagnostics.md) already
 contains original-NeMo, frontend, teacher-forced tail, prefix, larger-context

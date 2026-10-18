@@ -76,7 +76,7 @@ M1-full-corpus, unseen-data, human-word, physical GUI/microphone, fresh-machine,
 public signing or complete release claim. Human timing review remains deferred
 at the user's request. Main promotion still requires every original gate.
 
-## Execution checkpoint
+## Completed admission and full execution
 
 Static admission completed under committed source
 `d1954e86f936372cc2d481fb9da6da4c7bbf6ebe`. The independently checked
@@ -85,18 +85,54 @@ contains no child commands, neural calls, scores or image audits. The physical
 256 MiB reserve was allocated and released. Input admission passes; completion,
 quality and release flags remain false.
 
-The separate full controller is running from the same preregistered source and
-protocol. Runtime denied-read/write/network controls and the model-denied version
-probe have completed; the first native slice has started. No completed corpus or
-quality result is claimed at this checkpoint. The original slices range from
-114.944 to 515.904 seconds, so this is a longer run than the earlier short smoke
-checks. The controller retains its original 1,200-second deadline for each
-command and stops on runtime, identity or resource failure without automatic
-retry.
+The separate full controller completed with exit zero from the same
+preregistered source and protocol. All 19 commands succeeded: two actual sandbox
+denial controls, the model-denied version probe, and 16 fresh native/public
+model processes. All 17 strict image audits identify exactly 92 private
+libraries. All 177 staged input entries and source/preparation bindings remain
+unchanged. The original 1,200-second command deadline, 5/1 GiB storage floors and
+256 MiB physical reserve were preserved. The reserve was released after 648
+storage checks; minimum observed free space was 5,433,868,288 bytes.
 
 The first result-collection draft was reviewed but never executed. Review found
 incomplete command binding and a parse-before-inventory race. The retained V2
 collector corrects both: it compares complete commands, environments, policy
 bytes and denied-operation controls, captures identities before parsing, and
 rechecks sources and copied evidence. Both independent reviews cleared V2
-before its admission collection. Full-result collection remains pending.
+before its admission collection. Its subsequent full-result collection also
+completed with exit zero, recomputing all eight scores from the saved raw
+probabilities, original cached FP32 arrays and original references, without new
+helper or model calls.
+
+The [131-member full receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-bounded-corpus/collection.json)
+retains raw probabilities, native/public metadata, every command log, both
+policies and the independent collector and
+[replay qualification](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-bounded-corpus/collection-qualification.json).
+It also preserves 44 control-interpreter bytecode cache files as inert observed
+output; these were written under the disposable output home, not protected
+inputs. They are not model artifacts or executed by the collector.
+
+Every bounded native/public pair is byte-exact, and every Q8 degradation is
+within the original two absolute DER points. Six slices pass every quality
+gate. Both AMI channels still fail the original 20% absolute gate:
+
+| Original slice | Shared Q8 DER | Production DER | All quality gates |
+| --- | ---: | ---: | --- |
+| vox-bjruf | 9.429807% | 11.070824% | Pass |
+| vox-bxcfq | 0.729963% | 1.911809% | Pass |
+| vox-aepyx | 5.361117% | 11.437049% | Pass |
+| vox-cqfmj | 8.330265% | 10.852356% | Pass |
+| vox-auzru | 5.494709% | 6.261302% | Pass |
+| ami-ES2004a-Mix-Headset | 41.471453% | 33.214572% | **Fail** |
+| ami-ES2004a-Array1-01 | 49.959918% | 43.840741% | **Fail** |
+| icsi-Bmr005-interaction | 9.992051% | 19.336248% | Pass |
+
+Observed `/usr/bin/time -l` real-time factors for all 16 model commands range
+from 0.150943 to 0.175445 on this physical M4 Pro. This supplies a same-host
+bounded-profile full-corpus runtime result; it is not a comparative speedup or a
+Windows, other-machine, complete-app or release performance result.
+
+The runtime-identity coverage gap is closed for these eight CPU slices. The
+absolute accuracy requirement remains failed, and all human, unseen-data,
+physical app, fresh-machine, other-platform and public release gates remain
+open. Main remains unpromoted.

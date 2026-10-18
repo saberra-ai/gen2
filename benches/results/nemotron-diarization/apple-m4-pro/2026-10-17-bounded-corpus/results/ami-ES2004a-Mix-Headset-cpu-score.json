@@ -1,0 +1,102 @@
+{
+  "slice": "ami-ES2004a-Mix-Headset",
+  "backend": "cpu",
+  "device": null,
+  "scope": "local tuning-heldout integration and quality, not guaranteed checkpoint-unseen",
+  "wrapper_parity": {
+    "passed": true,
+    "scope": "wrapper/reference correctness at the recorded duration; not held-out quality or full release qualification",
+    "runtime_profile": "gen2-valid-mel-pool-cpu-v2",
+    "frame_contract": "v3-streaming-valid-mel-v1",
+    "audio_duration_seconds": 120.0,
+    "backend": "cpu",
+    "device": null,
+    "native_frame_count": 12000,
+    "retained_first_frame": 0,
+    "retained_rows": 12000,
+    "turns": 39,
+    "maximum_turn_error_seconds": 0.0,
+    "turn_tolerance_seconds": 1e-06,
+    "raw_native_and_gen2_probabilities_finite_and_bounded": true,
+    "retained_probabilities_match": true,
+    "maximum_probability_error": 0.0,
+    "probability_tolerance": 1e-06,
+    "gen2_rtf": 0.15177985833333332,
+    "native_rtf": 0.1514162,
+    "runtime_version": "nemo-speech-asr 0.2.0+gen2-valid-mel-pool-cpu-v2",
+    "probabilities_bit_exact": true
+  },
+  "fp32": {
+    "der": 0.414447315,
+    "missed_speaker_seconds": 45.67,
+    "false_alarm_speaker_seconds": 0.02,
+    "confusion_speaker_seconds": 0.84,
+    "reference_speaker_seconds": 112.27,
+    "reference_speakers": 4,
+    "hypothesis_speakers": 4,
+    "frame_seconds": 0.01,
+    "collar_seconds": 0,
+    "overlap_included": true,
+    "scoring_duration_seconds": 120.0
+  },
+  "q8_shared_threshold": {
+    "der": 0.414714527,
+    "missed_speaker_seconds": 45.71,
+    "false_alarm_speaker_seconds": 0.02,
+    "confusion_speaker_seconds": 0.83,
+    "reference_speaker_seconds": 112.27,
+    "reference_speakers": 4,
+    "hypothesis_speakers": 4,
+    "frame_seconds": 0.01,
+    "collar_seconds": 0,
+    "overlap_included": true,
+    "scoring_duration_seconds": 120.0
+  },
+  "q8_production_default": {
+    "der": 0.33214572,
+    "missed_speaker_seconds": 34.76,
+    "false_alarm_speaker_seconds": 1.2,
+    "confusion_speaker_seconds": 1.33,
+    "reference_speaker_seconds": 112.27,
+    "reference_speakers": 4,
+    "hypothesis_speakers": 4,
+    "frame_seconds": 0.01,
+    "collar_seconds": 0,
+    "overlap_included": true,
+    "scoring_duration_seconds": 120.0
+  },
+  "q8_minus_fp32_absolute_der": 0.00026721200000001666,
+  "gates": {
+    "wrapper_parity": true,
+    "q8_degradation_at_most_0_02": true,
+    "q8_shared_der_at_most_0_20": false,
+    "q8_production_der_at_most_0_20": false
+  },
+  "postprocessing": "shared probability >0.5, no hysteresis/padding/minimum-duration; production default reported separately",
+  "shape_difference": {
+    "native": [
+      12000,
+      8
+    ],
+    "fp32": [
+      12000,
+      8
+    ],
+    "native_extra_terminal_frame": 0,
+    "frame_seconds": 0.01,
+    "rule": "native and FP32 floor(N/160); every valid row retained; full audio UEM"
+  },
+  "channel_mae_common_frames": 0.0003437778213992715,
+  "channel_max_error_common_frames": 0.05888473987579346,
+  "runtime_version": "nemo-speech-asr 0.2.0+gen2-valid-mel-pool-cpu-v2",
+  "all_slice_gates_passed": false,
+  "input_pcm_f32le_sha256": "224b67a6ea4b758d769fd9e1b94de4b29bd62e14969a685cd1c3cc9adc03f4aa",
+  "oracle_array": {
+    "bytes": 384128,
+    "sha256": "2db1197c259343daf67f6a4497cd3b7d91cfde2214afb2bdea19917d640c3a4d"
+  },
+  "oracle_metadata": {
+    "bytes": 2882,
+    "sha256": "abce7ad36c1c1eb249ace5d6aa01388b43fa8356fb040858496cc9339ded5876"
+  }
+}
