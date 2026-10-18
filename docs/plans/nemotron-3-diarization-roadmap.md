@@ -33,6 +33,13 @@ with a passing 658-test local model-free suite (650 executed, eight Windows-only
 manual-only workflow has not been dispatched. The original graph/model parity,
 timing, production quality/performance and N4/N5 gates remain open.
 
+The [separate graph CPU source-only admission](../research/nemotron-graph-cpu-source-admission.md)
+now prepares a Linux check of all 3,425 materialized files under the original
+8 GiB floor and owned-stage supervision. Its local 661-test suite passes
+(653 executed, eight Windows-only skips). The source workflow and manual native
+diagnostic remain unexecuted; artifact identity, semantic replay and bounded
+return still require separate qualification. No original gate closes.
+
 The separate [batched matrix observer control](../research/nemotron-matrix-batch-results.md)
 now passes all twelve fresh native Mac graph processes, 144 byte-exact vectors
 against the earlier observer, and complete dispatch/fusion coverage. Only

@@ -85,3 +85,10 @@ gives the observer a separate runtime identity and exact patch/source/compiler
 admission. Its 658-test local model-free suite passes (650 executed, eight
 Windows-only skips). The manual-only workflow has not been dispatched; actual graph/model
 parity, both observer bounds and production performance remain unqualified.
+
+The [new source-only receiver preparation](nemotron-graph-cpu-source-admission.md)
+preserves the original 8 GiB Linux admission and outer-owned child supervision
+for the full 3,425-file composition check. Local controls pass in a 661-test
+suite (653 executed, eight Windows-only skips); actual source materialization
+and the later native artifact/return route remain unexecuted. This supplies no
+additional runtime, performance or release qualification.

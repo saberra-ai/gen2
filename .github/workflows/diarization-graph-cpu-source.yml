@@ -1,0 +1,49 @@
+name: Diarization graph CPU source-only admission
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/nemotron3-n0]
+    paths:
+      - .github/workflows/diarization-graph-cpu-source.yml
+      - tools/nemotron-diarization/graph_cpu_source_admission.py
+      - tools/nemotron-diarization/test_graph_cpu_source_admission.py
+      - tools/nemotron-diarization/freeze_graph_cpu_source_admission.py
+      - tools/nemotron-diarization/graph-cpu-source-admission.protocol.json
+permissions:
+  contents: read
+jobs:
+  source:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    env:
+      GIT_LFS_SKIP_SMUDGE: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Existing owned-process and inherited-stage controls
+        run: |
+          python -B -m unittest discover -s tools/nemotron-diarization -p test_remote_q8_apack_replay.py
+          python -B -m unittest discover -s tools/nemotron-diarization -p test_remote_thread_cpu_replay.py
+      - name: Reject wrong identities, storage and output overlap
+        run: python -B -m unittest discover -s tools/nemotron-diarization -p test_graph_cpu_source_admission.py
+      - name: Materialize exact native and GGML sources without compiler or model execution
+        run: python -B tools/nemotron-diarization/graph_cpu_source_admission.py --output "${{ runner.temp }}/graph-cpu-source-admission"
+      - name: Retain successful or failed source-only evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nemotron-graph-cpu-source-admission
+          path: |
+            ${{ runner.temp }}/graph-cpu-source-admission/qualification.json
+            ${{ runner.temp }}/graph-cpu-source-admission/stage.stdout.log
+            ${{ runner.temp }}/graph-cpu-source-admission/stage.stdout.log.process.json
+            ${{ runner.temp }}/graph-cpu-source-admission/stage.stderr.log
+            ${{ runner.temp }}/graph-cpu-source-admission/stage/protocol.json
+            ${{ runner.temp }}/graph-cpu-source-admission/stage/qualification.json
+            ${{ runner.temp }}/graph-cpu-source-admission/stage/evidence/
+          include-hidden-files: true
+          retention-days: 30
