@@ -36,9 +36,17 @@ timing, production quality/performance and N4/N5 gates remain open.
 The [separate graph CPU source-only admission](../research/nemotron-graph-cpu-source-admission.md)
 now prepares a Linux check of all 3,425 materialized files under the original
 8 GiB floor and owned-stage supervision. Its local 661-test suite passes
-(653 executed, eight Windows-only skips). The source workflow and manual native
-diagnostic remain unexecuted; artifact identity, semantic replay and bounded
-return still require separate qualification. No original gate closes.
+(653 executed, eight Windows-only skips). This was the preparation checkpoint;
+the actual source-only result follows below. The manual native diagnostic
+remains undispatched, and its artifact identity, semantic replay and bounded
+return still require separate qualification. No original release gate closes.
+
+The [actual source-only result](../research/nemotron-graph-cpu-source-results.md)
+now independently matches all 3,425 materialized files and 3,049 input bindings,
+with nineteen exact command/ownership records and the original 8 GiB floor.
+The `ce65591d` preparation also passes all thirteen feature CI jobs. The native
+graph/model diagnostic remains undispatched; its registration, artifact replay
+and bounded return still need qualification. N4/N5 and main remain open.
 
 The separate [batched matrix observer control](../research/nemotron-matrix-batch-results.md)
 now passes all twelve fresh native Mac graph processes, 144 byte-exact vectors

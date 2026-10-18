@@ -1,0 +1,328 @@
+source	Set up job	﻿2026-10-18T03:22:59.1718200Z Current runner version: '2.337.0'
+source	Set up job	2026-10-18T03:22:59.1737270Z ##[group]Runner Image Provisioner
+source	Set up job	2026-10-18T03:22:59.1737854Z Hosted Compute Agent
+source	Set up job	2026-10-18T03:22:59.1738203Z Version: 20261012.601
+source	Set up job	2026-10-18T03:22:59.1738679Z Commit: f3dc54e1fb89da6852db922499a0233137369e1d
+source	Set up job	2026-10-18T03:22:59.1739100Z Build Date: 2026-10-12T17:48:21Z
+source	Set up job	2026-10-18T03:22:59.1739519Z Worker ID: {c534a7ec-9ce8-4fed-82ae-74886715c170}
+source	Set up job	2026-10-18T03:22:59.1739966Z Region: southcentralus
+source	Set up job	2026-10-18T03:22:59.1740310Z Cloud: Azure
+source	Set up job	2026-10-18T03:22:59.1740696Z ##[endgroup]
+source	Set up job	2026-10-18T03:22:59.1741513Z ##[group]Operating System
+source	Set up job	2026-10-18T03:22:59.1741857Z Ubuntu
+source	Set up job	2026-10-18T03:22:59.1742216Z 24.04.5
+source	Set up job	2026-10-18T03:22:59.1742524Z LTS
+source	Set up job	2026-10-18T03:22:59.1742919Z ##[endgroup]
+source	Set up job	2026-10-18T03:22:59.1743239Z ##[group]Runner Image
+source	Set up job	2026-10-18T03:22:59.1743575Z Image: ubuntu-24.04
+source	Set up job	2026-10-18T03:22:59.1743959Z Version: 20261012.334.1
+source	Set up job	2026-10-18T03:22:59.1744788Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261012.334/images/ubuntu/Ubuntu2404-Readme.md
+source	Set up job	2026-10-18T03:22:59.1746155Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261012.334
+source	Set up job	2026-10-18T03:22:59.1746694Z ##[endgroup]
+source	Set up job	2026-10-18T03:22:59.1747394Z ##[group]GITHUB_TOKEN Permissions
+source	Set up job	2026-10-18T03:22:59.1748758Z Contents: read
+source	Set up job	2026-10-18T03:22:59.1749158Z Metadata: read
+source	Set up job	2026-10-18T03:22:59.1749493Z ##[endgroup]
+source	Set up job	2026-10-18T03:22:59.1750855Z Secret source: Actions
+source	Set up job	2026-10-18T03:22:59.1751420Z Cache mode: write
+source	Set up job	2026-10-18T03:22:59.1751888Z Prepare workflow directory
+source	Set up job	2026-10-18T03:22:59.2001891Z Prepare all required actions
+source	Set up job	2026-10-18T03:22:59.2034521Z Getting action download info
+source	Set up job	2026-10-18T03:22:59.4244532Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+source	Set up job	2026-10-18T03:22:59.5361460Z Download action repository 'actions/setup-python@v5' (SHA:a26af69be951a213d495a4c3e4e4022e16d87065)
+source	Set up job	2026-10-18T03:22:59.6454733Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+source	Set up job	2026-10-18T03:22:59.8376247Z Complete job name: source
+source	Run actions/checkout@v4	﻿2026-10-18T03:22:59.8843942Z ##[group]Run actions/checkout@v4
+source	Run actions/checkout@v4	2026-10-18T03:22:59.8844549Z with:
+source	Run actions/checkout@v4	2026-10-18T03:22:59.8844822Z   persist-credentials: false
+source	Run actions/checkout@v4	2026-10-18T03:22:59.8845107Z   repository: saberra-ai/gen2
+source	Run actions/checkout@v4	2026-10-18T03:22:59.8847188Z   token: ***
+source	Run actions/checkout@v4	2026-10-18T03:22:59.8847416Z   ssh-strict: true
+source	Run actions/checkout@v4	2026-10-18T03:22:59.8847655Z   ssh-user: git
+source	Run actions/checkout@v4	2026-10-18T03:22:59.8847880Z   clean: true
+source	Run actions/checkout@v4	2026-10-18T03:22:59.8848120Z   sparse-checkout-cone-mode: true
+source	Run actions/checkout@v4	2026-10-18T03:22:59.8848403Z   fetch-depth: 1
+source	Run actions/checkout@v4	2026-10-18T03:22:59.8848638Z   fetch-tags: false
+source	Run actions/checkout@v4	2026-10-18T03:22:59.8848877Z   show-progress: true
+source	Run actions/checkout@v4	2026-10-18T03:22:59.8849113Z   lfs: false
+source	Run actions/checkout@v4	2026-10-18T03:22:59.8849333Z   submodules: false
+source	Run actions/checkout@v4	2026-10-18T03:22:59.8849571Z   set-safe-directory: true
+source	Run actions/checkout@v4	2026-10-18T03:22:59.8849836Z   allow-unsafe-pr-checkout: false
+source	Run actions/checkout@v4	2026-10-18T03:22:59.8850178Z env:
+source	Run actions/checkout@v4	2026-10-18T03:22:59.8850395Z   GIT_LFS_SKIP_SMUDGE: 1
+source	Run actions/checkout@v4	2026-10-18T03:22:59.8850643Z ##[endgroup]
+source	Run actions/checkout@v4	2026-10-18T03:22:59.9496977Z Syncing repository: saberra-ai/gen2
+source	Run actions/checkout@v4	2026-10-18T03:22:59.9498796Z ##[group]Getting Git version info
+source	Run actions/checkout@v4	2026-10-18T03:22:59.9499475Z Working directory is '/home/runner/work/gen2/gen2'
+source	Run actions/checkout@v4	2026-10-18T03:22:59.9500251Z [command]/usr/bin/git version
+source	Run actions/checkout@v4	2026-10-18T03:22:59.9586262Z git version 2.55.0
+source	Run actions/checkout@v4	2026-10-18T03:22:59.9601515Z ##[endgroup]
+source	Run actions/checkout@v4	2026-10-18T03:22:59.9613132Z Temporarily overriding HOME='/home/runner/work/_temp/87b42b17-6b1f-4903-bee3-01964ea60d65' before making global git config changes
+source	Run actions/checkout@v4	2026-10-18T03:22:59.9614330Z Adding repository directory to the temporary git global config as a safe directory
+source	Run actions/checkout@v4	2026-10-18T03:22:59.9617867Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/gen2/gen2
+source	Run actions/checkout@v4	2026-10-18T03:22:59.9667546Z Deleting the contents of '/home/runner/work/gen2/gen2'
+source	Run actions/checkout@v4	2026-10-18T03:22:59.9672785Z ##[group]Initializing the repository
+source	Run actions/checkout@v4	2026-10-18T03:22:59.9675136Z [command]/usr/bin/git init /home/runner/work/gen2/gen2
+source	Run actions/checkout@v4	2026-10-18T03:22:59.9786925Z hint: Using 'master' as the name for the initial branch. This default branch name
+source	Run actions/checkout@v4	2026-10-18T03:22:59.9788388Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+source	Run actions/checkout@v4	2026-10-18T03:22:59.9789279Z hint: to use in all of your new repositories, which will suppress this warning,
+source	Run actions/checkout@v4	2026-10-18T03:22:59.9789815Z hint: call:
+source	Run actions/checkout@v4	2026-10-18T03:22:59.9790223Z hint:
+source	Run actions/checkout@v4	2026-10-18T03:22:59.9790787Z hint: 	git config --global init.defaultBranch <name>
+source	Run actions/checkout@v4	2026-10-18T03:22:59.9791410Z hint:
+source	Run actions/checkout@v4	2026-10-18T03:22:59.9792017Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+source	Run actions/checkout@v4	2026-10-18T03:22:59.9792945Z hint: 'development'. The just-created branch can be renamed via this command:
+source	Run actions/checkout@v4	2026-10-18T03:22:59.9793670Z hint:
+source	Run actions/checkout@v4	2026-10-18T03:22:59.9794244Z hint: 	git branch -m <name>
+source	Run actions/checkout@v4	2026-10-18T03:22:59.9794750Z hint:
+source	Run actions/checkout@v4	2026-10-18T03:22:59.9795366Z hint: Disable this message with "git config set advice.defaultBranchName false"
+source	Run actions/checkout@v4	2026-10-18T03:22:59.9796419Z Initialized empty Git repository in /home/runner/work/gen2/gen2/.git/
+source	Run actions/checkout@v4	2026-10-18T03:22:59.9802595Z [command]/usr/bin/git remote add origin https://github.com/saberra-ai/gen2
+source	Run actions/checkout@v4	2026-10-18T03:22:59.9856374Z ##[endgroup]
+source	Run actions/checkout@v4	2026-10-18T03:22:59.9857118Z ##[group]Disabling automatic garbage collection
+source	Run actions/checkout@v4	2026-10-18T03:22:59.9859218Z [command]/usr/bin/git config --local gc.auto 0
+source	Run actions/checkout@v4	2026-10-18T03:22:59.9891956Z ##[endgroup]
+source	Run actions/checkout@v4	2026-10-18T03:22:59.9892611Z ##[group]Setting up auth
+source	Run actions/checkout@v4	2026-10-18T03:22:59.9897911Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+source	Run actions/checkout@v4	2026-10-18T03:22:59.9930301Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+source	Run actions/checkout@v4	2026-10-18T03:23:00.0228206Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+source	Run actions/checkout@v4	2026-10-18T03:23:00.0257768Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+source	Run actions/checkout@v4	2026-10-18T03:23:00.0435221Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+source	Run actions/checkout@v4	2026-10-18T03:23:00.0466485Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+source	Run actions/checkout@v4	2026-10-18T03:23:00.0651045Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+source	Run actions/checkout@v4	2026-10-18T03:23:00.0687266Z ##[endgroup]
+source	Run actions/checkout@v4	2026-10-18T03:23:00.0687818Z ##[group]Fetching the repository
+source	Run actions/checkout@v4	2026-10-18T03:23:00.0693458Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +16344d808d3d9d00e382b47a6aa711420a2ffe35:refs/remotes/origin/codex/nemotron3-n0
+source	Run actions/checkout@v4	2026-10-18T03:23:09.4803415Z From https://github.com/saberra-ai/gen2
+source	Run actions/checkout@v4	2026-10-18T03:23:09.4805369Z  * [new ref]         16344d808d3d9d00e382b47a6aa711420a2ffe35 -> origin/codex/nemotron3-n0
+source	Run actions/checkout@v4	2026-10-18T03:23:09.4808944Z ##[endgroup]
+source	Run actions/checkout@v4	2026-10-18T03:23:09.4810256Z ##[group]Determining the checkout info
+source	Run actions/checkout@v4	2026-10-18T03:23:09.4811531Z ##[endgroup]
+source	Run actions/checkout@v4	2026-10-18T03:23:09.4813110Z [command]/usr/bin/git sparse-checkout disable
+source	Run actions/checkout@v4	2026-10-18T03:23:09.4864973Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+source	Run actions/checkout@v4	2026-10-18T03:23:09.4896139Z ##[group]Checking out the ref
+source	Run actions/checkout@v4	2026-10-18T03:23:09.4897522Z [command]/usr/bin/git checkout --progress --force -B codex/nemotron3-n0 refs/remotes/origin/codex/nemotron3-n0
+source	Run actions/checkout@v4	2026-10-18T03:23:10.5288544Z Updating files:  40% (11396/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:10.5400336Z Updating files:  41% (11626/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:10.6037436Z Updating files:  42% (11910/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:10.6329065Z Updating files:  43% (12194/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:10.6537087Z Updating files:  44% (12477/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:10.7367118Z Updating files:  45% (12761/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:10.8242992Z Updating files:  46% (13044/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:10.8427916Z Updating files:  47% (13328/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:10.9938399Z Updating files:  48% (13611/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:11.5106021Z Updating files:  49% (13895/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:11.6666680Z Updating files:  49% (14128/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:12.3120641Z Updating files:  50% (14178/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:12.5139035Z Updating files:  51% (14462/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:12.9186533Z Updating files:  51% (14557/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:13.5065516Z Updating files:  52% (14746/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:13.6076070Z Updating files:  52% (15010/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:13.6363851Z Updating files:  53% (15029/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:13.6615128Z Updating files:  54% (15313/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:13.6794765Z Updating files:  55% (15596/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:13.7880824Z Updating files:  56% (15880/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:14.4013687Z Updating files:  57% (16163/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:14.5068529Z Updating files:  58% (16447/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:15.0621684Z Updating files:  58% (16506/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:15.5078993Z Updating files:  59% (16731/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:15.7311924Z Updating files:  59% (16909/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:16.4139297Z Updating files:  60% (17014/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:16.4340379Z Updating files:  61% (17298/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:16.5095669Z Updating files:  62% (17581/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:16.9624829Z Updating files:  62% (17634/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:17.1716845Z Updating files:  63% (17865/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:17.5060180Z Updating files:  64% (18148/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:17.7024783Z Updating files:  64% (18365/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:18.3462609Z Updating files:  65% (18432/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:18.5165944Z Updating files:  66% (18715/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:19.0199469Z Updating files:  66% (18785/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:19.5140899Z Updating files:  67% (18999/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:19.6898619Z Updating files:  67% (19201/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:19.9284206Z Updating files:  68% (19283/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:20.3884594Z Updating files:  69% (19566/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:20.5056425Z Updating files:  70% (19850/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:21.0403421Z Updating files:  70% (19925/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:21.5068749Z Updating files:  71% (20133/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:21.6285143Z Updating files:  71% (20350/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:22.2779171Z Updating files:  72% (20417/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:22.5080654Z Updating files:  73% (20700/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:22.6179728Z Updating files:  73% (20800/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:22.9623487Z Updating files:  74% (20984/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:23.5132044Z Updating files:  75% (21267/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:23.7095179Z Updating files:  75% (21487/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:24.4820930Z Updating files:  76% (21551/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:24.5077710Z Updating files:  77% (21835/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:25.3077492Z Updating files:  77% (21871/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:25.5118311Z Updating files:  78% (22118/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:25.8542366Z Updating files:  78% (22202/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:25.8925449Z Updating files:  79% (22402/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:25.9640057Z Updating files:  80% (22685/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:26.1306037Z Updating files:  81% (22969/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:26.5260014Z Updating files:  82% (23252/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:26.9526827Z Updating files:  82% (23385/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:27.5083319Z Updating files:  83% (23536/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:27.8578221Z Updating files:  83% (23707/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:28.5108581Z Updating files:  84% (23820/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:28.7809837Z Updating files:  84% (24050/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:29.5247805Z Updating files:  85% (24103/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:29.6714784Z Updating files:  85% (24350/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:29.7618020Z Updating files:  86% (24387/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:29.7698422Z Updating files:  87% (24670/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:29.7781313Z Updating files:  88% (24954/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:29.7854374Z Updating files:  89% (25237/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:29.7951047Z Updating files:  90% (25521/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:29.8788910Z Updating files:  91% (25804/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:30.3901365Z Updating files:  92% (26088/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:30.4688799Z Updating files:  93% (26372/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:30.5107377Z Updating files:  94% (26655/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:30.5277232Z Updating files:  94% (26823/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:30.5507668Z Updating files:  95% (26939/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:30.5839797Z Updating files:  96% (27222/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:30.6403311Z Updating files:  97% (27506/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:30.6555120Z Updating files:  98% (27789/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:30.7331883Z Updating files:  99% (28073/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:30.7396901Z Updating files: 100% (28356/28356)
+source	Run actions/checkout@v4	2026-10-18T03:23:30.7397205Z Updating files: 100% (28356/28356), done.
+source	Run actions/checkout@v4	2026-10-18T03:23:30.9617380Z Switched to a new branch 'codex/nemotron3-n0'
+source	Run actions/checkout@v4	2026-10-18T03:23:30.9619042Z branch 'codex/nemotron3-n0' set up to track 'origin/codex/nemotron3-n0'.
+source	Run actions/checkout@v4	2026-10-18T03:23:30.9710397Z ##[endgroup]
+source	Run actions/checkout@v4	2026-10-18T03:23:30.9748377Z [command]/usr/bin/git log -1 --format=%H
+source	Run actions/checkout@v4	2026-10-18T03:23:30.9775272Z 16344d808d3d9d00e382b47a6aa711420a2ffe35
+source	Run actions/checkout@v4	2026-10-18T03:23:30.9782468Z ##[group]Removing auth
+source	Run actions/checkout@v4	2026-10-18T03:23:30.9785069Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+source	Run actions/checkout@v4	2026-10-18T03:23:30.9810208Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+source	Run actions/checkout@v4	2026-10-18T03:23:31.0002172Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+source	Run actions/checkout@v4	2026-10-18T03:23:31.0023559Z http.https://github.com/.extraheader
+source	Run actions/checkout@v4	2026-10-18T03:23:31.0027803Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+source	Run actions/checkout@v4	2026-10-18T03:23:31.1051617Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+source	Run actions/checkout@v4	2026-10-18T03:23:31.1339850Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+source	Run actions/checkout@v4	2026-10-18T03:23:31.1366013Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+source	Run actions/checkout@v4	2026-10-18T03:23:31.1551840Z ##[endgroup]
+source	Run actions/setup-python@v5	﻿2026-10-18T03:23:31.2527318Z ##[group]Run actions/setup-python@v5
+source	Run actions/setup-python@v5	2026-10-18T03:23:31.2527497Z with:
+source	Run actions/setup-python@v5	2026-10-18T03:23:31.2527625Z   python-version: 3.12
+source	Run actions/setup-python@v5	2026-10-18T03:23:31.2527756Z   check-latest: false
+source	Run actions/setup-python@v5	2026-10-18T03:23:31.2529051Z   token: ***
+source	Run actions/setup-python@v5	2026-10-18T03:23:31.2529170Z   update-environment: true
+source	Run actions/setup-python@v5	2026-10-18T03:23:31.2529314Z   allow-prereleases: false
+source	Run actions/setup-python@v5	2026-10-18T03:23:31.2529445Z   freethreaded: false
+source	Run actions/setup-python@v5	2026-10-18T03:23:31.2529564Z env:
+source	Run actions/setup-python@v5	2026-10-18T03:23:31.2529673Z   GIT_LFS_SKIP_SMUDGE: 1
+source	Run actions/setup-python@v5	2026-10-18T03:23:31.2529799Z ##[endgroup]
+source	Run actions/setup-python@v5	2026-10-18T03:23:31.3368754Z ##[group]Installed versions
+source	Run actions/setup-python@v5	2026-10-18T03:23:31.3523177Z (node:2176) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+source	Run actions/setup-python@v5	2026-10-18T03:23:31.3523747Z (Use `node --trace-deprecation ...` to show where the warning was created)
+source	Run actions/setup-python@v5	2026-10-18T03:23:31.3524262Z Successfully set up CPython (3.12.15)
+source	Run actions/setup-python@v5	2026-10-18T03:23:31.3524935Z ##[endgroup]
+source	Existing owned-process and inherited-stage controls	﻿2026-10-18T03:23:31.3912985Z ##[group]Run python -B -m unittest discover -s tools/nemotron-diarization -p test_remote_q8_apack_replay.py
+source	Existing owned-process and inherited-stage controls	2026-10-18T03:23:31.3913510Z [36;1mpython -B -m unittest discover -s tools/nemotron-diarization -p test_remote_q8_apack_replay.py[0m
+source	Existing owned-process and inherited-stage controls	2026-10-18T03:23:31.3913893Z [36;1mpython -B -m unittest discover -s tools/nemotron-diarization -p test_remote_thread_cpu_replay.py[0m
+source	Existing owned-process and inherited-stage controls	2026-10-18T03:23:31.4425054Z shell: /usr/bin/bash -e {0}
+source	Existing owned-process and inherited-stage controls	2026-10-18T03:23:31.4425215Z env:
+source	Existing owned-process and inherited-stage controls	2026-10-18T03:23:31.4425334Z   GIT_LFS_SKIP_SMUDGE: 1
+source	Existing owned-process and inherited-stage controls	2026-10-18T03:23:31.4425508Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.15/x64
+source	Existing owned-process and inherited-stage controls	2026-10-18T03:23:31.4425762Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib/pkgconfig
+source	Existing owned-process and inherited-stage controls	2026-10-18T03:23:31.4425996Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+source	Existing owned-process and inherited-stage controls	2026-10-18T03:23:31.4426208Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+source	Existing owned-process and inherited-stage controls	2026-10-18T03:23:31.4426642Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+source	Existing owned-process and inherited-stage controls	2026-10-18T03:23:31.4426851Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib
+source	Existing owned-process and inherited-stage controls	2026-10-18T03:23:31.4427087Z ##[endgroup]
+source	Existing owned-process and inherited-stage controls	2026-10-18T03:23:37.7104846Z ............
+source	Existing owned-process and inherited-stage controls	2026-10-18T03:23:37.7105225Z ----------------------------------------------------------------------
+source	Existing owned-process and inherited-stage controls	2026-10-18T03:23:37.7105452Z Ran 12 tests in 5.592s
+source	Existing owned-process and inherited-stage controls	2026-10-18T03:23:37.7105535Z 
+source	Existing owned-process and inherited-stage controls	2026-10-18T03:23:37.7105582Z OK
+source	Existing owned-process and inherited-stage controls	2026-10-18T03:23:40.8596396Z .........
+source	Existing owned-process and inherited-stage controls	2026-10-18T03:23:40.8596780Z ----------------------------------------------------------------------
+source	Existing owned-process and inherited-stage controls	2026-10-18T03:23:40.8597104Z Ran 9 tests in 3.002s
+source	Existing owned-process and inherited-stage controls	2026-10-18T03:23:40.8597222Z 
+source	Existing owned-process and inherited-stage controls	2026-10-18T03:23:40.8597312Z OK
+source	Reject wrong identities, storage and output overlap	﻿2026-10-18T03:23:40.8742981Z ##[group]Run python -B -m unittest discover -s tools/nemotron-diarization -p test_graph_cpu_source_admission.py
+source	Reject wrong identities, storage and output overlap	2026-10-18T03:23:40.8743398Z [36;1mpython -B -m unittest discover -s tools/nemotron-diarization -p test_graph_cpu_source_admission.py[0m
+source	Reject wrong identities, storage and output overlap	2026-10-18T03:23:40.8797006Z shell: /usr/bin/bash -e {0}
+source	Reject wrong identities, storage and output overlap	2026-10-18T03:23:40.8797145Z env:
+source	Reject wrong identities, storage and output overlap	2026-10-18T03:23:40.8797257Z   GIT_LFS_SKIP_SMUDGE: 1
+source	Reject wrong identities, storage and output overlap	2026-10-18T03:23:40.8797422Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.15/x64
+source	Reject wrong identities, storage and output overlap	2026-10-18T03:23:40.8797651Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib/pkgconfig
+source	Reject wrong identities, storage and output overlap	2026-10-18T03:23:40.8797875Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+source	Reject wrong identities, storage and output overlap	2026-10-18T03:23:40.8798080Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+source	Reject wrong identities, storage and output overlap	2026-10-18T03:23:40.8798282Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+source	Reject wrong identities, storage and output overlap	2026-10-18T03:23:40.8798488Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib
+source	Reject wrong identities, storage and output overlap	2026-10-18T03:23:40.8798659Z ##[endgroup]
+source	Reject wrong identities, storage and output overlap	2026-10-18T03:23:40.9525415Z ...
+source	Reject wrong identities, storage and output overlap	2026-10-18T03:23:40.9525800Z ----------------------------------------------------------------------
+source	Reject wrong identities, storage and output overlap	2026-10-18T03:23:40.9526124Z Ran 3 tests in 0.005s
+source	Reject wrong identities, storage and output overlap	2026-10-18T03:23:40.9526253Z 
+source	Reject wrong identities, storage and output overlap	2026-10-18T03:23:40.9526324Z OK
+source	Materialize exact native and GGML sources without compiler or model execution	﻿2026-10-18T03:23:40.9632105Z ##[group]Run python -B tools/nemotron-diarization/graph_cpu_source_admission.py --output "/home/runner/work/_temp/graph-cpu-source-admission"
+source	Materialize exact native and GGML sources without compiler or model execution	2026-10-18T03:23:40.9632692Z [36;1mpython -B tools/nemotron-diarization/graph_cpu_source_admission.py --output "/home/runner/work/_temp/graph-cpu-source-admission"[0m
+source	Materialize exact native and GGML sources without compiler or model execution	2026-10-18T03:23:40.9688009Z shell: /usr/bin/bash -e {0}
+source	Materialize exact native and GGML sources without compiler or model execution	2026-10-18T03:23:40.9688162Z env:
+source	Materialize exact native and GGML sources without compiler or model execution	2026-10-18T03:23:40.9688280Z   GIT_LFS_SKIP_SMUDGE: 1
+source	Materialize exact native and GGML sources without compiler or model execution	2026-10-18T03:23:40.9688452Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.15/x64
+source	Materialize exact native and GGML sources without compiler or model execution	2026-10-18T03:23:40.9688691Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib/pkgconfig
+source	Materialize exact native and GGML sources without compiler or model execution	2026-10-18T03:23:40.9688925Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+source	Materialize exact native and GGML sources without compiler or model execution	2026-10-18T03:23:40.9689141Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+source	Materialize exact native and GGML sources without compiler or model execution	2026-10-18T03:23:40.9689358Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+source	Materialize exact native and GGML sources without compiler or model execution	2026-10-18T03:23:40.9689573Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib
+source	Materialize exact native and GGML sources without compiler or model execution	2026-10-18T03:23:40.9689800Z ##[endgroup]
+source	Materialize exact native and GGML sources without compiler or model execution	2026-10-18T03:23:58.9013661Z {"completed": true, "compiled_sdk_or_model": false, "source_commit": "16344d808d3d9d00e382b47a6aa711420a2ffe35", "minimum_free_bytes": 8589934592, "scope": "Materialize the frozen graph observer on Linux; never configure a compiler or load a model.", "stage": {"command": ["/opt/hostedtoolcache/Python/3.12.15/x64/bin/python", "-B", "/home/runner/work/gen2/gen2/tools/nemotron-diarization/graph_cpu_source_admission.py", "--output", "/home/runner/work/_temp/graph-cpu-source-admission/stage", "--worker"], "cwd": "/home/runner/work/gen2/gen2", "stdout_bytes": 464, "stderr_bytes": 0, "leader_reaped": true, "group_gone": true, "completed": true, "pid": 2254, "returncode": 0, "elapsed_seconds": 16.595164768000004}, "stage_qualification": {"bytes": 1252249, "sha256": "e98f23262277713a0ba3b45dc5591f4f7d86171f069e8cfcfc84e9c7aca0d6c2"}}
+source	Retain successful or failed source-only evidence	﻿2026-10-18T03:23:58.9292282Z ##[group]Run actions/upload-artifact@v4
+source	Retain successful or failed source-only evidence	2026-10-18T03:23:58.9292459Z with:
+source	Retain successful or failed source-only evidence	2026-10-18T03:23:58.9292597Z   name: nemotron-graph-cpu-source-admission
+source	Retain successful or failed source-only evidence	2026-10-18T03:23:58.9293745Z   path: /home/runner/work/_temp/graph-cpu-source-admission/qualification.json
+source	Retain successful or failed source-only evidence	/home/runner/work/_temp/graph-cpu-source-admission/stage.stdout.log
+source	Retain successful or failed source-only evidence	/home/runner/work/_temp/graph-cpu-source-admission/stage.stdout.log.process.json
+source	Retain successful or failed source-only evidence	/home/runner/work/_temp/graph-cpu-source-admission/stage.stderr.log
+source	Retain successful or failed source-only evidence	/home/runner/work/_temp/graph-cpu-source-admission/stage/protocol.json
+source	Retain successful or failed source-only evidence	/home/runner/work/_temp/graph-cpu-source-admission/stage/qualification.json
+source	Retain successful or failed source-only evidence	/home/runner/work/_temp/graph-cpu-source-admission/stage/evidence/
+source	Retain successful or failed source-only evidence	
+source	Retain successful or failed source-only evidence	2026-10-18T03:23:58.9294974Z   include-hidden-files: true
+source	Retain successful or failed source-only evidence	2026-10-18T03:23:58.9295116Z   retention-days: 30
+source	Retain successful or failed source-only evidence	2026-10-18T03:23:58.9295244Z   if-no-files-found: warn
+source	Retain successful or failed source-only evidence	2026-10-18T03:23:58.9295376Z   compression-level: 6
+source	Retain successful or failed source-only evidence	2026-10-18T03:23:58.9295505Z   overwrite: false
+source	Retain successful or failed source-only evidence	2026-10-18T03:23:58.9295618Z env:
+source	Retain successful or failed source-only evidence	2026-10-18T03:23:58.9295730Z   GIT_LFS_SKIP_SMUDGE: 1
+source	Retain successful or failed source-only evidence	2026-10-18T03:23:58.9295916Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.15/x64
+source	Retain successful or failed source-only evidence	2026-10-18T03:23:58.9296161Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib/pkgconfig
+source	Retain successful or failed source-only evidence	2026-10-18T03:23:58.9296394Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+source	Retain successful or failed source-only evidence	2026-10-18T03:23:58.9296608Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+source	Retain successful or failed source-only evidence	2026-10-18T03:23:58.9296829Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+source	Retain successful or failed source-only evidence	2026-10-18T03:23:58.9297042Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib
+source	Retain successful or failed source-only evidence	2026-10-18T03:23:58.9297226Z ##[endgroup]
+source	Retain successful or failed source-only evidence	2026-10-18T03:23:59.0444294Z (node:2688) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+source	Retain successful or failed source-only evidence	2026-10-18T03:23:59.0444755Z (Use `node --trace-deprecation ...` to show where the warning was created)
+source	Retain successful or failed source-only evidence	2026-10-18T03:23:59.0596794Z Multiple search paths detected. Calculating the least common ancestor of all paths
+source	Retain successful or failed source-only evidence	2026-10-18T03:23:59.0599687Z The least common ancestor is /home/runner/work/_temp/graph-cpu-source-admission. This will be the root directory of the artifact
+source	Retain successful or failed source-only evidence	2026-10-18T03:23:59.0600461Z With the provided path, there will be 70 files uploaded
+source	Retain successful or failed source-only evidence	2026-10-18T03:23:59.0601205Z Artifact name is valid!
+source	Retain successful or failed source-only evidence	2026-10-18T03:23:59.0601583Z Root directory input is valid!
+source	Retain successful or failed source-only evidence	2026-10-18T03:23:59.3500451Z Beginning upload of artifact content to blob storage
+source	Retain successful or failed source-only evidence	2026-10-18T03:23:59.4092698Z (node:2688) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+source	Retain successful or failed source-only evidence	2026-10-18T03:23:59.7177476Z Uploaded bytes 289996
+source	Retain successful or failed source-only evidence	2026-10-18T03:23:59.7641627Z Finished uploading artifact content to blob storage!
+source	Retain successful or failed source-only evidence	2026-10-18T03:23:59.7642122Z SHA256 digest of uploaded artifact zip is 1bc7608bb9032263aa9465df7ab7ed35bca26dc725b5c9fe5420eedda7d2e78e
+source	Retain successful or failed source-only evidence	2026-10-18T03:23:59.7642831Z Finalizing artifact upload
+source	Retain successful or failed source-only evidence	2026-10-18T03:23:59.9890046Z Artifact nemotron-graph-cpu-source-admission.zip successfully finalized. Artifact ID 12123622270
+source	Retain successful or failed source-only evidence	2026-10-18T03:23:59.9890890Z Artifact nemotron-graph-cpu-source-admission has been successfully uploaded! Final size is 289996 bytes. Artifact ID is 12123622270
+source	Retain successful or failed source-only evidence	2026-10-18T03:23:59.9896032Z Artifact download URL: https://github.com/saberra-ai/gen2/actions/runs/39093415395/artifacts/12123622270
+source	Post Run actions/setup-python@v5	﻿2026-10-18T03:24:00.0040734Z Post job cleanup.
+source	Post Run actions/setup-python@v5	2026-10-18T03:24:00.0817937Z (node:2700) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+source	Post Run actions/setup-python@v5	2026-10-18T03:24:00.0818619Z (Use `node --trace-deprecation ...` to show where the warning was created)
+source	Post Run actions/checkout@v4	﻿2026-10-18T03:24:00.0950115Z Post job cleanup.
+source	Post Run actions/checkout@v4	2026-10-18T03:24:00.1557746Z [command]/usr/bin/git version
+source	Post Run actions/checkout@v4	2026-10-18T03:24:00.1596940Z git version 2.55.0
+source	Post Run actions/checkout@v4	2026-10-18T03:24:00.1624277Z Temporarily overriding HOME='/home/runner/work/_temp/96503695-9485-4ec1-8c4a-cac5322ca417' before making global git config changes
+source	Post Run actions/checkout@v4	2026-10-18T03:24:00.1625233Z Adding repository directory to the temporary git global config as a safe directory
+source	Post Run actions/checkout@v4	2026-10-18T03:24:00.1627178Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/gen2/gen2
+source	Post Run actions/checkout@v4	2026-10-18T03:24:00.1665159Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+source	Post Run actions/checkout@v4	2026-10-18T03:24:00.1695782Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+source	Post Run actions/checkout@v4	2026-10-18T03:24:00.1934723Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+source	Post Run actions/checkout@v4	2026-10-18T03:24:00.1964020Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+source	Post Run actions/checkout@v4	2026-10-18T03:24:00.2232294Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+source	Post Run actions/checkout@v4	2026-10-18T03:24:00.2267160Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+source	Complete job	﻿2026-10-18T03:24:00.2624264Z Cleaning up orphan processes
+source	Complete job	2026-10-18T03:24:00.2832770Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-python@v5, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

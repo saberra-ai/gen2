@@ -89,6 +89,14 @@ parity, both observer bounds and production performance remain unqualified.
 The [new source-only receiver preparation](nemotron-graph-cpu-source-admission.md)
 preserves the original 8 GiB Linux admission and outer-owned child supervision
 for the full 3,425-file composition check. Local controls pass in a 661-test
-suite (653 executed, eight Windows-only skips); actual source materialization
-and the later native artifact/return route remain unexecuted. This supplies no
-additional runtime, performance or release qualification.
+suite (653 executed, eight Windows-only skips). That preparation checkpoint
+precedes the completed source result below. Native execution and its later
+artifact/return route remain unqualified. This supplies no additional runtime,
+performance or release qualification.
+
+The [actual graph source-only result](nemotron-graph-cpu-source-results.md)
+now passes complete 3,425-file composition and nineteen-command ownership
+replay. All 3,049 bindings match, the outer group is gone, and every command
+starts above the original 8 GiB floor. The `ce65591d` feature CI is also 13/13
+successful. This closes source composition only; native execution, registration,
+artifact replay/return and all unmet release requirements remain open.

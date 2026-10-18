@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "native_source": "ce65591dffd22e387416f0950a88f607b1761d44",
+  "native_protocol": {
+    "bytes": 674377,
+    "sha256": "e033090bdb03a947326c8decd633e1d92c816170694ff1369c623c265ed54d52"
+  },
+  "minimum_free_bytes": 8589934592,
+  "expected_acquisition_commands": 8,
+  "expected_composition_commands": 11,
+  "expected_materialized_files": 3425,
+  "compiler_sdk_model_execution": false,
+  "files": {
+    ".github/workflows/diarization-graph-cpu-source.yml": {
+      "bytes": 2313,
+      "sha256": "8b370cecd131e7fe2ec053b2995f3e3e8059e06094783ec9fd45bed08a54848e"
+    },
+    "docs/research/nemotron-graph-cpu-source-admission.md": {
+      "bytes": 2990,
+      "sha256": "d80b578fda5a4390adc121d83e1f67a44ddfe04a8fba90620778ac948d32dc3b"
+    },
+    "tools/nemotron-diarization/freeze_graph_cpu_source_admission.py": {
+      "bytes": 3102,
+      "sha256": "c78325b79b10073656cf461fe29753a1da0144536021845899350f93a04a0e60"
+    },
+    "tools/nemotron-diarization/graph_cpu_source_admission.py": {
+      "bytes": 12718,
+      "sha256": "c0a3a3f503ef2da963091c23cb7d81b1b03fbdfef20ddf9bc43b14e61475e01d"
+    },
+    "tools/nemotron-diarization/remote_q8_apack_replay.py": {
+      "bytes": 22591,
+      "sha256": "6b7f4c6d3a9a672ad0a89c790fa0d51608adad4c3667395c2da1329c68e48b08"
+    },
+    "tools/nemotron-diarization/remote_thread_cpu_replay.py": {
+      "bytes": 20063,
+      "sha256": "3b58c3c8c320c6bacf45b2e0b7a9649da9b382ffed6b5af890a6795408b1a14c"
+    },
+    "tools/nemotron-diarization/test_graph_cpu_source_admission.py": {
+      "bytes": 2625,
+      "sha256": "972895b4a426c775fec7844cd54cc3acd306b88f77f9109ec6333cb8512c3625"
+    },
+    "tools/nemotron-diarization/test_remote_q8_apack_replay.py": {
+      "bytes": 17633,
+      "sha256": "76721c5809e5f25acbe2a90da7ff19f9892d241c49815da7480028ec4bae9eb7"
+    },
+    "tools/nemotron-diarization/test_remote_thread_cpu_replay.py": {
+      "bytes": 13638,
+      "sha256": "994fcbd8f5b1601eeda48cddc10f861cdea396bab08d0a059c68eb328d3a3e7f"
+    }
+  },
+  "limits": [
+    "Only source acquisition, exact patch composition and CMake script-mode materialization.",
+    "Original 8 GiB source-only floor before acquisition and every registered command; no native SDK/model build, load or inference.",
+    "One bounded outer POSIX group owns all stage children, with original inherited-child I/O and deadlines.",
+    "All native protocol inputs remain bound before project imports and each stage operation.",
+    "Source proof alone supplies no Windows graph/API, compiler, parity, observer timing, performance or release pass."
+  ]
+}
