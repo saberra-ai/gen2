@@ -1,0 +1,216 @@
+{
+  "schema_version": 1,
+  "observed_at_utc": "2026-10-18T01:31:52.545048+00:00",
+  "source_commit": "856ffffa04c3f5234d49f7f93a636fe716a38550",
+  "pre_execution_protocol": {
+    "bytes": 4619,
+    "sha256": "0c418ce439942baac824a61db85ac14adcef719090ba003a485b203b70bd3047"
+  },
+  "scope": "Fixed retained qualification-report audit plus current statvfs observation. No repeat of lower-level raw replays, no model/helper/VM/GUI/credential/network call and no completion claim.",
+  "historical_verified_observations": {
+    "mac_arm64_bounded_public_realtime": true,
+    "mac_arm64_bounded_public_warm_rtf": 0.6053464166666667,
+    "actual_model_reloads": 100,
+    "fixed_native_public_pairs_byte_exact": true,
+    "q8_degradation_bounds_all_at_most_0_02": true,
+    "same_host_bounded_pnola_cli_resolution": true
+  },
+  "unmet_gates": {
+    "original_per_slice_accuracy": {
+      "status": "failed",
+      "limit_der": 0.2,
+      "ami_metrics": [
+        {
+          "slice": "ami-ES2004a-Mix-Headset",
+          "backend": "cpu",
+          "fp32_der": 0.414447315,
+          "q8_shared_der": 0.414714527,
+          "q8_production_der": 0.33214572,
+          "q8_minus_fp32_absolute_der": 0.00026721200000001666
+        },
+        {
+          "slice": "ami-ES2004a-Mix-Headset",
+          "backend": "metal",
+          "fp32_der": 0.414447315,
+          "q8_shared_der": 0.415427095,
+          "q8_production_der": 0.332234791,
+          "q8_minus_fp32_absolute_der": 0.0009797800000000412
+        },
+        {
+          "slice": "ami-ES2004a-Array1-01",
+          "backend": "cpu",
+          "fp32_der": 0.500222677,
+          "q8_shared_der": 0.499599181,
+          "q8_production_der": 0.438407411,
+          "q8_minus_fp32_absolute_der": -0.0006234960000000012
+        },
+        {
+          "slice": "ami-ES2004a-Array1-01",
+          "backend": "metal",
+          "fp32_der": 0.500222677,
+          "q8_shared_der": 0.499599181,
+          "q8_production_der": 0.438229269,
+          "q8_minus_fp32_absolute_der": -0.0006234960000000012
+        }
+      ],
+      "original_nemo_shared_der": {
+        "ami-close": 0.415070811,
+        "ami-distant": 0.500044535
+      },
+      "next_dependency": "Product-appropriate acoustic boundary review and separate development/fresh validation; no policy selected by completed fixed contrasts. Preserve original failures."
+    },
+    "human_word_time_attribution": {
+      "status": "deferred_by_user",
+      "annotators": 0,
+      "reviewed_words": 0,
+      "human_gold_admitted": false,
+      "instruction": "just document it for now",
+      "next_dependency": "Actual independent human annotation, review and adjudication; do not request again or fabricate gold."
+    },
+    "physical_pnola_gui_mic_playback_ipc": {
+      "status": "not_established",
+      "next_dependency": "Accessible physical interactive test host and actual capture/display/playback observations. CLI parity is separate."
+    },
+    "fresh_machine_complete_app": {
+      "status": "not_established",
+      "guest_os_ready_qualified": false,
+      "data_access_passed": false,
+      "private_app_transfer": "skipped_by_user",
+      "next_dependency": "Operational fresh receiver; local disposable guest also needs original storage admission and independently qualified guest access/provisioning."
+    },
+    "windows_production_realtime": {
+      "status": "failed",
+      "functional_lifecycle_gates_passed": true,
+      "rtfs": [
+        1.0630409333333333,
+        1.0465252333333332,
+        1.0623256333333333,
+        1.0558045333333332
+      ],
+      "next_dependency": "New justified candidate with exact native/public, observer/control and original platform/package qualification. Do not repeat failed unchanged experiments."
+    },
+    "independent_unseen_meeting_validation": {
+      "status": "not_established",
+      "next_dependency": "Separately frozen licensed recordings, demonstrable training exclusion and independent human labels; current corpus exposure limits remain."
+    },
+    "advertised_platform_release_and_public_signing": {
+      "status": "not_established",
+      "next_dependency": "Actual platform/backend delivery and signing/notarization receipts; ad-hoc same-host construction is insufficient."
+    }
+  },
+  "current_vm_storage_observation": {
+    "available_bytes": 5925392384,
+    "available_gib": 5.518451690673828,
+    "original_floors": {
+      "start_minimum": 128849018880,
+      "running_minimum": 85899345920,
+      "reserve_bytes": 268435456
+    },
+    "start_admissible": false,
+    "running_floor_satisfied": false,
+    "limits": "Point-in-time filesystem observation only. No reserve, clone, disk read/hash, VM or cleanup was attempted."
+  },
+  "full_goal_achieved": false,
+  "main_promotion_allowed": false,
+  "new_model_helper_vm_or_gui_calls": 0,
+  "input_identities": {
+    "audit_source": {
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/audit-nemotron-release-readiness-v1.py",
+      "identity": {
+        "bytes": 8418,
+        "sha256": "7b146ae1bc99cdc23eace5f15b934ada25e094c4003116ecbe412cdb7cfbc297"
+      }
+    },
+    "current_corpus": {
+      "path": "/Users/victor/workspace/gen2-nemotron3-n0/benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-frozen-corpus/receiver-qualification.json",
+      "identity": {
+        "bytes": 42132,
+        "sha256": "87ac93f69e51c6bcca3a6ab5bc3ce7cbe9808860d2965498451b19a77005550b"
+      }
+    },
+    "original_nemo": {
+      "path": "/Users/victor/workspace/gen2-nemotron3-n0/benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-original-nemo-ami/receiver-qualification.json",
+      "identity": {
+        "bytes": 1885,
+        "sha256": "177e5ae1d29516e93ad104675fcab55635ad2f543d16a823f3a92ce2d706e9ae"
+      }
+    },
+    "bounded_public": {
+      "path": "/Users/victor/workspace/gen2-nemotron3-n0/benches/results/nemotron-diarization/macos-arm64/2026-10-17-bounded-public/collection-qualification.json",
+      "identity": {
+        "bytes": 14187,
+        "sha256": "46fd178cedb3f1e6e0642f704af6edbc39481b682be4bc812a92df86b1b157fd"
+      }
+    },
+    "bounded_pnola": {
+      "path": "/Users/victor/workspace/gen2-nemotron3-n0/benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-bounded-pnola-runtime/collection-qualification.json",
+      "identity": {
+        "bytes": 2186,
+        "sha256": "ca275d3eafc69c63afe26f6145e3533070e57b635c65c277df95aa32468a0db4"
+      }
+    },
+    "windows_candidate": {
+      "path": "/Users/victor/workspace/gen2-nemotron3-n0/benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-candidate/collection-qualification.json",
+      "identity": {
+        "bytes": 64669,
+        "sha256": "05f39c4b28bd7c69b3f7dd44a9070dfc6be09878627a1092caf149bc8141bf70"
+      }
+    },
+    "word_preparation": {
+      "path": "/Users/victor/workspace/gen2-nemotron3-n0/benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-hcrc-word-review-preparation/collection-qualification.json",
+      "identity": {
+        "bytes": 1486,
+        "sha256": "786338ebf5244156e2ea82809560fa915b0a3050f2347732bc5fb2cece5ee950"
+      }
+    },
+    "review_template": {
+      "path": "/Users/victor/workspace/gen2-nemotron3-n0/benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-hcrc-word-review-preparation/review-template.json",
+      "identity": {
+        "bytes": 775,
+        "sha256": "1de0e6288b63b23ee1fc6ae52a186396445ccf0e9b4681ee5e58be6897de3204"
+      }
+    },
+    "vm_data_failure": {
+      "path": "/Users/victor/workspace/gen2-nemotron3-n0/benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-vm-data-failure/collection-qualification.json",
+      "identity": {
+        "bytes": 4877,
+        "sha256": "5ae1d75bee0405cca4b7acbea00b5aada4d5e6126e91440a69082cf3a38af5ba"
+      }
+    },
+    "vm_boot_protocol": {
+      "path": "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/macos-vm-boot.protocol.json",
+      "identity": {
+        "bytes": 47014,
+        "sha256": "7987614a1d9e7533a405d0a1bb9ee6d729c8861a9d836b43a34572cf7c88acfe"
+      }
+    },
+    "thread_cpu_replay": {
+      "path": "/Users/victor/workspace/gen2-nemotron3-n0/benches/results/nemotron-diarization/windows-x86_64/2026-10-17-thread-cpu-local-replay/replay/thread-cpu-returned-evidence-replay-v3.json",
+      "identity": {
+        "bytes": 6506271,
+        "sha256": "bec3813eda85c5477573c8e3b365cda777463fd751e8c9705592ee190b51f932"
+      }
+    },
+    "quality_investigation": {
+      "path": "/Users/victor/workspace/gen2-nemotron3-n0/docs/research/nemotron-quality-next-diagnostics.md",
+      "identity": {
+        "bytes": 30985,
+        "sha256": "dab78c6105019aa26a3b6db2bec58cd5cbc562f23fde8dcb3dcac009b2ee498c"
+      }
+    },
+    "segmentation_investigation": {
+      "path": "/Users/victor/workspace/gen2-nemotron3-n0/docs/research/nemotron-development-segmentation.md",
+      "identity": {
+        "bytes": 5974,
+        "sha256": "dd152bd7eedb19facf37a45f0fca67c70bef9b733f453dbae29bfcd808ba5b11"
+      }
+    },
+    "roadmap": {
+      "path": "/Users/victor/workspace/gen2-nemotron3-n0/docs/plans/nemotron-3-diarization-roadmap.md",
+      "identity": {
+        "bytes": 187092,
+        "sha256": "c5e0a467f6111e01cc33f6e808121f2b22c68d2d384c31ff64843f27a700d16a"
+      }
+    }
+  }
+}
