@@ -75,3 +75,28 @@ independent result collection are unperformed. This check supplies no Metal,
 M1-full-corpus, unseen-data, human-word, physical GUI/microphone, fresh-machine,
 public signing or complete release claim. Human timing review remains deferred
 at the user's request. Main promotion still requires every original gate.
+
+## Execution checkpoint
+
+Static admission completed under committed source
+`d1954e86f936372cc2d481fb9da6da4c7bbf6ebe`. The independently checked
+[admission receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-bounded-corpus-admission/collection-qualification.json)
+contains no child commands, neural calls, scores or image audits. The physical
+256 MiB reserve was allocated and released. Input admission passes; completion,
+quality and release flags remain false.
+
+The separate full controller is running from the same preregistered source and
+protocol. Runtime denied-read/write/network controls and the model-denied version
+probe have completed; the first native slice has started. No completed corpus or
+quality result is claimed at this checkpoint. The original slices range from
+114.944 to 515.904 seconds, so this is a longer run than the earlier short smoke
+checks. The controller retains its original 1,200-second deadline for each
+command and stops on runtime, identity or resource failure without automatic
+retry.
+
+The first result-collection draft was reviewed but never executed. Review found
+incomplete command binding and a parse-before-inventory race. The retained V2
+collector corrects both: it compares complete commands, environments, policy
+bytes and denied-operation controls, captures identities before parsing, and
+rechecks sources and copied evidence. Both independent reviews cleared V2
+before its admission collection. Full-result collection remains pending.

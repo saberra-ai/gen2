@@ -41,9 +41,11 @@ evidence for those gaps.
 The [complete corpus results](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-frozen-corpus/qualification.json)
 identify the earlier valid-Mel runtime. They do not by
 itself qualify the subsequent `gen2-valid-mel-pool-cpu-v2` profile across all
-eight slices. A separately frozen bounded-profile native/public corpus check is
-an independent next action; retain the original references, FP32 arrays and
-failed accuracy gate rather than inheriting a result across runtime identities.
+eight slices. The [separately frozen bounded-profile corpus check](nemotron-bounded-corpus.md)
+now passes static input/package/oracle admission, with no model calls during
+that admission. Its full eight-pair run is in progress; no completed result is
+claimed here. It retains the original references, FP32 arrays and failed
+accuracy gate rather than inheriting a result across runtime identities.
 
 The [quality investigation](nemotron-quality-next-diagnostics.md) already
 contains original-NeMo, frontend, teacher-forced tail, prefix, larger-context
