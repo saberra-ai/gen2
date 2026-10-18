@@ -126,3 +126,9 @@ Linux acquisition/bundling and bounded local quarantine wiring, with fourteen
 focused controls passing. Actual identities remain unset and no artifact is
 consumed; independent local semantic replay remains required before native
 dispatch. This supplies no actual model, timing or release result.
+
+The [independent local graph replay preparation](nemotron-graph-cpu-local-replay.md)
+now reuses the fixed reviewed raw validation blocks with graph-only CPU fields,
+complete source/command proofs and seven passing focused controls. Actual native
+and return identities remain unset, and no actual new artifact is replayed.
+End-to-end execution and review remain required; the unmet gates are unchanged.

@@ -76,6 +76,14 @@ admission. Actual identities remain unset; no artifact is consumed. Independent
 local semantic replay still needs completion before native dispatch. All
 original quality, timing, desktop and release gates remain open.
 
+The [independent local graph replay preparation](../research/nemotron-graph-cpu-local-replay.md)
+now supplies the matching raw-data replay after quarantine. Seven focused controls
+pass, including three expected receiver ASTs, mutation rejection, graph CPU
+zeros and exact nineteen-command source reconstruction against retained real
+evidence. Actual transport identities remain unset; no artifact/model is run.
+CI, review and an actual end-to-end diagnostic/return/replay still remain before
+any native timing interpretation or production/release qualification.
+
 The separate [batched matrix observer control](../research/nemotron-matrix-batch-results.md)
 now passes all twelve fresh native Mac graph processes, 144 byte-exact vectors
 against the earlier observer, and complete dispatch/fusion coverage. Only
