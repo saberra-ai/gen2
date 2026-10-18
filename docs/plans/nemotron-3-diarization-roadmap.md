@@ -332,6 +332,15 @@ Real nested-child timeout/cancellation controls also pass locally after source
 preparation was changed to inherit one outer owned group. The replay/return/local interpretation have not executed;
 successful CI alone supplies no new performance or release qualification.
 
+The separate Linux replay at `c7bc1899` (run39084790919/job117548983776)
+is terminal success. It admitted the complete original ZIP and retained a
+449-member result collection, then returned a9,908,825byte result-only bundle.
+The [fixed bounded local return](../research/nemotron-windows-thread-cpu-bundle-receive.md)
+preserves the existing4GiB result-return floor and AST-identical quarantine
+algorithm. Return download, independent local numerical/counter/timing replay
+and interpretation remain pending; the original native ZIP has not been fetched
+or rehashed locally. No original performance or release gate closes here.
+
 Remaining release work as of 2026-10-17:
 
 - Meet the original 20% DER target on every required meeting slice. The two AMI

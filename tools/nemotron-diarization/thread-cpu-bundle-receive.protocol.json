@@ -1,0 +1,484 @@
+{
+  "schema_version": 1,
+  "remote_source": "c7bc18994fb8247fd3723ce3c3645039cd14dcaf",
+  "remote_run_id": 39084790919,
+  "remote_job_id": 117548983776,
+  "delivery": {
+    "id": 12119973020,
+    "bytes": 10671725,
+    "sha256": "6a839674c367032f0668b03581699e7c627ae6ca0db79493455e6c2fb62255e5"
+  },
+  "zip_cap": 134217728,
+  "extract_cap": 201326592,
+  "bundle_cap": 134217728,
+  "start_floor": 4294967296,
+  "result_commit": "580e79ac6943384a3ec545c0c9f2a540e48e9e6d",
+  "bundle": {
+    "bytes": 9908825,
+    "sha256": "4520891122b9450a6619d7d7059229f7696984ccdfc3c80b214c5b9f712fe92b"
+  },
+  "result_roots": [
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-thread-cpu-profile"
+  ],
+  "collection": {
+    "members": 449,
+    "bytes_without_manifest": 115007188,
+    "manifest": {
+      "bytes": 69735,
+      "sha256": "2a06aa9ac950656a505ae91a3f3fd8a2abb45fb2cf32b02099f8bcbffc05e985"
+    }
+  },
+  "files": {
+    ".github/workflows/diarization-q8-apack-replay.yml": {
+      "bytes": 1614,
+      "sha256": "5eaa81b450edc6f0fe5471dd51ca046876deecb520f80d43e40f0b4171da54b0"
+    },
+    ".github/workflows/diarization-thread-cpu-replay.yml": {
+      "bytes": 1821,
+      "sha256": "37e387cecd8577ff577372312c7d6078bbce099f4038c14da9bbff09d4fd1123"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack-admission-preparation/api/artifacts.json": {
+      "bytes": 732,
+      "sha256": "a458f59b7aab4cb8f9690694c74514874998d7df9a3f2c26927ff3457168a014"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack-admission-preparation/api/job.json": {
+      "bytes": 4129,
+      "sha256": "fda00ac83055d70e9716b5cd3a70241e95e672b80a0b9f09964d6ef216741440"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack-admission-preparation/api/job.log": {
+      "bytes": 63578,
+      "sha256": "a4294fdfd20bac549f94e5cb04bbf3e22adf6c2935c97840e384ca8dd4f187e1"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack-admission-preparation/api/producer-run.json": {
+      "bytes": 11816,
+      "sha256": "99d194b3abeab2073f4004e1210fe83e48c385b44aca565d255e2fc55d5afb8c"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack-admission-preparation/api/status.json": {
+      "bytes": 1167,
+      "sha256": "6b06900414702a6203c202a0f534616cf5a8369974fcb78ec683bce19985cae0"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack-admission-preparation/collection.json": {
+      "bytes": 6091,
+      "sha256": "352e64a11fc41e5f02fc66dd802b4e70cc0db7ab8ec9815981cbdb10ee0a6b7e"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack-admission-preparation/prepared/admit-windows-q8-apack-delivery-v1.py": {
+      "bytes": 9234,
+      "sha256": "9d820e24bfb16da08021523bd333ac94e5205ff32a4b037ef43f66783630b286"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack-admission-preparation/prepared/collect-windows-q8-apack-v1.py": {
+      "bytes": 16186,
+      "sha256": "dae93a1ba546f73194e2112ce17e485a772993b282237546dfd8db1ff542ed90"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack-admission-preparation/prepared/fetch-windows-q8-apack-artifact-v1.py": {
+      "bytes": 5695,
+      "sha256": "32254966b198e0cd713e475af400b36176ebbc171784e2e195c58df3089f7c99"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack-admission-preparation/prepared/inspect-q8-apack-loops-v1.py": {
+      "bytes": 7054,
+      "sha256": "4cdbb1584707cce71bbc7e3ef4ba517283f01f3d3275a9f733b459d31a50e711"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack-admission-preparation/prepared/inspect-q8-row-loops-v1.py": {
+      "bytes": 6730,
+      "sha256": "bd4894963398a45c04128d3e690e61f0604acd4083a9e7361a588026d2137dbb"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack-admission-preparation/prepared/prepare-windows-q8-apack-receivers-v1.py": {
+      "bytes": 8773,
+      "sha256": "c5440ebf780af2b2e85e9b141179df7644e2874b9ef478e9566854bd0f8dc049"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack-admission-preparation/prepared/publish-q8-apack-static-v1.py": {
+      "bytes": 5966,
+      "sha256": "154d6f948ee98ee347589661ebc7a815a698d5d642749280bfa3852524ce8c47"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack-admission-preparation/prepared/publish-windows-q8-apack-v1.py": {
+      "bytes": 9334,
+      "sha256": "717bd7f509a48c74d78f26d9afaf6ee59a6d6b8be4c252f0b3fba8e1fc42b783"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack-admission-preparation/prepared/q8-apack-loop-inspector-pre-execution-v1.json": {
+      "bytes": 807,
+      "sha256": "7a3110f204989bc474528e2e4bd51348524b525cb5440b644f9a60b466dcc3c5"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack-admission-preparation/prepared/q8-apack-preparation-retention-green-v2.json": {
+      "bytes": 359,
+      "sha256": "5827877eab699d6df9ec5d3e2affb7f0602e2177c6b901cb65296767c2cc4cc3"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack-admission-preparation/prepared/q8-apack-preparation-retention-green-v2.stderr.log": {
+      "bytes": 572,
+      "sha256": "e0a45bd3ee2986b534eb78f3b2283f7d50bda4ae29a365b4575db33a290dc660"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack-admission-preparation/prepared/q8-apack-preparation-retention-green-v2.stdout.log": {
+      "bytes": 333,
+      "sha256": "11d7c17b0cd04f5cb6d1607b051130b65b73dc0da18ce34b85e49efecb43551a"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack-admission-preparation/prepared/q8-apack-publication-green-v1.json": {
+      "bytes": 352,
+      "sha256": "28a2a06fd321cce5a97f4e048c398aa59bb84b08d762164e8419d9104dfaa2b7"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack-admission-preparation/prepared/q8-apack-publication-green-v1.stderr.log": {
+      "bytes": 760,
+      "sha256": "cd78f375fab18c6eab36ca473d4bbf08c09b6508c1969acbd1b7f824371973b2"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack-admission-preparation/prepared/q8-apack-publication-green-v1.stdout.log": {
+      "bytes": 326,
+      "sha256": "2041107cd704a35b323796f315a292ecebb35c96d3a7e5c912e929f45260caa2"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack-admission-preparation/prepared/q8-apack-receiver-controls-local-v1.json": {
+      "bytes": 320,
+      "sha256": "2b8755dc992bf23ff02fc9124234a3d41374132165ad71c074ea7f8e1e635c4f"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack-admission-preparation/prepared/q8-apack-receiver-controls-local-v1.stderr.log": {
+      "bytes": 1386,
+      "sha256": "36164479b376b08352d73d8d8efbffba1251537641060eb3378ef62c22022f14"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack-admission-preparation/prepared/q8-apack-receiver-controls-local-v1.stdout.log": {
+      "bytes": 296,
+      "sha256": "8e99eaddfb96c97b8d2f77d675a8919157022906c254274640e1683206be0390"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack-admission-preparation/prepared/q8-apack-static-publication-green-v1.json": {
+      "bytes": 359,
+      "sha256": "bac6ff9367c8b347ab46858b14dd0cf82e4fd5359bda47ed2ccd2852aec88823"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack-admission-preparation/prepared/q8-apack-static-publication-green-v1.stderr.log": {
+      "bytes": 572,
+      "sha256": "de3c08339d31d3ae2d511ad0419af4b20f857038b14d8c4f2af8fce980aabd5b"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack-admission-preparation/prepared/q8-apack-static-publication-green-v1.stdout.log": {
+      "bytes": 333,
+      "sha256": "680727cabb3342faadeefdb6c07a917b74bc2c04323a8423326ea8d8d59c9de0"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack-admission-preparation/prepared/q8-apack-static-publisher-preparation-v1.json": {
+      "bytes": 1656,
+      "sha256": "2a0d9c4d68fd8a3d615ce85f34a982a0a58599e38d263c408577479b593c2718"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack-admission-preparation/prepared/replay-windows-q8-apack-supervision-v1.py": {
+      "bytes": 8197,
+      "sha256": "709a48376cc816b54b427fa710c30811c94d4474a7848bce73761815de89c07e"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack-admission-preparation/prepared/test-q8-apack-preparation-retention-v2.py": {
+      "bytes": 3590,
+      "sha256": "63deadd5dec85bd0eb4311ab9fda543d20e834b8a5a4afa9f072e55241871d85"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack-admission-preparation/prepared/test-q8-apack-publication-v1.py": {
+      "bytes": 4077,
+      "sha256": "c70e3b9d475318cbff57dd3408578de811215bddf9d44891cafd6f0d7f361c0e"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack-admission-preparation/prepared/test-q8-apack-receiver-controls-v1.py": {
+      "bytes": 8454,
+      "sha256": "a5d9e657c43cb8ec761940f94a9d2f41c56cc04d3d9693a929136c8443c0eb87"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack-admission-preparation/prepared/test-q8-scale-static-publication-v1.py": {
+      "bytes": 3559,
+      "sha256": "cd5e705155946e29b30004b33cb291d55c568b266f3b066217aa44342a55adf5"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack-admission-preparation/prepared/windows-q8-apack-publication-pre-execution-v1.json": {
+      "bytes": 3557,
+      "sha256": "c481996579857186f90060c96993c24e203c1e892dc4a1f38cc84b50afbead2d"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack-admission-preparation/prepared/windows-q8-apack-receivers-pre-execution-v1.json": {
+      "bytes": 2090,
+      "sha256": "84795b59fc6a5df4c3bebdfe4d9e57bf3885bd3f14c18c77b8fd46c3f39a2868"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack-admission-preparation/prepared/windows-q8-apack-receivers-preparation-v1.json": {
+      "bytes": 2227,
+      "sha256": "2b49955e2aa975ad7069d378fd84353f628d23aaf5083a0883a8fe39e10754e3"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack-admission-preparation/publisher.py": {
+      "bytes": 7108,
+      "sha256": "e0feee9914d3d6613822df3a790b5ff54fa869dc539f0cc7935b6f12016b0a8f"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack-admission-preparation/qualification.json": {
+      "bytes": 8178,
+      "sha256": "e8a8f11856d72c9313dde179381c37b6c1bde77886ec51d58346a3bc153c92fa"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack-remote-failure/artifacts.stdout": {
+      "bytes": 728,
+      "sha256": "43ddd98106dfad8627f4e08a2c0f715ded754d9ca749e883bbfb5760a9ac224e"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack-remote-failure/collection.json": {
+      "bytes": 3375,
+      "sha256": "6f90c48a44bb19bcc074b8411bf762ac6833f76136138857552edcaf2f1abbc1"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack-remote-failure/controls/raw-red.stderr.log": {
+      "bytes": 1124,
+      "sha256": "6ee8c21fadbc7764ffde7ba283962678c97f9223f07d9ac3580021155353c926"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack-remote-failure/controls/raw-red.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack-remote-failure/diagnosis/download.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack-remote-failure/diagnosis/gh-2.100.0-arm64.zip.process.json": {
+      "bytes": 386,
+      "sha256": "e6bb55c0b29693232e47d1c2404cb887e6f14bb8a5d79cad8c6bb9712a9e6159"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack-remote-failure/diagnosis/help.stdout": {
+      "bytes": 7770,
+      "sha256": "c6136b139e05d1b4e9271a1edf08473b6f57df6ff01dc6da64b7079f53852e82"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack-remote-failure/diagnosis/raw.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack-remote-failure/diagnosis/raw.stdout": {
+      "bytes": 63578,
+      "sha256": "a4294fdfd20bac549f94e5cb04bbf3e22adf6c2935c97840e384ca8dd4f187e1"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack-remote-failure/diagnosis/raw.stdout.process.json": {
+      "bytes": 442,
+      "sha256": "9e52ef1d55de02f819fcf432a8721817bbb2e1c5a4ae3f1fd20cfeeb00c7a2ee"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack-remote-failure/diagnosis/unflagged.stderr": {
+      "bytes": 99,
+      "sha256": "8b6407b2fdbca54bf3d53fb93e79a3560dbe59567fa5044cfee4bed1b5b6e467"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack-remote-failure/diagnosis/unflagged.stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack-remote-failure/diagnosis/unflagged.stdout.process.json": {
+      "bytes": 459,
+      "sha256": "d9279bcb1b1180b5a88c2be0e50b4a9458e8019d5d1e435f5cfdd4bc66017378"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack-remote-failure/diagnosis/version.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack-remote-failure/diagnosis/version.stdout": {
+      "bytes": 81,
+      "sha256": "b44d50cf88c05d469e0f327c61645023ad3f5b86c8a64372d6f81222fbc6de09"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack-remote-failure/failure-admission.json": {
+      "bytes": 26943,
+      "sha256": "287d3e999f0a9f25b056ad45336f1e5905fe909c8e2d90b62e09b77d708b79b3"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack-remote-failure/failure.zip": {
+      "bytes": 132784,
+      "sha256": "fcfad7b3adab7b2b2c06cfff3490f6ba9e1690324867d74c5ed439bdf0a42b04"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack-remote-failure/job-log.stdout": {
+      "bytes": 37893,
+      "sha256": "55223a82177f579bfc934ab8d730a5b13755934eda2c7b4e8bf136d81b065ace"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack-remote-failure/job.stdout": {
+      "bytes": 2484,
+      "sha256": "d73dbebbb77c2fcaf8a077666be9efcb1909eb7c9fcc5c9f3d02a784c5656ef0"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack-remote-failure/qualification.json": {
+      "bytes": 1147,
+      "sha256": "0f10ddb36fd73ce832006569d8c295d53671a493d29dc68535c1b89ed546e07f"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack-remote-failure/receiver/commands/fetch.stderr.log": {
+      "bytes": 1146,
+      "sha256": "b865f3cc06f7b1c54ba15e29447cbfff1559b47832e47a541ca350e96a8ad5b7"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack-remote-failure/receiver/commands/fetch.stdout.log.process.json": {
+      "bytes": 460,
+      "sha256": "f9eb0bd5ae60662a286834bef994626129ef8e3e98281404541de5888812a0a4"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack-remote-failure/receiver/storage-admission.json": {
+      "bytes": 155,
+      "sha256": "6ea984f313d0ab43d388d2e306d6e9075155bb71c8b1ee6c30954ad71f4d5931"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack-remote-failure/run.stdout": {
+      "bytes": 11852,
+      "sha256": "8e6d544c3e8bd0f830b9c9ab4b62527998ef809b287cb3ac255a8470c065aad8"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-thread-cpu-admission-preparation/collection.json": {
+      "bytes": 3837,
+      "sha256": "b293c9b4dec3a1ed503dc0ae48c7859a11077dbe6b07e5540f0b6868f62ebfd3"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-thread-cpu-admission-preparation/preparation.json": {
+      "bytes": 1128,
+      "sha256": "b7188737ad454e8fcc6dc546afbfd8f9e097a1d5cfa0200bf7113fa8d95f91ab"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-thread-cpu-admission-preparation/prepare-thread-cpu-receivers-v3.py": {
+      "bytes": 11034,
+      "sha256": "0c61bc2ea9f4de54635d1b3fd4cb147514a4bd3b314693f783d4ce25c8c79f7e"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-thread-cpu-admission-preparation/prepare-thread-cpu-source-v1.py": {
+      "bytes": 4779,
+      "sha256": "333f1b1812435d8eab80534e837876976ca501cade0c08150f76fe70969177d3"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-thread-cpu-admission-preparation/prepare-thread-cpu-source-v2.py": {
+      "bytes": 4921,
+      "sha256": "a3264344c9cebcd24ff721f40aa42458a112fbbb9931c8f3ceae54de9743da54"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-thread-cpu-admission-preparation/prepare-thread-cpu-source-v3.py": {
+      "bytes": 5344,
+      "sha256": "d6945eec8333e5494c8ad0a95ccf95603bae4bef5bfbd77ade92de322dc10346"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-thread-cpu-admission-preparation/prepare-windows-matrix-batch-source-admission-v1.py": {
+      "bytes": 4927,
+      "sha256": "b178f4e3a76222480c4bc9b7144ac430d547b25ef0e30837de8b48522da534e2"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-thread-cpu-admission-preparation/prepared/admit-windows-thread-cpu-profile-delivery-v1.py": {
+      "bytes": 6720,
+      "sha256": "2e66fa2eeb099214044456d4dbf367306b9f6f91934e65220fb517f699b0ede3"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-thread-cpu-admission-preparation/prepared/collect-windows-thread-cpu-profile-v1.py": {
+      "bytes": 30461,
+      "sha256": "60f38bc5cfd875985de70c56b4e521c666532fc63787ec5ba9412120b4e26906"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-thread-cpu-admission-preparation/prepared/preparation.json": {
+      "bytes": 2623,
+      "sha256": "b03abd7442c3435b0ae1ab6c7551ac36096e39381957bb0812f772da38c6184a"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-thread-cpu-admission-preparation/prepared/replay-windows-thread-cpu-profile-supervision-v1.py": {
+      "bytes": 6156,
+      "sha256": "7e4f2aaf3c00b547314374c6018f290579ad1ea2b860a6708412b11379d9df66"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-thread-cpu-admission-preparation/source-stage-ownership-v3.json": {
+      "bytes": 653,
+      "sha256": "744cfb07d29df4615ec575dbc463ae149801aaa063324a5641122049c2cf445d"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-thread-cpu-admission-preparation/terminal-native-api/artifacts.json": {
+      "bytes": 741,
+      "sha256": "809ff0619e59f06cfeaba52aa227bfb0d17ab612648c8c9feb0f6f1e5a66797f"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-thread-cpu-admission-preparation/terminal-native-api/feature-jobs.json": {
+      "bytes": 37654,
+      "sha256": "c8e838f6eda943102e219dcdc76df6033459fd17f787beac9c0f81819fb7f145"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-thread-cpu-admission-preparation/terminal-native-api/feature-run.json": {
+      "bytes": 11815,
+      "sha256": "2882f207c85eedf86d90357d581eec7ee43d1e75771a7b396f214a4b543f1cd2"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-thread-cpu-admission-preparation/terminal-native-api/job.json": {
+      "bytes": 3943,
+      "sha256": "32274b3c998683e2d93582e979549a4dc0303d64a579ce5c9721bcf5fea89d22"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-thread-cpu-admission-preparation/terminal-native-api/job.log": {
+      "bytes": 56856,
+      "sha256": "976a66b2b11d8b1167b401ca190931fcd32ce8dd040eee0b1e32c142f2168df0"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-thread-cpu-admission-preparation/terminal-native-api/run.json": {
+      "bytes": 11869,
+      "sha256": "efcdfdda6604185b4999917dca4287acfc84dde22cd1942a7327d7a092705031"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-thread-cpu-admission-preparation/test-thread-cpu-receiver-bindings-v1.py": {
+      "bytes": 5769,
+      "sha256": "bdcc706a187b226798b9b0964fe92778768e3f1b8b53f9ddde49a8248dcc32d4"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-thread-cpu-admission-preparation/thread-cpu-receiver-binding-controls-v1.json": {
+      "bytes": 835,
+      "sha256": "60c23a228f1c0ebdc62c34aa09ec3d4005ed6e67343e6148e350393b0bbaff8a"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-thread-cpu-admission-preparation/thread-cpu-receiver-binding-controls-v1.stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-thread-cpu-admission-preparation/thread-cpu-receiver-binding-controls-v1.stdout.log": {
+      "bytes": 48,
+      "sha256": "5468605d89ad94358d286b6538be8c6e09e29ae357095d6a86eaef6f96811f8a"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-thread-cpu-admission-preparation/thread-cpu-receivers-prepare-v3.stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-thread-cpu-admission-preparation/thread-cpu-receivers-prepare-v3.stdout.log": {
+      "bytes": 281,
+      "sha256": "af5e350b3b07a98b2ccf8c998dd451a15427da9fa0a91d1fd26832284c49ee39"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-thread-cpu-admission-preparation/thread-cpu-source-preparation-derivation-v1.json": {
+      "bytes": 1175,
+      "sha256": "ba61740c12ff1a4421e4beccf470676e65e8aa4e6f662357c640cbddec61a367"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-thread-cpu-return-preparation/artifacts.json": {
+      "bytes": 732,
+      "sha256": "b517f074fe63ee12a35497619b519ea9499526475fd4b95e586f042521699062"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-thread-cpu-return-preparation/collection.json": {
+      "bytes": 825,
+      "sha256": "1060f927f1ae754808de45051db933b1b3ff6b715fc8c10cbbf3f9fc46d9dc1b"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-thread-cpu-return-preparation/job.json": {
+      "bytes": 2687,
+      "sha256": "bc0226a03522ae93546db931beab2d7813206385530cde164dbe769f44aa9709"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-thread-cpu-return-preparation/job.log": {
+      "bytes": 26727,
+      "sha256": "7b236043c0ca6787f00f5c5f717638214472a3c579d2de72ab9078fac22e81d3"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-thread-cpu-return-preparation/preparation.json": {
+      "bytes": 525,
+      "sha256": "eb54dfb10c3276d7ec0233df7052b21e9b875ccb8e9f01d515a3606e1f0d1cf1"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-thread-cpu-return-preparation/receiver-derivation-v1.json": {
+      "bytes": 667,
+      "sha256": "ef53028e570a2ff858a49eb9fdcc08f67df0a772b2af18232734b634c9ed83a5"
+    },
+    "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-thread-cpu-return-preparation/run.json": {
+      "bytes": 11846,
+      "sha256": "75203cab5078793c6072c4fa6d0ab741bdffbaae68fcbaaf2363fded13016271"
+    },
+    "docs/research/nemotron-windows-q8-apack-remote-replay.md": {
+      "bytes": 5458,
+      "sha256": "157b3e7d951fb592f09bc1d0b7f4a31dfb1e55509665fa02724c9c2cce9cb594"
+    },
+    "docs/research/nemotron-windows-thread-cpu-bundle-receive.md": {
+      "bytes": 2612,
+      "sha256": "de547e932d8d9bd03dbf64742253868ee8ad90ee7c44eeb870121a12d828d3f3"
+    },
+    "docs/research/nemotron-windows-thread-cpu-replay.md": {
+      "bytes": 4009,
+      "sha256": "21c6d75f80305c33c5a77becf03899d468c346fa2b9ab5f96a236b64728ad865"
+    },
+    "tools/nemotron-diarization/freeze_remote_q8_apack_replay.py": {
+      "bytes": 3896,
+      "sha256": "6f55c54ee3dca7ea26861e36e35a954511fa970a9754e298ed013002b5efc72d"
+    },
+    "tools/nemotron-diarization/freeze_remote_thread_cpu_replay.py": {
+      "bytes": 4077,
+      "sha256": "34dccb4b4964e9ba6540c356d6a92cd37195050aaa5201f48d59d0aa2162de0a"
+    },
+    "tools/nemotron-diarization/freeze_thread_cpu_bundle_receiver.py": {
+      "bytes": 3212,
+      "sha256": "3df16039e9ecb00cfeabad920b1ef65f0375c380fe2b99eb36b46afd18ff6cc8"
+    },
+    "tools/nemotron-diarization/receive_q8_apack_bundle.py": {
+      "bytes": 15532,
+      "sha256": "b0376fd4271464e4d2fc79db7083028945c8dec428bed14fbc47dbddb9c2cead"
+    },
+    "tools/nemotron-diarization/receive_thread_cpu_bundle.py": {
+      "bytes": 17675,
+      "sha256": "4f5f30613e5245fedb5ba8936bfd2b6c0ec3c8689329b04cf56d2e42e1054ecf"
+    },
+    "tools/nemotron-diarization/remote-q8-apack-replay.protocol.json": {
+      "bytes": 18183,
+      "sha256": "6053c9cd14e21a5810f3fde0d47a9ba44da2e325e7127ace881f59b0a13c1a5d"
+    },
+    "tools/nemotron-diarization/remote-thread-cpu-replay.protocol.json": {
+      "bytes": 25164,
+      "sha256": "b7614d9205a59fa79a02cfecfb14c70107a55aa6da9e3bad8325d3649de798c8"
+    },
+    "tools/nemotron-diarization/remote_q8_apack_replay.py": {
+      "bytes": 22591,
+      "sha256": "6b7f4c6d3a9a672ad0a89c790fa0d51608adad4c3667395c2da1329c68e48b08"
+    },
+    "tools/nemotron-diarization/remote_thread_cpu_replay.py": {
+      "bytes": 20063,
+      "sha256": "3b58c3c8c320c6bacf45b2e0b7a9649da9b382ffed6b5af890a6795408b1a14c"
+    },
+    "tools/nemotron-diarization/test_receive_thread_cpu_bundle.py": {
+      "bytes": 11027,
+      "sha256": "964b878f4ae165016a84beec7a5f92eefe864ddb9eae6754f6b3b54f531f401f"
+    },
+    "tools/nemotron-diarization/test_remote_q8_apack_replay.py": {
+      "bytes": 17633,
+      "sha256": "76721c5809e5f25acbe2a90da7ff19f9892d241c49815da7480028ec4bae9eb7"
+    },
+    "tools/nemotron-diarization/test_remote_thread_cpu_replay.py": {
+      "bytes": 13638,
+      "sha256": "994fcbd8f5b1601eeda48cddc10f861cdea396bab08d0a059c68eb328d3a3e7f"
+    }
+  },
+  "limits": [
+    "Separate bounded result return with unchanged4GiB floor; original complete-native8GiB floor remains enforced remotely.",
+    "Exact terminal native/remote/archive/bundle/result identities; source-only proof and complete result collection retain separate scope.",
+    "Existing bounded process helper is hashed before execution and compiled from that same captured byte string. No project helper imported before that binding.",
+    "Original safe-name, JSON uniqueness, Git v2 bundle header and complete quarantine algorithms remain AST-identical. No source refs/index/object import during admission.",
+    "Raw numerical/counter/timing replay and review precede explicit result import. No native SDK/model calls or production/release claim."
+  ]
+}
