@@ -296,6 +296,19 @@ and600 local tool tests pass (seven platform skips). Original accuracy,
 deferred human review, physical desktop, fresh-machine/platform and release
 gates remain open; no main promotion is established.
 
+The separate [Windows thread CPU diagnostic](../research/nemotron-windows-thread-cpu-profile.md)
+now instruments the existing bounded wall observer with graph CPU100ns durations
+and per-region raw thread cycle counts. It preserves inference, fusion, tasks
+and all five original barrier sites. Eighteen focused local tests pass,
+including actual C adapter/error paths,256 extreme paired emission records in
+one bounded write, complete identity coverage and all97 compiler-command
+admission checks. Source-only replay admits all3,425 canonical files and only
+the declared CPU observer delta. The new protocol binds135 tools,2,880 repository
+references and45 local imports. Actual Windows clock/graph controls, the fixed
+four full-model calls, complete delivery and interpretation remain pending.
+CPU cycles are not converted to time; successful profiling would supply no
+speed, accuracy, public runtime, packaging or release pass.
+
 Remaining release work as of 2026-10-17:
 
 - Meet the original 20% DER target on every required meeting slice. The two AMI
