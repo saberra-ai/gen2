@@ -132,3 +132,16 @@ now reuses the fixed reviewed raw validation blocks with graph-only CPU fields,
 complete source/command proofs and seven passing focused controls. Actual native
 and return identities remain unset, and no actual new artifact is replayed.
 End-to-end execution and review remain required; the unmet gates are unchanged.
+
+The local replay preparation at `65cd82cd540fee5ba99da725f2f89b51f16d5e32`
+now passes all thirteen feature jobs in
+[CI run 39097218996](https://github.com/saberra-ai/gen2/actions/runs/39097218996),
+and its source reviews are complete. On 2026-10-18 the subsequent
+`gh workflow run diarization-windows-graph-cpu-profile.yml --ref codex/nemotron3-n0`
+request failed with HTTP 403: "Resource not accessible by personal access token."
+A follow-up run listing still shows only registration run39094365683; no manual
+native diagnostic was created. An authorized GitHub session must start the
+prepared workflow on that branch before actual artifact acquisition/replay can
+proceed. The current token cannot perform that action. Credentials and workflow
+guards remain unchanged. This is separate from the skipped private-app transfer;
+all original quality, human, desktop, fresh-machine and release gates stay open.

@@ -81,8 +81,16 @@ now supplies the matching raw-data replay after quarantine. Seven focused contro
 pass, including three expected receiver ASTs, mutation rejection, graph CPU
 zeros and exact nineteen-command source reconstruction against retained real
 evidence. Actual transport identities remain unset; no artifact/model is run.
-CI, review and an actual end-to-end diagnostic/return/replay still remain before
-any native timing interpretation or production/release qualification.
+Review is complete, and all thirteen feature CI jobs pass at `65cd82cd` in
+[run 39097218996](https://github.com/saberra-ai/gen2/actions/runs/39097218996).
+The subsequent manual native dispatch was rejected with HTTP 403, "Resource
+not accessible by personal access token"; no diagnostic run was created.
+The next external action is to start `diarization-windows-graph-cpu-profile.yml`
+on `codex/nemotron3-n0` through an authorized GitHub session. Preserve the exact
+resulting source/run/job/artifact identities before artifact return and replay.
+Actual end-to-end execution still remains before native timing interpretation
+or production/release qualification. No credentials or manual compute guards
+were changed to bypass the rejection.
 
 The separate [batched matrix observer control](../research/nemotron-matrix-batch-results.md)
 now passes all twelve fresh native Mac graph processes, 144 byte-exact vectors
