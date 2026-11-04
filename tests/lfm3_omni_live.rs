@@ -40,10 +40,12 @@ fn lfm3_omni_embedded_turns() -> gen2::Result<()> {
     assert!(vision.to_lowercase().contains("red"));
 
     let pcm_bytes = std::fs::read(fixtures.join("pineapple.f32le")).expect("audio fixture");
-    let pcm: Vec<_> = pcm_bytes
-        .chunks_exact(4)
-        .map(|bytes| f32::from_le_bytes(bytes.try_into().unwrap()))
-        .collect();
+    let (frames, remainder) = pcm_bytes.as_chunks::<4>();
+    assert!(
+        remainder.is_empty(),
+        "fixture must contain complete f32 samples"
+    );
+    let pcm: Vec<_> = frames.iter().copied().map(f32::from_le_bytes).collect();
     let heard = model
         .generate(Input::new().audio_pcm(pcm.clone()))
         .system("Perform ASR in English.")

@@ -21,10 +21,12 @@ fn lfm3_encodes_microphone_before_commit_and_streams_a_reply() -> gen2::Result<(
     assert!(model.capabilities().microphone);
 
     let pcm_bytes = std::fs::read(fixtures.join("pineapple.f32le")).expect("audio fixture");
-    let pcm: Vec<_> = pcm_bytes
-        .chunks_exact(4)
-        .map(|bytes| f32::from_le_bytes(bytes.try_into().unwrap()))
-        .collect();
+    let (frames, remainder) = pcm_bytes.as_chunks::<4>();
+    assert!(
+        remainder.is_empty(),
+        "fixture must contain complete f32 samples"
+    );
+    let pcm: Vec<_> = frames.iter().copied().map(f32::from_le_bytes).collect();
 
     let mut transcription = Session::new().with_system("Perform ASR in English.");
     let mut mic = model
