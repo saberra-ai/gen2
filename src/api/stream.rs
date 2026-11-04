@@ -109,6 +109,7 @@ pub enum Struggle {
 #[allow(unnameable_types)]
 pub struct TokenStream {
     rx: Receiver<ControllerEvent>,
+    before_acceptance: std::collections::VecDeque<ControllerEvent>,
     finish: Option<Finish>,
     done: bool,
     /// How many messages the engine acknowledged holding, if it has.
@@ -124,6 +125,7 @@ impl TokenStream {
     pub(crate) fn new(rx: Receiver<ControllerEvent>) -> Self {
         Self {
             rx,
+            before_acceptance: Default::default(),
             finish: None,
             done: false,
             accepted: None,
@@ -142,6 +144,35 @@ impl TokenStream {
     /// succeeded. Until then nothing about this turn is known to have landed.
     pub(crate) fn accepted(&self) -> Option<usize> {
         self.accepted
+    }
+
+    /// A microphone turn is ready once the backend acknowledges its prompt.
+    /// Preserve any context events that arrived before the acknowledgement.
+    pub(crate) fn wait_until_accepted(&mut self) -> Result<()> {
+        loop {
+            match self.rx.recv().map_err(|_| Error::ControllerGone)? {
+                ControllerEvent::Accepted { delivered } => {
+                    self.accepted = Some(delivered);
+                    return Ok(());
+                }
+                ControllerEvent::Error { code, message } => {
+                    return Err(Error::Generation { code, message });
+                }
+                ControllerEvent::Stopped => {
+                    return Err(super::turn::microphone_cancelled());
+                }
+                event @ (ControllerEvent::ContextTruncated(_)
+                | ControllerEvent::ContextCompacted { .. }) => {
+                    self.before_acceptance.push_back(event);
+                }
+                _ => {
+                    return Err(Error::Generation {
+                        code: "generation_error".into(),
+                        message: "the microphone turn ended before capture was ready".into(),
+                    });
+                }
+            }
+        }
     }
 
     /// Run to completion, concatenating every text fragment.
@@ -322,7 +353,11 @@ impl Iterator for TokenStream {
         // The sender closing without a terminal event means the controller died
         // mid-generation. That is a failure, not a normal end — a caller that
         // saw `None` here would read a truncated reply as complete.
-        let Ok(event) = self.rx.recv() else {
+        let Some(event) = self
+            .before_acceptance
+            .pop_front()
+            .or_else(|| self.rx.recv().ok())
+        else {
             self.done = true;
             return match self.finish {
                 Some(_) => None,
@@ -394,6 +429,21 @@ mod tests {
         }
         drop(tx);
         TokenStream::new(rx)
+    }
+
+    #[test]
+    fn microphone_acceptance_preserves_context_events_for_the_reply() {
+        let mut stream = stream_of(vec![
+            ControllerEvent::ContextTruncated(2),
+            ControllerEvent::Accepted { delivered: 1 },
+            ControllerEvent::Token("hello".into()),
+            ControllerEvent::Eos,
+        ]);
+        stream.wait_until_accepted().unwrap();
+        assert_eq!(stream.accepted(), Some(1));
+        let completion = stream.complete().unwrap();
+        assert_eq!(completion.dropped, 2);
+        assert_eq!(completion.text, "hello");
     }
 
     #[test]

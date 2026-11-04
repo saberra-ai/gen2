@@ -138,10 +138,50 @@ let response = stream.finish()?;
 
 Pass a recorded turn through `Input::audio_pcm`. For video, give
 `input::Video::new` image frames sampled at 2 fps and the aligned mono PCM
-soundtrack. The host decodes the container and captures microphone audio.
-Gen2 consumes completed audio inputs and streams generated speech as 24 kHz
-mono PCM. Use `OutputMode::TextAndSpeech` to receive text and audio events in
-the same stream. `response.message.content` keeps the output parts in order.
+soundtrack. The host decodes the video container. `response.message.content`
+keeps the output parts in order.
+
+### Stream a microphone turn
+
+Use `Turn::start_microphone` to start encoding while the host captures audio.
+Send finite, normalized mono 16 kHz PCM from a worker thread. Each push
+blocks until LFM3 processes that chunk and returns the number of rows added
+to the active context. Short chunks can return zero while the encoder waits
+for more samples.
+
+```rust,no_run
+use gen2::{Event, Model, Session};
+use gen2::output::OutputMode;
+
+fn voice_turn(
+    model: &Model,
+    session: &mut Session,
+    capture: impl IntoIterator<Item = Vec<f32>>,
+) -> gen2::Result<()> {
+    let mut mic = model
+        .turn(session)
+        .output_mode(OutputMode::TextAndSpeech)
+        .start_microphone()?;
+
+    for pcm in capture {
+        mic.push(&pcm)?;
+    }
+
+    let mut reply = mic.commit()?;
+    for event in &mut reply {
+        if let Event::SpeechDelta(chunk) = event? {
+            // Play chunk.samples at chunk.sample_rate (24 kHz for LFM3).
+        }
+    }
+    reply.finish()?;
+    Ok(())
+}
+```
+
+End the capture to start the reply. Use `OutputMode::Text` and Liquid AI's
+ASR system prompt for transcription. Drop the microphone turn to discard
+an unfinished capture. The host owns microphone permissions, capture,
+end-of-turn detection, and playback.
 
 See the [LFM3-Omni model card](https://huggingface.co/LiquidAI/LFM3-Omni-2B#usage-examples)
 for task prompts and the [GGUF files](https://huggingface.co/LiquidAI/LFM3-Omni-2B-GGUF/tree/main)

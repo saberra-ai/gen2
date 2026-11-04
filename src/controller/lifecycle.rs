@@ -6,6 +6,7 @@
 use std::collections::HashMap;
 use std::path::PathBuf;
 use std::sync::Arc;
+use std::sync::atomic::Ordering;
 use std::sync::mpsc::SyncSender;
 use std::time::Instant;
 
@@ -45,10 +46,11 @@ fn finalize_runtime_session(
     engine: &Engine,
     mut chat: ChatRuntime,
     metrics: &metrics::ControllerMetrics,
+    terminal_event: ControllerEvent,
 ) {
     let sid = chat.session.id();
     chat.session.stop();
-    metrics::emit_must_deliver(metrics, &chat.tx, ControllerEvent::Stopped);
+    metrics::emit_must_deliver(metrics, &chat.tx, terminal_event);
     deregister_and_end_session(engine, sid);
 }
 
@@ -72,13 +74,20 @@ pub(super) fn terminate_runtime_owned(
     outcome: RuntimeOutcome,
     metrics: &metrics::ControllerMetrics,
 ) {
+    let terminal_event = if chat.state.is_capturing_microphone()
+        && matches!(outcome, RuntimeOutcome::Failed(FailureReason::Timeout))
+    {
+        metrics.generation_timeouts.fetch_add(1, Ordering::Relaxed);
+        super::backend_failure(microphone_timeout())
+    } else {
+        ControllerEvent::Stopped
+    };
     if !chat.state.is_terminal() {
         chat.state = match outcome {
             RuntimeOutcome::Completed(r) => ChatRunState::Completed(r),
             RuntimeOutcome::Failed(f) => ChatRunState::Failed(f),
         };
     }
-    use std::sync::atomic::Ordering;
     match outcome {
         RuntimeOutcome::Completed(CompletionReason::Evicted) => {
             metrics.evictions.fetch_add(1, Ordering::Relaxed);
@@ -90,7 +99,14 @@ pub(super) fn terminate_runtime_owned(
         }
         _ => {}
     }
-    finalize_runtime_session(engine, chat, metrics);
+    finalize_runtime_session(engine, chat, metrics, terminal_event);
+}
+
+pub(super) fn microphone_timeout() -> crate::engine::ExecError {
+    crate::engine::ExecError::Coded {
+        code: "timeout".into(),
+        message: "microphone capture timed out waiting for audio".into(),
+    }
 }
 
 /// Enter [`ChatRunState::Generating`] with a fresh puller (Start / Continue / Resume).

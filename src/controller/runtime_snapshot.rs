@@ -61,6 +61,7 @@ pub struct ActiveChatSnapshot {
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 pub enum RuntimeLifecycleSnapshot {
     Idle,
+    CapturingMicrophone,
     Generating { elapsed_ms: u64 },
     Paused,
     Completed(CompletionReason),
@@ -70,6 +71,7 @@ pub enum RuntimeLifecycleSnapshot {
 fn lifecycle_from_state(state: &ChatRunState) -> RuntimeLifecycleSnapshot {
     match state {
         ChatRunState::Idle => RuntimeLifecycleSnapshot::Idle,
+        ChatRunState::CapturingMicrophone => RuntimeLifecycleSnapshot::CapturingMicrophone,
         ChatRunState::Generating { gen_started, .. } => RuntimeLifecycleSnapshot::Generating {
             elapsed_ms: gen_started.elapsed().as_millis() as u64,
         },

@@ -215,8 +215,8 @@ pub use api::event::AsyncEventStream;
 /// [`GenerationOptions`] and a [`ToolChoice`], blocking or as an
 /// [`EventStream`] of [`Event`]s.
 pub use api::{
-    Error, Event, EventStream, GenerationOptions, Input, Model, RequestSchema, Response, Result,
-    Runtime, Session, ToolChoice, ToolDefinition, ToolSet, Turn,
+    Error, Event, EventStream, GenerationOptions, Input, MicrophoneTurn, Model, RequestSchema,
+    Response, Result, Runtime, Session, ToolChoice, ToolDefinition, ToolSet, Turn,
 };
 /// The conversation the model is given: the role-based wire message the
 /// backends render (api_spec.md §9's `enum Message` is not yet this type).

@@ -7,10 +7,10 @@ use llama_cpp_2::mtmd::{
 use crate::engine::ExecError;
 use crate::input::Video;
 use crate::session_rt::media_util::{decode_limits, media_parts, validate_image_path};
-use crate::types::message::{Message, MessageChunk};
+use crate::types::message::{Message, MessageBody, MessageChunk, MessageContent};
 
 const PCM_SAMPLE_RATE: usize = 16_000;
-const MAX_AUDIO_SAMPLES: usize = 192 * PCM_SAMPLE_RATE;
+pub(super) const MAX_AUDIO_SAMPLES: usize = 192 * PCM_SAMPLE_RATE;
 const MAX_VIDEO_FRAMES: usize = 384;
 const MAX_RESIZED_VIDEO_PIXELS: u64 = 32 * 1024 * 1024;
 
@@ -19,19 +19,53 @@ enum Attachment {
     Video(MtmdVideoBitmap),
 }
 
+#[derive(Debug)]
+pub(super) struct MediaPrompt {
+    pub prefix: MtmdInputChunks,
+    pub microphone_suffix: Option<String>,
+}
+
 pub(super) fn tokenize(
     ctx: &MtmdContext,
-    prompt: String,
+    mut prompt: String,
     marker: &str,
     messages: &[Message],
     add_special: bool,
-) -> Result<MtmdInputChunks, ExecError> {
-    let parts = media_parts(messages).collect::<Vec<_>>();
+) -> Result<MediaPrompt, ExecError> {
+    let mut parts = media_parts(messages).collect::<Vec<_>>();
     if prompt.matches(marker).count() != parts.len() {
         return Err(ExecError::InvalidArg(
             "media marker count does not match attachments",
         ));
     }
+    let microphone_suffix = if matches!(parts.last(), Some(MessageChunk::Microphone)) {
+        if !messages.last().is_some_and(|message| {
+            message.role == "user"
+                && matches!(
+                    &message.body,
+                    MessageBody::Content { content: MessageContent::MultipleChunks(chunks) }
+                        if matches!(chunks.last(), Some(MessageChunk::Microphone))
+                )
+        }) {
+            return Err(ExecError::InvalidArg(
+                "microphone input must end the final user message",
+            ));
+        }
+        parts.pop();
+        let (prefix, suffix) = prompt.rsplit_once(marker).ok_or(ExecError::InvalidArg(
+            "microphone position missing from the chat template",
+        ))?;
+        if suffix.is_empty() {
+            return Err(ExecError::InvalidArg(
+                "microphone turn is missing an assistant prompt",
+            ));
+        }
+        let suffix = suffix.to_owned();
+        prompt.truncate(prefix.len());
+        Some(suffix)
+    } else {
+        None
+    };
     let attachments = parts
         .into_iter()
         .map(|part| match part {
@@ -48,6 +82,9 @@ pub(super) fn tokenize(
                 Ok(Attachment::Bitmap(bitmap))
             }
             MessageChunk::Video { video } => prepare_video(ctx, video).map(Attachment::Video),
+            MessageChunk::Microphone => Err(ExecError::InvalidArg(
+                "microphone must be the last attachment in a turn",
+            )),
             MessageChunk::Text { .. } => unreachable!("media parts excludes text"),
         })
         .collect::<Result<Vec<_>, _>>()?;
@@ -58,15 +95,20 @@ pub(super) fn tokenize(
             Attachment::Video(video) => video.as_bitmap(),
         })
         .collect::<Vec<_>>();
-    ctx.tokenize(
-        MtmdInputText {
-            text: prompt,
-            add_special,
-            parse_special: true,
-        },
-        &bitmaps,
-    )
-    .map_err(|err| ExecError::Other(err.into()))
+    let prefix = ctx
+        .tokenize(
+            MtmdInputText {
+                text: prompt,
+                add_special,
+                parse_special: true,
+            },
+            &bitmaps,
+        )
+        .map_err(|err| ExecError::Other(err.into()))?;
+    Ok(MediaPrompt {
+        prefix,
+        microphone_suffix,
+    })
 }
 
 fn validate_pcm(samples: &[f32], max_samples: usize) -> Result<(), ExecError> {

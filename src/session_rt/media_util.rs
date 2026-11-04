@@ -147,6 +147,7 @@ pub(crate) fn unsupported_media<'a>(
         let (capability, name) = match part {
             MessageChunk::ImageUrl { .. } => (Capabilities::IMAGES, "images"),
             MessageChunk::AudioPcm { .. } => (Capabilities::AUDIO, "audio input"),
+            MessageChunk::Microphone => (Capabilities::MICROPHONE, "microphone input"),
             MessageChunk::Video { .. } => (Capabilities::VIDEO, "video input"),
             MessageChunk::Text { .. } => return None,
         };

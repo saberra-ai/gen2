@@ -4,12 +4,16 @@ use std::sync::{
     atomic::{AtomicBool, Ordering},
 };
 
+mod microphone;
+
+use self::microphone::MicrophoneCapture;
 use super::bundle::ModelBundle;
+use super::media::MediaPrompt;
 use super::puller::TokenPuller;
 use crate::Message;
 use crate::backend::common::chat_template::ChatTemplate;
 use crate::backend::common::grammar::{GrammarMatcher, GrammarVocab};
-use crate::engine::{ExecError, HookBus, HookEvent, Settings};
+use crate::engine::{Capabilities, ExecError, HookBus, HookEvent, Settings};
 use crate::generation::{GenSpec, TokenEvent};
 use crate::kv::{
     KvLoadReport, KvLoadSpec, KvMeta, KvSaveSpec, KvSnapshot, build_blob, parse_blob,
@@ -209,8 +213,91 @@ pub(crate) struct DecodeState {
     pub ctx_cell: SessionCtxCell,
     pub cur_pos: i32,
     pub logits_i: i32,
+    microphone: Option<MicrophoneCapture>,
     /// Timestamp (ggml_time_us) when prefill started, for accurate TTFT.
     pub prefill_start_us: u64,
+}
+
+impl DecodeState {
+    pub(super) fn ready(
+        ctx_cell: SessionCtxCell,
+        cur_pos: i32,
+        logits_i: i32,
+        prefill_start_us: u64,
+    ) -> Self {
+        Self {
+            ctx_cell,
+            cur_pos,
+            logits_i,
+            prefill_start_us,
+            microphone: None,
+        }
+    }
+
+    fn prefill_media(&mut self, prompt: MediaPrompt, batch_size: u32) -> Result<usize, ExecError> {
+        if self.microphone.is_some() {
+            return Err(ExecError::InvalidArg("microphone is already capturing"));
+        }
+        let prefix_positions = prompt.prefix.total_positions();
+        let microphone = prompt
+            .microphone_suffix
+            .as_deref()
+            .map(|suffix| {
+                self.ctx_cell.with_dependent(|bundle, _| {
+                    let suffix = tokenize_chat_prompt(&bundle.model, suffix)?;
+                    if suffix.is_empty() {
+                        return Err(ExecError::InvalidArg("empty microphone prompt suffix"));
+                    }
+                    Ok(MicrophoneCapture {
+                        suffix,
+                        pcm: Vec::new(),
+                    })
+                })
+            })
+            .transpose()?;
+        let suffix_positions = microphone
+            .as_ref()
+            .map_or(0, |capture| capture.suffix.len() as i32);
+        let available = self.ctx_cell.with_dependent(|_, ctx| ctx.n_ctx()) as i32;
+        if prefix_positions <= 0
+            || self
+                .cur_pos
+                .saturating_add(prefix_positions)
+                .saturating_add(suffix_positions)
+                >= available
+        {
+            return Err(ExecError::ContextOverflow(
+                "media turn exceeds the remaining context".into(),
+            ));
+        }
+
+        self.cur_pos = self.ctx_cell.with_dependent_mut(|bundle, ctx| {
+            let mtmd = bundle
+                .mtmd_ctx
+                .as_ref()
+                .ok_or(ExecError::FeatureUnsupported("media input"))?;
+            let end = prompt
+                .prefix
+                .eval_chunks(
+                    mtmd,
+                    ctx,
+                    self.cur_pos,
+                    0,
+                    batch_size as i32,
+                    microphone.is_none(),
+                )
+                .map_err(|err| ExecError::Other(err.into()))?;
+            if microphone.is_some() {
+                ctx.start_mtmd_audio_input(mtmd)
+                    .map_err(microphone::native_error)?;
+            }
+            Ok::<_, ExecError>(end)
+        })?;
+        // MTMD computes logits for the final row only.
+        self.logits_i = -1;
+        self.microphone = microphone;
+        Ok(prefix_positions as usize)
+    }
 }
 
 /// Build a [`GrammarVocab`] straight from the GGUF's embedded vocab so
@@ -360,6 +447,14 @@ impl Session {
             Self::build_sampler_and_grammar(&effective_settings, &gen_spec, &self.bundle)?
         };
         let mut guard = self.state.lock();
+        if guard
+            .as_ref()
+            .is_some_and(|state| state.microphone.is_some())
+        {
+            return Err(ExecError::InvalidArg(
+                "commit microphone input before generation",
+            ));
+        }
         let state = guard
             .take()
             .ok_or(ExecError::InvalidArg("session already consumed"))?;
@@ -492,6 +587,11 @@ impl Session {
         let state = guard
             .as_ref()
             .ok_or(ExecError::InvalidArg("session already consumed"))?;
+        if state.microphone.is_some() {
+            return Err(ExecError::FeatureUnsupported(
+                "uncommitted microphone KV cache",
+            ));
+        }
         let sz = state.ctx_cell.with_dependent(|_, ctx| ctx.get_state_size());
         if sz == 0 {
             return Err(ExecError::Other(anyhow::anyhow!("no state available")));
@@ -547,6 +647,11 @@ impl Session {
         let state = guard
             .as_mut()
             .ok_or(ExecError::InvalidArg("session already consumed"))?;
+        if state.microphone.is_some() {
+            return Err(ExecError::FeatureUnsupported(
+                "uncommitted microphone KV cache",
+            ));
+        }
         let path = match &src {
             KvLoadSpec::Strict(p) | KvLoadSpec::Lenient(p) => p,
         };
@@ -1034,6 +1139,7 @@ impl Session {
             stopped: Arc::new(AtomicBool::new(false)),
             state: Arc::new(Mutex::new(Some(DecodeState {
                 ctx_cell,
+                microphone: None,
                 cur_pos,
                 logits_i: (last_batch_tokens - 1).max(0),
                 prefill_start_us,
@@ -1064,6 +1170,11 @@ impl Session {
         strict_request: Option<GenSpec>,
     ) -> Result<Self, ExecError> {
         let has_media = media_parts(&messages).next().is_some();
+        let has_microphone =
+            media_parts(&messages).any(|part| matches!(part, MessageChunk::Microphone));
+        if has_microphone && !bundle.capabilities.contains(Capabilities::MICROPHONE) {
+            return Err(ExecError::FeatureUnsupported("microphone input"));
+        }
         if let Some(request) = &strict_request {
             if !request.require_full_context || !request.max_tokens.is_some_and(|n| n > 0) {
                 return Err(ExecError::InvalidArg(
@@ -1117,7 +1228,7 @@ impl Session {
         let merged_prompt = merge_prompts(&meta_prompt, system_prompt, persona);
 
         if strict_request.is_none() {
-            tracing::debug!("Session prompt messages: {:?}", messages);
+            tracing::debug!(message_count = messages.len(), "preparing session prompt");
         }
 
         // Build chat template FIRST so the system-injection logic below
@@ -1263,7 +1374,7 @@ impl Session {
         // Context overflow: truncate old messages until conversation fits.
         // Generic driver in session_rt::truncate — Phase 3 refactor.
         let original_message_count = messages.len();
-        if strict_request.is_none() {
+        if strict_request.is_none() && !has_microphone {
             let tokenizer = Arc::new(super::tokenizer_adapter::LlamaSessionTokenizer {
                 bundle: bundle.clone(),
                 chat_template: chat_template.clone(),
@@ -1339,26 +1450,25 @@ impl Session {
                 .mtmd_marker
                 .as_deref()
                 .unwrap_or(mtmd_default_marker());
-            let chunks = super::media::tokenize(mtmd_ctx, prompt, marker, &messages, true)?;
-            if chunks.total_positions() >= actual_context as i32 {
-                return Err(ExecError::InvalidArg(
-                    "media prompt exceeds available context",
-                ));
+            let prompt = super::media::tokenize(mtmd_ctx, prompt, marker, &messages, true)?;
+            let mut state = DecodeState {
+                ctx_cell,
+                cur_pos: 0,
+                logits_i: -1,
+                microphone: None,
+                prefill_start_us: llama_cpp_2::ggml_time_us() as u64,
+            };
+            let prompt_tokens = state.prefill_media(prompt, batch_size)?;
+            if state.microphone.is_none() {
+                hooks.emit(HookEvent::SessionPrefillStart {
+                    session_id: id,
+                    prompt_tokens,
+                });
+                hooks.emit(HookEvent::SessionPrefillOk {
+                    session_id: id,
+                    prompt_tokens,
+                });
             }
-            // Evaluate chunks to prefill
-            let n_past = ctx_cell
-                .with_dependent_mut(|_, ctx| {
-                    chunks.eval_chunks(mtmd_ctx, ctx, 0, 0, batch_size as i32, true)
-                })
-                .map_err(|e| ExecError::Other(e.into()))?;
-            hooks.emit(HookEvent::SessionPrefillStart {
-                session_id: id,
-                prompt_tokens: n_past as usize,
-            });
-            hooks.emit(HookEvent::SessionPrefillOk {
-                session_id: id,
-                prompt_tokens: n_past as usize,
-            });
 
             return Ok(Self {
                 id,
@@ -1368,19 +1478,7 @@ impl Session {
                 chat_template,
                 paused: Arc::new(AtomicBool::new(false)),
                 stopped: Arc::new(AtomicBool::new(false)),
-                // For MTMD, `eval_chunks(.., logits_last = true)` computes
-                // logits only for the final token, so the first sample must
-                // read the *last* logits via index -1 — not an absolute
-                // position. (`n_past - 1` points at a token whose logits
-                // were never materialized, which aborts the C sampler with
-                // `GGML_ASSERT(logits != nullptr)`.) This mirrors the
-                // upstream llama-cpp-2 mtmd example: `sampler.sample(ctx, -1)`.
-                state: Arc::from(Mutex::new(Some(DecodeState {
-                    ctx_cell,
-                    cur_pos: n_past,
-                    logits_i: -1,
-                    prefill_start_us: llama_cpp_2::ggml_time_us() as u64,
-                }))),
+                state: Arc::new(Mutex::new(Some(state))),
                 messages: RwLock::new(messages),
                 initial_messages_dropped: 0, // MTMD path has no truncation
                 ctx_size,
@@ -1437,6 +1535,7 @@ impl Session {
             stopped: Arc::new(AtomicBool::new(false)),
             state: Arc::new(Mutex::new(Some(DecodeState {
                 ctx_cell,
+                microphone: None,
                 cur_pos: total_tokens,
                 logits_i: (last_batch_tokens - 1),
                 prefill_start_us,
@@ -1518,46 +1617,37 @@ impl Session {
             "<|im_end|>\n{}",
             prompt.strip_prefix("<|startoftext|>").unwrap_or(&prompt)
         );
-        let chunks = super::media::tokenize(mtmd, continuation, marker, &delta, false)?;
-        let positions = chunks.total_positions();
+        let prompt = super::media::tokenize(mtmd, continuation, marker, &delta, false)?;
         let mut guard = self.state.lock();
         let st = guard
             .as_mut()
             .ok_or(ExecError::InvalidArg("session already consumed"))?;
-        let available = st.ctx_cell.with_dependent(|_, ctx| ctx.n_ctx()) as i32;
-        if positions <= 0 || st.cur_pos.saturating_add(positions) >= available {
-            return Err(ExecError::ContextOverflow(
-                "LFM3-Omni turn exceeds the remaining context".into(),
-            ));
-        }
         let batch_size = self
             .settings
             .system
             .batch_size
             .unwrap_or(DEFAULT_BATCH_SIZE);
         st.prefill_start_us = llama_cpp_2::ggml_time_us() as u64;
-        self.hooks.emit(HookEvent::SessionPrefillStart {
-            session_id: self.id,
-            prompt_tokens: positions as usize,
-        });
-        match st.ctx_cell.with_dependent_mut(|_, ctx| {
-            chunks.eval_chunks(mtmd, ctx, st.cur_pos, 0, batch_size as i32, true)
-        }) {
-            Ok(position) => {
-                st.cur_pos = position;
-                st.logits_i = -1;
-            }
+        let prompt_tokens = match st.prefill_media(prompt, batch_size) {
+            Ok(positions) => positions,
             Err(err) => {
                 *guard = None;
                 self.stopped.store(true, Ordering::Release);
-                return Err(ExecError::Other(err.into()));
+                return Err(err);
             }
+        };
+        if st.microphone.is_none() {
+            self.hooks.emit(HookEvent::SessionPrefillStart {
+                session_id: self.id,
+                prompt_tokens,
+            });
+            self.hooks.emit(HookEvent::SessionPrefillOk {
+                session_id: self.id,
+                prompt_tokens,
+            });
         }
         self.messages.write().extend(new_messages);
-        self.hooks.emit(HookEvent::SessionPrefillOk {
-            session_id: self.id,
-            prompt_tokens: positions as usize,
-        });
+
         Ok(0)
     }
 
@@ -1838,6 +1928,15 @@ impl BackendSession for Session {
     }
     fn append_messages(&self, new_messages: Vec<Message>) -> Result<usize, ExecError> {
         Session::append_messages(self, new_messages)
+    }
+    fn is_capturing_microphone(&self) -> bool {
+        Session::is_capturing_microphone(self)
+    }
+    fn push_microphone(&self, samples: &[f32]) -> Result<usize, ExecError> {
+        Session::push_microphone(self, samples)
+    }
+    fn commit_microphone(&self) -> Result<Vec<f32>, ExecError> {
+        Session::commit_microphone(self)
     }
     fn as_kv_snapshot(&self) -> Option<&dyn KvSnapshotTrait> {
         if self.strict_request.is_some() {

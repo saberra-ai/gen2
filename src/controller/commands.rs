@@ -5,19 +5,20 @@ use std::sync::Arc;
 use std::sync::atomic::Ordering;
 use std::time::{Duration, Instant};
 
-use crate::engine::EmbedLoadRequest;
-use crate::generation::TokenEvent;
+use crate::engine::{EmbedLoadRequest, ExecError};
+use crate::generation::{GenSpec, TokenEvent};
 
 use crate::residency::{ResidentRuntime, RuntimeKind};
 use crate::residency_policy::{
     estimate_resident_mb_for_path, estimate_resident_mb_for_path_offloaded,
 };
 use crate::session_rt::SessionSpec;
+use crate::types::message::{Message, MessageBody, MessageChunk, MessageContent};
 
 use super::lifecycle::{
     RuntimeOutcome, apply_generation_defaults, attach_generating_puller, build_load_request,
-    deregister_and_end_session, evict_lru, runtime_outcome_from_state, start_ephemeral,
-    terminate_runtime, terminate_runtime_owned,
+    deregister_and_end_session, evict_lru, microphone_timeout, runtime_outcome_from_state,
+    start_ephemeral, terminate_runtime, terminate_runtime_owned,
 };
 use super::metrics::{emit_best_effort, emit_must_deliver};
 use super::observability::{EmitResult, Forwarder};
@@ -205,9 +206,8 @@ fn attempt_load(
     Ok(())
 }
 
-/// Keepwarm: persist every quiesced chat's KV to the store. Generating
-/// chats are skipped — mid-decode the transcript lacks the partial
-/// reply, so a restore would diverge. Budget enforced after.
+/// Keepwarm: persist quiesced chats. An in-flight turn has partial input or
+/// output in KV that a later transcript cannot reconstruct.
 fn save_all_chat_kv(state: &ControllerState) {
     use crate::kv::store;
     if !store::keepwarm_enabled() || state.chats.is_empty() {
@@ -218,7 +218,7 @@ fn save_all_chat_kv(state: &ControllerState) {
         return;
     }
     for (chat_id, chat) in state.chats.iter() {
-        if matches!(chat.state, ChatRunState::Generating { .. }) {
+        if chat.state.is_in_flight() {
             continue;
         }
         let path = store::path_for_chat(&dir, chat_id);
@@ -301,10 +301,7 @@ pub(super) fn maybe_idle_unload_llm(state: &mut ControllerState) {
         return;
     };
     let now = chrono::Utc::now().timestamp();
-    let any_active = state
-        .chats
-        .values()
-        .any(|c| matches!(c.state, ChatRunState::Generating { .. }));
+    let any_active = state.chats.values().any(|c| c.state.is_in_flight());
     if any_active {
         state.last_llm_activity_unix = now;
         return;
@@ -534,7 +531,7 @@ fn handle_model_command(state: &mut ControllerState, cmd: ControllerCmd) -> Cont
             let active = state
                 .chats
                 .values()
-                .filter(|c| c.state.is_generating())
+                .filter(|c| c.state.is_in_flight())
                 .count();
             if active > 0 {
                 tracing::info!(
@@ -711,6 +708,96 @@ fn handle_status_command(state: &mut ControllerState, cmd: ControllerCmd) -> Con
     }
 }
 
+fn has_microphone(messages: &[Message]) -> bool {
+    messages.iter().any(|message| {
+        matches!(&message.body, MessageBody::Content { content: MessageContent::MultipleChunks(chunks) }
+            if chunks.iter().any(|chunk| matches!(chunk, MessageChunk::Microphone)))
+    })
+}
+
+fn attach_user_turn(
+    chat: &mut ChatRuntime,
+    spec: GenSpec,
+    microphone: bool,
+) -> Result<(), ExecError> {
+    if microphone {
+        if !chat.session.is_capturing_microphone() {
+            return Err(ExecError::FeatureUnsupported(
+                "incremental microphone input",
+            ));
+        }
+        chat.last_gen_spec = spec;
+        chat.state = ChatRunState::CapturingMicrophone;
+    } else {
+        let puller = chat.session.pull(spec.clone())?;
+        attach_generating_puller(chat, puller, spec);
+    }
+    chat.last_used = Instant::now();
+    Ok(())
+}
+
+fn handle_microphone_command<T>(
+    state: &mut ControllerState,
+    chat_id: &str,
+    resp: std::sync::mpsc::Sender<Result<T, ExecError>>,
+    work: impl FnOnce(&mut ChatRuntime) -> Result<T, ExecError>,
+) {
+    let timeout = state.generation_timeout();
+    let Some(chat) = state
+        .chats
+        .get_mut(chat_id)
+        .filter(|chat| chat.state.is_capturing_microphone())
+    else {
+        let _ = resp.send(Err(ExecError::InvalidArg(
+            "no microphone capture is active",
+        )));
+        return;
+    };
+    if chat.last_used.elapsed() >= timeout {
+        let _ = resp.send(Err(microphone_timeout()));
+        terminate_runtime(
+            &state.engine,
+            &mut state.chats,
+            chat_id,
+            RuntimeOutcome::Failed(FailureReason::Timeout),
+            state.metrics.as_ref(),
+        );
+        return;
+    }
+
+    let (result, failed) = match catch_unwind(AssertUnwindSafe(|| work(chat))) {
+        Ok(result) => {
+            let failed = result.is_err()
+                && (!chat.session.is_capturing_microphone() || chat.session.is_poisoned());
+            (result, failed)
+        }
+        Err(_) => (
+            Err(ExecError::SessionPoisoned(
+                "microphone prefill panicked".into(),
+            )),
+            true,
+        ),
+    };
+    if result.is_ok() {
+        chat.last_used = Instant::now();
+    }
+    let reply_dropped = resp.send(result).is_err();
+    if failed || reply_dropped {
+        let outcome = if failed {
+            RuntimeOutcome::Failed(FailureReason::GenerationError)
+        } else {
+            RuntimeOutcome::Completed(CompletionReason::ReceiverDropped)
+        };
+        terminate_runtime(
+            &state.engine,
+            &mut state.chats,
+            chat_id,
+            outcome,
+            state.metrics.as_ref(),
+        );
+    }
+}
+
 fn handle_chat_command(state: &mut ControllerState, cmd: ControllerCmd) -> ControlFlow {
     match cmd {
         ControllerCmd::StartChat {
@@ -727,15 +814,14 @@ fn handle_chat_command(state: &mut ControllerState, cmd: ControllerCmd) -> Contr
             tx,
         } => {
             let pull_spec = apply_generation_defaults(&state.engine, gen_spec);
-            if let Some(chat) = state.chats.get_mut(&chat_id) {
-                if chat.state.is_generating() {
-                    chat.tx = tx.clone();
+            if let Some(chat) = state.chats.get(&chat_id) {
+                if !chat.state.allows_user_pull_start() {
                     emit_must_deliver(
                         state.metrics.as_ref(),
                         &tx,
                         ControllerEvent::Error {
                             code: "generation_error".into(),
-                            message: "chat already generating; pause/stop first".into(),
+                            message: "chat already has an active turn".into(),
                         },
                     );
                     return ControlFlow::Continue;
@@ -777,7 +863,11 @@ fn handle_chat_command(state: &mut ControllerState, cmd: ControllerCmd) -> Contr
             // history. Lenient — any identity or transcript mismatch
             // falls back to the cold path inside the backend.
             maybe_wake_llm(state);
-            let cache = if !pull_spec.require_full_context && crate::kv::store::keepwarm_enabled() {
+            let microphone = has_microphone(&messages);
+            let cache = if !microphone
+                && !pull_spec.require_full_context
+                && crate::kv::store::keepwarm_enabled()
+            {
                 let dir = crate::kv::store::kv_dir();
                 let cand = crate::kv::store::candidate_for_chat(&dir, &chat_id);
                 if cand.is_none() {
@@ -827,35 +917,42 @@ fn handle_chat_command(state: &mut ControllerState, cmd: ControllerCmd) -> Contr
                             metrics: state.metrics.clone(),
                         }),
                     );
-                    match session.pull(pull_spec.clone()) {
+                    let mut runtime = ChatRuntime {
+                        session,
+                        tx,
+                        workload: WorkloadKind::PrimaryChat,
+                        last_used: Instant::now(),
+                        last_gen_spec: pull_spec.clone(),
+                        state: ChatRunState::Idle,
+                        health: Default::default(),
+                    };
+                    match attach_user_turn(&mut runtime, pull_spec, microphone) {
                         Err(e) => {
                             deregister_and_end_session(&state.engine, sid);
                             emit_must_deliver(
                                 state.metrics.as_ref(),
-                                &tx,
+                                &runtime.tx,
                                 super::backend_failure(e),
                             );
                         }
-                        Ok(puller) => {
-                            let mut runtime = ChatRuntime {
-                                session,
-                                tx,
-                                workload: WorkloadKind::PrimaryChat,
-                                last_used: std::time::Instant::now(),
-                                last_gen_spec: pull_spec.clone(),
-                                state: ChatRunState::Idle,
-                                health: Default::default(),
-                            };
-                            attach_generating_puller(&mut runtime, puller, pull_spec);
-                            // Everything that could fail has succeeded, so the
-                            // caller may now record what the engine holds.
-                            emit_must_deliver(
+                        Ok(()) => {
+                            // The caller can now record what the engine holds.
+                            let ack = emit_must_deliver(
                                 state.metrics.as_ref(),
                                 &runtime.tx,
                                 ControllerEvent::Accepted {
                                     delivered: delivered_count,
                                 },
                             );
+                            if microphone && !matches!(ack, EmitResult::Sent) {
+                                terminate_runtime_owned(
+                                    &state.engine,
+                                    runtime,
+                                    RuntimeOutcome::Completed(CompletionReason::ReceiverDropped),
+                                    state.metrics.as_ref(),
+                                );
+                                return ControlFlow::Continue;
+                            }
                             let evicted = state.chats.insert(chat_id, runtime);
                             if let Some(evicted_chat) = evicted {
                                 terminate_runtime_owned(
@@ -897,7 +994,19 @@ fn handle_chat_command(state: &mut ControllerState, cmd: ControllerCmd) -> Contr
                 );
                 return ControlFlow::Continue;
             }
+            let microphone = has_microphone(&new_messages);
             if let Some(chat) = state.chats.get_mut(&chat_id) {
+                if !chat.state.allows_user_pull_start() || (microphone && chat.state.is_paused()) {
+                    emit_must_deliver(
+                        state.metrics.as_ref(),
+                        &tx,
+                        ControllerEvent::Error {
+                            code: "generation_error".into(),
+                            message: "chat cannot start a new turn in its current state".into(),
+                        },
+                    );
+                    return ControlFlow::Continue;
+                }
                 chat.tx = tx.clone();
                 // The stats forwarder was registered with the first turn's
                 // channel; point it at this turn's, or every continuation's
@@ -912,38 +1021,24 @@ fn handle_chat_command(state: &mut ControllerState, cmd: ControllerCmd) -> Contr
                         metrics: state.metrics.clone(),
                     }),
                 );
-                if chat.state.is_generating() {
-                    emit_must_deliver(
-                        state.metrics.as_ref(),
-                        &tx,
-                        ControllerEvent::Error {
-                            code: "generation_error".into(),
-                            message: "chat already generating; pause/stop first".into(),
-                        },
-                    );
-                    return ControlFlow::Continue;
-                }
                 let appended = new_messages.len();
-                match chat.session.append_messages(new_messages) {
-                    Err(e) => {
-                        emit_must_deliver(state.metrics.as_ref(), &tx, super::backend_failure(e));
-                        return ControlFlow::Continue;
-                    }
-                    Ok(dropped) if dropped > 0 => {
-                        emit_must_deliver(
-                            state.metrics.as_ref(),
-                            &tx,
-                            ControllerEvent::ContextTruncated(dropped),
-                        );
-                    }
-                    _ => {}
-                }
-
-                let pull_spec = apply_generation_defaults(&state.engine, gen_spec);
-                match chat.session.pull(pull_spec.clone()) {
-                    Ok(puller) => {
-                        attach_generating_puller(chat, puller, pull_spec);
-                        emit_must_deliver(
+                let prepared = chat
+                    .session
+                    .append_messages(new_messages)
+                    .and_then(|dropped| {
+                        if dropped > 0 {
+                            emit_must_deliver(
+                                state.metrics.as_ref(),
+                                &tx,
+                                ControllerEvent::ContextTruncated(dropped),
+                            );
+                        }
+                        let spec = apply_generation_defaults(&state.engine, gen_spec);
+                        attach_user_turn(chat, spec, microphone)
+                    });
+                match prepared {
+                    Ok(()) => {
+                        let ack = emit_must_deliver(
                             state.metrics.as_ref(),
                             &chat.tx,
                             ControllerEvent::Accepted {
@@ -953,9 +1048,27 @@ fn handle_chat_command(state: &mut ControllerState, cmd: ControllerCmd) -> Contr
                                 delivered: appended,
                             },
                         );
+                        if microphone && !matches!(ack, EmitResult::Sent) {
+                            terminate_runtime(
+                                &state.engine,
+                                &mut state.chats,
+                                &chat_id,
+                                RuntimeOutcome::Completed(CompletionReason::ReceiverDropped),
+                                state.metrics.as_ref(),
+                            );
+                        }
                     }
                     Err(e) => {
                         emit_must_deliver(state.metrics.as_ref(), &tx, super::backend_failure(e));
+                        if microphone {
+                            terminate_runtime(
+                                &state.engine,
+                                &mut state.chats,
+                                &chat_id,
+                                RuntimeOutcome::Failed(FailureReason::StartSessionFailed),
+                                state.metrics.as_ref(),
+                            );
+                        }
                     }
                 }
             } else {
@@ -991,6 +1104,26 @@ fn handle_chat_command(state: &mut ControllerState, cmd: ControllerCmd) -> Contr
             }
             ControlFlow::Continue
         }
+        ControllerCmd::PushMicrophone {
+            chat_id,
+            samples,
+            resp,
+        } => {
+            handle_microphone_command(state, &chat_id, resp, |chat| {
+                chat.session.push_microphone(&samples)
+            });
+            ControlFlow::Continue
+        }
+        ControllerCmd::CommitMicrophone { chat_id, resp } => {
+            handle_microphone_command(state, &chat_id, resp, |chat| {
+                let samples = chat.session.commit_microphone()?;
+                let spec = chat.last_gen_spec.clone();
+                let puller = chat.session.pull(spec.clone())?;
+                attach_generating_puller(chat, puller, spec);
+                Ok(samples)
+            });
+            ControlFlow::Continue
+        }
         ControllerCmd::StopChat { chat_id } => {
             terminate_runtime(
                 &state.engine,
@@ -1005,7 +1138,8 @@ fn handle_chat_command(state: &mut ControllerState, cmd: ControllerCmd) -> Contr
             if let Some(chat) = state.chats.get_mut(&chat_id) {
                 // These low-level commands have no reply channel. Refuse the
                 // unsupported operation without changing a live strict stream.
-                if chat.last_gen_spec.require_full_context
+                if chat.state.is_capturing_microphone()
+                    || chat.last_gen_spec.require_full_context
                     || chat.last_gen_spec.output_mode != crate::generation::OutputMode::Text
                 {
                     tracing::warn!("pause/resume unsupported for this request; use cancellation");
@@ -1031,7 +1165,8 @@ fn handle_chat_command(state: &mut ControllerState, cmd: ControllerCmd) -> Contr
             if let Some(chat) = state.chats.get_mut(&chat_id) {
                 // These low-level commands have no reply channel. Refuse the
                 // unsupported operation without changing a live strict stream.
-                if chat.last_gen_spec.require_full_context
+                if chat.state.is_capturing_microphone()
+                    || chat.last_gen_spec.require_full_context
                     || chat.last_gen_spec.output_mode != crate::generation::OutputMode::Text
                 {
                     tracing::warn!("pause/resume unsupported for this request; use cancellation");
@@ -1172,6 +1307,8 @@ pub(super) fn dispatch_cmd(cmd: ControllerCmd, state: &mut ControllerState) -> C
         }
         ControllerCmd::StartChat { .. }
         | ControllerCmd::ContinueChat { .. }
+        | ControllerCmd::PushMicrophone { .. }
+        | ControllerCmd::CommitMicrophone { .. }
         | ControllerCmd::StopChat { .. }
         | ControllerCmd::PauseChat { .. }
         | ControllerCmd::ResumeChat { .. } => handle_chat_command(state, cmd),
@@ -1194,15 +1331,33 @@ pub(super) fn dispatch_cmd(cmd: ControllerCmd, state: &mut ControllerState) -> C
 const MAINTENANCE_INTERVAL: Duration = Duration::from_millis(250);
 
 pub(super) fn tick_active_chats(state: &mut ControllerState, tick_busy: Duration) {
+    let generation_timeout = state.generation_timeout();
     let due = state
         .last_maintenance
         .is_none_or(|at| at.elapsed() >= MAINTENANCE_INTERVAL);
     if due {
         state.last_maintenance = Some(Instant::now());
+        let expired: Vec<_> = state
+            .chats
+            .iter()
+            .filter(|(_, chat)| {
+                chat.state.is_capturing_microphone()
+                    && chat.last_used.elapsed() >= generation_timeout
+            })
+            .map(|(id, _)| id.clone())
+            .collect();
+        for id in expired {
+            terminate_runtime(
+                &state.engine,
+                &mut state.chats,
+                &id,
+                RuntimeOutcome::Failed(FailureReason::Timeout),
+                state.metrics.as_ref(),
+            );
+        }
         run_residency_maintenance(state);
     }
 
-    let generation_timeout = state.generation_timeout();
     let metrics = state.metrics.clone();
     let metrics_ref = metrics.as_ref();
     let sched_views = scheduler::views(&state.chats);

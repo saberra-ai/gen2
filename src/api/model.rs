@@ -149,6 +149,7 @@ impl Model {
             text: true,
             images: caps.contains(crate::engine::Capabilities::IMAGES),
             audio: caps.contains(crate::engine::Capabilities::AUDIO),
+            microphone: caps.contains(crate::engine::Capabilities::MICROPHONE),
             video: caps.contains(crate::engine::Capabilities::VIDEO),
             speech: caps.contains(crate::engine::Capabilities::SPEECH),
             // Local backends render tool declarations through the chat
@@ -313,6 +314,8 @@ pub struct ModelCapabilities {
     pub images: bool,
     /// Accepts audio on the input.
     pub audio: bool,
+    /// Can prefill microphone audio while it is being captured.
+    pub microphone: bool,
     /// Accepts prepared video, including a soundtrack.
     pub video: bool,
     /// Generates spoken audio.

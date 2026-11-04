@@ -403,6 +403,30 @@ impl<'a> Chat<'a> {
 
     /// Dispatch the turn, handing back the stream and the session to append to.
     pub(crate) fn begin(self) -> Result<(TokenStream, &'a mut Session)> {
+        self.begin_with_wire_tail(Vec::new())
+    }
+
+    pub(crate) fn begin_microphone(
+        self,
+        staged: &[Message],
+    ) -> Result<(TokenStream, &'a mut Session)> {
+        use crate::types::message::{MessageBody, MessageChunk, MessageContent};
+        let mut wire_tail = staged.to_vec();
+        wire_tail.push(Message {
+            role: "user".into(),
+            body: MessageBody::Content {
+                content: MessageContent::MultipleChunks(vec![MessageChunk::Microphone]),
+            },
+            name: None,
+            tool_call_id: None,
+        });
+        self.begin_with_wire_tail(wire_tail)
+    }
+
+    fn begin_with_wire_tail(
+        self,
+        wire_tail: Vec<Message>,
+    ) -> Result<(TokenStream, &'a mut Session)> {
         let engine = self.engine;
         let session = self.session;
         // Which engine's runtime state this turn is about (api_spec.md §17):
@@ -417,7 +441,7 @@ impl<'a> Chat<'a> {
         session.note_thinking(self.thinking);
         // A per-turn prompt or tool set is a different prefix from the one
         // the engine holds: build afresh, and again next turn.
-        if self.system_override.is_some() {
+        if self.system_override.is_some() || wire_tail.iter().any(|m| m.role == "assistant") {
             session.opened = false;
         }
 
@@ -430,7 +454,15 @@ impl<'a> Chat<'a> {
             return Err(Error::Unsupported(media.into()));
         }
 
-        let (tx, rx) = event_channel(engine.event_channel_capacity());
+        let capacity = engine.event_channel_capacity();
+        // Capture readiness must fit alongside a context event even before the
+        // caller starts waiting for the controller's acknowledgement.
+        let capacity = if wire_tail.is_empty() {
+            capacity
+        } else {
+            capacity.max(2)
+        };
+        let (tx, rx) = event_channel(capacity);
 
         // Tools: this turn's, else the session's (api_spec.md §7.4).
         let tools = if self.suppress_tools {
@@ -464,13 +496,13 @@ impl<'a> Chat<'a> {
         // at index 0 of what the engine sees — `Session::transcript` is where
         // first-order state rejoins the message list.
         let start = !session.opened;
-        let messages = match &self.system_override {
+        let mut messages = match &self.system_override {
             // Reopened above, so the whole transcript goes — under the
             // override's prompt rather than the session's.
             Some(system) => session.transcript_with_system(system.as_deref()),
             None => session.pending(held),
         };
-        let sent = session.len();
+        messages.extend(wire_tail);
 
         let cmd = if start {
             ControllerCmd::StartChat {
@@ -521,7 +553,6 @@ impl<'a> Chat<'a> {
         // The engine acknowledges instead, and [`Chat::settle`] records it.
         // A turn nobody reads far enough to see acknowledged simply stays
         // closed, and the next one rebuilds — slower, never wrong.
-        let _ = sent;
         Ok((TokenStream::new(rx), session))
     }
 }

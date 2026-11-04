@@ -116,6 +116,7 @@ pub enum FailureReason {
 pub(super) enum ChatRunState {
     /// Session may exist but no generation is active (reserved for future use).
     Idle,
+    CapturingMicrophone,
     Generating {
         puller: crate::generation::TokenPuller,
         gen_started: Instant,
@@ -134,6 +135,14 @@ impl ChatRunState {
         matches!(self, Self::Generating { .. })
     }
 
+    pub(super) fn is_capturing_microphone(&self) -> bool {
+        matches!(self, Self::CapturingMicrophone)
+    }
+
+    pub(super) fn is_in_flight(&self) -> bool {
+        self.is_generating() || self.is_capturing_microphone()
+    }
+
     pub(super) fn is_paused(&self) -> bool {
         matches!(self, Self::Paused { .. })
     }
@@ -143,9 +152,8 @@ impl ChatRunState {
     }
 
     /// `StartChat` / `ContinueChat` / `ResumeChat` may call `Session::pull` only when not mid-flight.
-    #[allow(dead_code)]
     pub(super) fn allows_user_pull_start(&self) -> bool {
-        !self.is_generating()
+        !self.is_in_flight()
     }
 
     /// Monotonic start instant for the active puller, if any.
@@ -349,6 +357,17 @@ pub enum ControllerCmd {
         model_size_bytes: Option<u64>,
         tx: SyncSender<ControllerEvent>,
     },
+    /// Encode a chunk of live microphone PCM into the pending turn.
+    PushMicrophone {
+        chat_id: String,
+        samples: Vec<f32>,
+        resp: Sender<Result<usize, crate::engine::ExecError>>,
+    },
+    /// Finish microphone prefill and start generation for the pending turn.
+    CommitMicrophone {
+        chat_id: String,
+        resp: Sender<Result<Vec<f32>, crate::engine::ExecError>>,
+    },
     /// Abort and remove a chat session.
     StopChat { chat_id: String },
     /// Pause token generation for a chat (session stays in memory).
@@ -431,8 +450,8 @@ pub enum ControllerEvent {
     },
     /// The turn was accepted: a runtime exists and holds these messages.
     ///
-    /// Sent once, before any token, and only after the work that could still
-    /// fail has succeeded — starting a session, appending, opening the puller.
+    /// Sent once, after the controller opens the puller or prefills the
+    /// prefix of a live microphone turn, and before any generated tokens.
     /// Until this arrives the caller has no grounds to believe the engine
     /// received anything, which is why the facade waits for it before
     /// recording that a conversation is open and how much of it was delivered.

@@ -663,12 +663,12 @@ impl Drop for TokenPuller {
             && let (Some(ctx_cell), Some(_sampler)) = (self.ctx_cell.take(), self.sampler.take())
         {
             let mut g = slot.lock();
-            *g = Some(DecodeState {
+            *g = Some(DecodeState::ready(
                 ctx_cell,
-                cur_pos: self.cur_pos,
-                logits_i: self.logits_i,
-                prefill_start_us: self.start_us,
-            });
+                self.cur_pos,
+                self.logits_i,
+                self.start_us,
+            ));
         }
     }
 }

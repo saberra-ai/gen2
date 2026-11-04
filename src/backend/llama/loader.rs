@@ -187,6 +187,9 @@ pub(crate) fn build_bundle(
                     }
                     if ctx.support_lfm3_omni_video() {
                         caps |= Capabilities::VIDEO;
+                        if ctx.support_audio_stream() {
+                            caps |= Capabilities::MICROPHONE;
+                        }
                     }
                     if ctx.supports_lfm3_audio_generation() {
                         caps |= Capabilities::SPEECH;
