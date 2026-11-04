@@ -38,9 +38,11 @@
 
 use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::mpsc::channel;
 
 use crate::backend::common::grammar::GrammarSpec;
-use crate::generation::{GenSpec, ThinkingMode};
+use crate::controller::ControllerCmd;
+use crate::generation::{GenSpec, OutputMode, ThinkingMode};
 use crate::types::message::Message;
 
 use super::error::{Error, Result};
@@ -50,6 +52,7 @@ use super::input::Input;
 use super::model::Model;
 use super::response::Response;
 use super::session::Session;
+use super::stream::TokenStream;
 use super::tool_defs::ToolSet;
 
 /// How the model may use the tools it is offered (api_spec.md §10.3).
@@ -116,6 +119,8 @@ pub struct GenerationOptions {
     pub min_p: Option<f32>,
     /// The reasoning channel, on models that expose one.
     pub reasoning: ThinkingMode,
+    /// The requested reply format.
+    pub output_mode: OutputMode,
 }
 
 impl GenerationOptions {
@@ -174,9 +179,16 @@ impl GenerationOptions {
         self
     }
 
+    /// Request a text, speech, or interleaved reply.
+    pub fn output_mode(mut self, mode: OutputMode) -> Self {
+        self.output_mode = mode;
+        self
+    }
+
     /// Lay these options over a backend spec. A field left `None` keeps
     /// whatever the spec had — the engine's configured default.
     pub(crate) fn apply_to(&self, spec: &mut GenSpec) {
+        spec.output_mode = self.output_mode;
         if let Some(n) = self.max_tokens {
             spec.max_tokens = Some(n);
         }
@@ -333,6 +345,12 @@ impl<'a> Turn<'a> {
         self
     }
 
+    /// Request a text, speech, or interleaved reply.
+    pub fn output_mode(mut self, mode: OutputMode) -> Self {
+        self.options.output_mode = mode;
+        self
+    }
+
     /// How the model may use the tools it is offered.
     pub fn tool_choice(mut self, choice: ToolChoice) -> Self {
         self.tool_choice = choice;
@@ -394,10 +412,54 @@ impl<'a> Turn<'a> {
         Ok(EventStream::new(core, SessionSlot::Borrowed(session)))
     }
 
+    /// Start a turn that accepts microphone audio in chunks before replying.
+    ///
+    /// This waits until the model has prepared the conversation prefix. Feed
+    /// mono 16 kHz PCM with [`MicrophoneTurn::push`], then call
+    /// [`MicrophoneTurn::commit`] to generate a reply.
+    ///
+    /// Staged messages precede the captured audio. The session records the
+    /// recording once it is committed.
+    pub fn start_microphone(self) -> Result<MicrophoneTurn<'a>> {
+        let Dispatch::Started(pending) = self.dispatch(true)? else {
+            return Err(microphone_cancelled());
+        };
+        let mut capture = MicrophoneTurn {
+            pending: Some(pending),
+        };
+        capture
+            .pending
+            .as_mut()
+            .unwrap()
+            .stream
+            .wait_until_accepted()?;
+        capture.active()?;
+        Ok(capture)
+    }
+
     /// Validate, commit, and dispatch: the stream's engine half, and the
     /// session it will settle into. What [`stream`](Turn::stream) is made of;
     /// the async surface bridges the two halves across a worker.
     pub(crate) fn begin(self) -> Result<(StreamCore, &'a mut Session)> {
+        match self.dispatch(false)? {
+            Dispatch::Started(pending) => Ok(pending.into_core()),
+            Dispatch::Cancelled {
+                session,
+                model,
+                cancel,
+            } => Ok((
+                StreamCore::cancelled_before_start(session.next_message_id(), model, cancel),
+                session,
+            )),
+        }
+    }
+
+    fn dispatch(self, microphone: bool) -> Result<Dispatch<'a>> {
+        if microphone && self.require_full_context {
+            return Err(Error::InvalidRequest(
+                "microphone input cannot be combined with full context enforcement".into(),
+            ));
+        }
         if self.request_schema
             && (!self.require_full_context || !self.options.max_tokens.is_some_and(|n| n > 0))
         {
@@ -419,19 +481,37 @@ impl<'a> Turn<'a> {
         let session = self.session;
 
         // ── Validate before anything is committed (§11.1) ──
+        if microphone
+            && !engine
+                .capabilities()
+                .contains(crate::engine::Capabilities::MICROPHONE)
+        {
+            return Err(Error::Unsupported("microphone input".into()));
+        }
         if self.require_full_context && !self.options.max_tokens.is_some_and(|n| n > 0) {
             return Err(Error::InvalidRequest(
                 "full context requires a positive explicit output budget".into(),
             ));
         }
-        let staged_images = self
-            .staged
-            .iter()
-            .any(|m| super::chat::has_images(std::slice::from_ref(m)));
-        if (staged_images || super::chat::has_images(session.messages()))
-            && !engine.supports_images()
-        {
-            return Err(Error::Unsupported("images".into()));
+        if let Some(media) = crate::session_rt::media_util::unsupported_media(
+            session.messages().iter().chain(&self.staged),
+            || engine.capabilities(),
+        ) {
+            return Err(Error::Unsupported(media.into()));
+        }
+        if self.options.output_mode != OutputMode::Text {
+            if !engine
+                .capabilities()
+                .contains(crate::engine::Capabilities::SPEECH)
+            {
+                return Err(Error::Unsupported("speech output".into()));
+            }
+            if self.grammar.is_some() || self.require_full_context {
+                return Err(Error::InvalidRequest(
+                    "speech output cannot be combined with grammar or full context enforcement"
+                        .into(),
+                ));
+            }
         }
         let effective: &ToolSet = self.tools_override.as_ref().unwrap_or(session.tools());
         // Offer nothing: asked for, or an override that is the empty set.
@@ -483,15 +563,22 @@ impl<'a> Turn<'a> {
 
         if self.cancel.load(Ordering::SeqCst) {
             // Cancelled before it began: nothing runs, nothing is staged.
-            let core =
-                StreamCore::cancelled_before_start(session.next_message_id(), model, self.cancel);
-            return Ok((core, session));
+            return Ok(Dispatch::Cancelled {
+                session,
+                model,
+                cancel: self.cancel,
+            });
         }
 
         // ── Commit (§11.1) ──
-        for message in self.staged {
-            session.push(message);
-        }
+        let staged = if microphone {
+            self.staged
+        } else {
+            for message in self.staged {
+                session.push(message);
+            }
+            Vec::new()
+        };
         if per_turn_prefix {
             session.opened = false;
         }
@@ -519,24 +606,28 @@ impl<'a> Turn<'a> {
         if let Some(system) = self.system_override {
             chat = chat.system_override(Some(system));
         }
-        let (stream, session) = chat.begin()?;
+        let (stream, session) = if microphone {
+            chat.begin_microphone(&staged)?
+        } else {
+            chat.begin()?
+        };
 
         // A cancel that raced the dispatch: the stop it sent found no chat
         // yet. Sent again now, it lands behind the start.
         if self.cancel.load(Ordering::SeqCst) {
             let _ = engine.stop(session.id().to_string());
         }
-        let core = StreamCore::new(
+        Ok(Dispatch::Started(PendingTurn {
             stream,
-            session.next_message_id(),
+            session,
             model,
-            self.cancel,
-            Settled {
+            cancel: self.cancel,
+            settled: Settled {
                 max_tokens,
                 close_after: per_turn_prefix,
             },
-        );
-        Ok((core, session))
+            staged,
+        }))
     }
 
     /// Run the turn and decode the reply as `T` (api_spec.md §13).
@@ -677,6 +768,140 @@ fn strip_fence(text: &str) -> &str {
     rest.trim().strip_suffix("```").unwrap_or(rest).trim()
 }
 
+enum Dispatch<'a> {
+    Started(PendingTurn<'a>),
+    Cancelled {
+        session: &'a mut Session,
+        model: Model,
+        cancel: Arc<AtomicBool>,
+    },
+}
+
+struct PendingTurn<'a> {
+    stream: TokenStream,
+    session: &'a mut Session,
+    model: Model,
+    cancel: Arc<AtomicBool>,
+    settled: Settled,
+    staged: Vec<Message>,
+}
+
+impl<'a> PendingTurn<'a> {
+    fn into_core(self) -> (StreamCore, &'a mut Session) {
+        let core = StreamCore::new(
+            self.stream,
+            self.session.next_message_id(),
+            self.model,
+            self.cancel,
+            self.settled,
+        );
+        (core, self.session)
+    }
+}
+
+/// An open microphone turn. Dropping it before committing discards the
+/// recording and the messages staged for this turn.
+#[must_use = "a microphone turn is discarded unless committed"]
+pub struct MicrophoneTurn<'a> {
+    pending: Option<PendingTurn<'a>>,
+}
+
+impl<'a> MicrophoneTurn<'a> {
+    /// Feed up to one second of finite mono 16 kHz PCM in `[-1, 1]`.
+    ///
+    /// Blocks until the model has processed the chunk. Returns the number
+    /// of new audio rows added to the conversation. The model may buffer
+    /// small chunks and return zero until it has enough samples.
+    pub fn push(&mut self, mono_16khz: &[f32]) -> Result<usize> {
+        let pending = self.active()?;
+        if !(1..=16_000).contains(&mono_16khz.len())
+            || mono_16khz
+                .iter()
+                .any(|sample| !(-1.0..=1.0).contains(sample))
+        {
+            return Err(Error::InvalidRequest(
+                "expected 1 to 16000 finite mono 16 kHz PCM samples in [-1, 1]".into(),
+            ));
+        }
+        let (resp, rx) = channel();
+        pending.model.engine().send(ControllerCmd::PushMicrophone {
+            chat_id: pending.session.id().to_string(),
+            samples: mono_16khz.to_vec(),
+            resp,
+        })?;
+        let rows = rx.recv().map_err(|_| Error::ControllerGone)??;
+        self.active()?;
+        Ok(rows)
+    }
+
+    /// Finish capturing and return the reply stream. A recording must be
+    /// at least 20 ms long. This consumes the capture even on failure.
+    pub fn commit(mut self) -> Result<EventStream<'a>> {
+        let pending = self.active()?;
+        let (resp, rx) = channel();
+        pending
+            .model
+            .engine()
+            .send(ControllerCmd::CommitMicrophone {
+                chat_id: pending.session.id().to_string(),
+                resp,
+            })?;
+        let pcm = rx.recv().map_err(|_| Error::ControllerGone)??;
+        let mut pending = self.pending.take().unwrap();
+        for message in pending.staged.drain(..) {
+            pending.session.push(message);
+        }
+        pending
+            .session
+            .push(Input::new().audio_pcm(pcm).into_message());
+        let (core, session) = pending.into_core();
+        Ok(EventStream::new(core, SessionSlot::Borrowed(session)))
+    }
+
+    /// A handle that can stop this turn from another thread.
+    pub fn canceller(&self) -> Canceller {
+        let pending = self.pending.as_ref().unwrap();
+        Canceller::new(
+            pending.model.clone(),
+            pending.session.id().to_string(),
+            Arc::clone(&pending.cancel),
+        )
+    }
+
+    fn active(&self) -> Result<&PendingTurn<'a>> {
+        let pending = self.pending.as_ref().unwrap();
+        if pending.cancel.load(Ordering::SeqCst) {
+            return Err(microphone_cancelled());
+        }
+        Ok(pending)
+    }
+}
+
+impl Drop for MicrophoneTurn<'_> {
+    fn drop(&mut self) {
+        if let Some(pending) = self.pending.take() {
+            let engine = pending.model.engine();
+            pending.cancel.store(true, Ordering::SeqCst);
+            let _ = engine.stop(pending.session.id().to_string());
+            engine.forget(pending.session);
+            pending.session.opened = false;
+        }
+    }
+}
+
+impl std::fmt::Debug for MicrophoneTurn<'_> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("MicrophoneTurn").finish_non_exhaustive()
+    }
+}
+
+pub(super) fn microphone_cancelled() -> Error {
+    Error::Generation {
+        code: "cancelled".into(),
+        message: "microphone capture was cancelled".into(),
+    }
+}
+
 impl std::fmt::Debug for Turn<'_> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.debug_struct("Turn")
@@ -702,6 +927,40 @@ mod tests {
         ToolSet::new()
             .with(ToolDefinition::new("read").description("Read a file"))
             .with(ToolDefinition::new("write").description("Write a file"))
+    }
+
+    #[test]
+    fn microphone_rejects_a_text_only_model_before_staging() {
+        let model = Runtime::scripted(Script::new());
+        let mut session = Session::new();
+        let error = model
+            .turn(&mut session)
+            .user("Do not record this.")
+            .start_microphone()
+            .unwrap_err();
+        assert!(matches!(error, Error::Unsupported(_)));
+        assert!(session.all_messages().is_empty());
+    }
+
+    #[test]
+    fn microphone_start_propagates_backend_failure_without_journaling() {
+        use crate::engine::{Capabilities, ExecError};
+        let model = Runtime::scripted(
+            Script::new()
+                .capable_of(Capabilities::TEXT | Capabilities::MICROPHONE)
+                .failing_start_session(|| ExecError::ContextOverflow("capture prefix".into())),
+        );
+        let mut session = Session::new();
+        session.push_user("Keep this.");
+        let error = model
+            .turn(&mut session)
+            .user("Do not record this.")
+            .start_microphone()
+            .unwrap_err();
+        assert_eq!(error.code(), Some("context_overflow"));
+        assert_eq!(session.all_messages().len(), 1);
+        assert_eq!(session.latest_text().as_deref(), Some("Keep this."));
+        assert!(serde_json::to_vec(&session).is_ok());
     }
 
     #[test]

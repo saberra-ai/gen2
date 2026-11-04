@@ -613,6 +613,14 @@ fn main() {
 
     debug_log!("Bindings Created");
 
+    // Prefer CMake-installed libraries to archives left by the wrapper build.
+    for dir in ["lib", "lib64"] {
+        println!(
+            "cargo:rustc-link-search=native={}",
+            out_dir.join(dir).display()
+        );
+    }
+
     if cfg!(feature = "common") {
         let mut common_wrapper_build = cc::Build::new();
         common_wrapper_build
@@ -669,6 +677,12 @@ fn main() {
             config.define(&key, &value);
         }
     }
+    config.define(
+        "LLAMA_BUILD_MTMD",
+        if cfg!(feature = "mtmd") { "ON" } else { "OFF" },
+    );
+    // Gen2 passes decoded media into MTMD without spawning ffmpeg.
+    config.define("MTMD_VIDEO", "OFF");
 
     // Also forward GGML_ environment variables as CMake cache entries, so a
     // downstream can toggle any ggml build option without patching this build
@@ -1069,8 +1083,7 @@ fn main() {
     // General
     config
         .profile(&profile)
-        .very_verbose(std::env::var("CMAKE_VERBOSE").is_ok()) // Not verbose by default
-        .always_configure(false);
+        .very_verbose(std::env::var("CMAKE_VERBOSE").is_ok());
 
     let build_dir = config.build();
 
@@ -1090,62 +1103,20 @@ fn main() {
         }
     }
 
-    // Build mtmd directly with cc::Build, bypassing the cmake tools build.
-    // Using LLAMA_BUILD_TOOLS=ON would pull in all tools (batched-bench, quantize, etc.)
-    // and their CMakeLists.txt files, which are not included in the crate package.
     if cfg!(feature = "mtmd") {
-        let mtmd_src = llama_src.join("tools/mtmd");
-        let mut mtmd_build = cc::Build::new();
-        mtmd_build
-            .cpp(true)
-            .include(&mtmd_src)
-            .include(&llama_src)
-            .include(llama_src.join("include"))
-            .include(llama_src.join("ggml/include"))
-            .include(llama_src.join("common"))
-            .include(llama_src.join("vendor"))
-            .flag_if_supported("-std=c++17")
-            .flag_if_supported("-Wno-cast-qual")
-            .pic(true);
-
-        if matches!(target_os, TargetOs::Windows(WindowsVariant::Msvc)) {
-            mtmd_build.flag("/std:c++17");
+        let mtmd_kind = if build_shared_libs { "dylib" } else { "static" };
+        println!("cargo:rustc-link-lib={mtmd_kind}=mtmd");
+        if !build_shared_libs {
+            let hash_dir = out_dir.join("build/vendor/hash");
+            println!("cargo:rustc-link-search=native={}", hash_dir.display());
+            println!(
+                "cargo:rustc-link-search=native={}",
+                hash_dir.join(&profile).display()
+            );
+            println!("cargo:rustc-link-lib=static=vendor-hash");
         }
-
-        // When static-stdcxx is enabled on Android, suppress the cc crate's automatic
-        // C++ stdlib linking (which defaults to c++_shared) so we can link c++_static instead.
-        if matches!(target_os, TargetOs::Android) && cfg!(feature = "static-stdcxx") {
-            mtmd_build.cpp_link_stdlib(None);
-        }
-
-        // Collect all .cpp files in tools/mtmd and its subdirectories
-        for entry in glob(mtmd_src.join("**/*.cpp").to_str().unwrap()).unwrap() {
-            match entry {
-                Ok(path) => {
-                    // Skip CLI / deprecation-warning binaries — we only want the library sources
-                    let filename = path.file_name().unwrap().to_str().unwrap();
-                    if filename == "mtmd-cli.cpp" || filename == "deprecation-warning.cpp" {
-                        continue;
-                    }
-                    mtmd_build.file(&path);
-                }
-                Err(e) => println!("cargo:warning=mtmd glob error: {}", e),
-            }
-        }
-
-        mtmd_build.compile("mtmd");
-        let hash_dir = out_dir.join("build/vendor/hash");
-        println!("cargo:rustc-link-search=native={}", hash_dir.display());
-        println!("cargo:rustc-link-search=native={}", hash_dir.join(&profile).display());
-        println!("cargo:rustc-link-lib=static=vendor-hash");
     }
 
-    // Search paths
-    println!("cargo:rustc-link-search={}", out_dir.join("lib").display());
-    println!(
-        "cargo:rustc-link-search={}",
-        out_dir.join("lib64").display()
-    );
     println!("cargo:rustc-link-search={}", build_dir.display());
 
     if cfg!(feature = "system-ggml") {
@@ -1334,6 +1305,9 @@ fn main() {
         println!("cargo:rustc-link-lib={llama_libs_kind}=ggml-cpu");
     }
     for lib in llama_libs {
+        if lib == "mtmd" {
+            continue;
+        }
         let link = format!("cargo:rustc-link-lib={}={}", llama_libs_kind, lib);
         debug_log!("LINK {link}",);
         println!("{link}",);
@@ -1397,11 +1371,12 @@ fn main() {
             if cfg!(feature = "static-stdcxx") {
                 println!("cargo:rustc-link-lib=c++_static");
                 println!("cargo:rustc-link-lib=c++abi");
-            } else if cfg!(feature = "shared-stdcxx") {
+            } else if cfg!(feature = "shared-stdcxx")
+                || (cfg!(feature = "mtmd") && !cfg!(feature = "common"))
+            {
                 println!("cargo:rustc-link-lib=c++_shared");
             }
-            // When neither feature is set, the cc crate handles C++ stdlib
-            // linking automatically (defaults to c++_shared on Android).
+            // With `common`, the cc crate also defaults to c++_shared.
         }
         _ => (),
     }

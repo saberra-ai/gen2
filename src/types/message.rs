@@ -100,8 +100,23 @@ pub struct Url {
 #[serde(tag = "type")]
 #[serde(rename_all = "snake_case")]
 pub enum MessageChunk {
-    Text { text: String },
-    ImageUrl { image_url: Url },
+    Text {
+        text: String,
+    },
+    ImageUrl {
+        image_url: Url,
+    },
+    AudioPcm {
+        samples: Vec<f32>,
+    },
+    Video {
+        video: crate::api::input::Video,
+    },
+    /// Controller-only marker for a live microphone capture.
+    #[serde(skip)]
+    #[cfg_attr(feature = "specta", specta(skip))]
+    #[non_exhaustive]
+    Microphone,
 }
 
 #[derive(Clone, Deserialize, Serialize, Debug, PartialEq)]
@@ -373,6 +388,9 @@ impl MessageContent {
                 .map(|chunk| match chunk {
                     MessageChunk::Text { text } => text.clone(),
                     MessageChunk::ImageUrl { image_url } => format!("![]({})", image_url.url),
+                    MessageChunk::AudioPcm { .. } => "[audio]".into(),
+                    MessageChunk::Video { .. } => "[video]".into(),
+                    MessageChunk::Microphone => "[audio]".into(),
                 })
                 .collect::<Vec<_>>()
                 .join(""),

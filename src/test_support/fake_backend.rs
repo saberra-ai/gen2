@@ -40,7 +40,7 @@ use crate::engine::{
 };
 use crate::generation::{GenSpec, TokenEvent};
 use crate::session_rt::SessionSpec;
-use crate::types::message::Message;
+use crate::types::message::{Message, MessageBody, MessageChunk, MessageContent};
 
 /// One step of a scripted token stream.
 ///
@@ -532,10 +532,14 @@ impl Backend for FakeBackend {
             return Err(ExecError::ModelNotLoaded);
         }
         self.script.live_sessions.fetch_add(1, Ordering::SeqCst);
+        let microphone = (self.capabilities().contains(Capabilities::MICROPHONE)
+            && has_microphone(&spec.messages))
+        .then(Vec::new);
         Ok(Arc::new(FakeSession {
             id: self.script.next_session_id.fetch_add(1, Ordering::SeqCst),
             script: self.script.clone(),
             poisoned: Arc::new(AtomicBool::new(false)),
+            microphone: Mutex::new(microphone),
         }))
     }
 
@@ -630,6 +634,14 @@ struct FakeSession {
     /// Shared with the puller: a scripted crash sets it there, and the
     /// controller reads it here, exactly as a real FFI poisoning propagates.
     poisoned: Arc<AtomicBool>,
+    microphone: Mutex<Option<Vec<f32>>>,
+}
+
+fn has_microphone(messages: &[Message]) -> bool {
+    messages.iter().any(|message| {
+        matches!(&message.body, MessageBody::Content { content: MessageContent::MultipleChunks(chunks) }
+            if chunks.iter().any(|chunk| matches!(chunk, MessageChunk::Microphone)))
+    })
 }
 
 impl BackendSession for FakeSession {
@@ -647,6 +659,7 @@ impl BackendSession for FakeSession {
 
     fn stop(&self) {
         self.script.record("stop");
+        self.microphone.lock().unwrap().take();
     }
 
     fn pull(&self, spec: GenSpec) -> Result<Box<dyn TokenPullerDyn>, ExecError> {
@@ -687,8 +700,35 @@ impl BackendSession for FakeSession {
             for m in &new_messages {
                 inner.seen.push(m.text());
             }
+            if inner.capabilities.contains(Capabilities::MICROPHONE)
+                && has_microphone(&new_messages)
+            {
+                *self.microphone.lock().unwrap() = Some(Vec::new());
+            }
         }
         Ok(new_messages.len())
+    }
+
+    fn is_capturing_microphone(&self) -> bool {
+        self.microphone.lock().unwrap().is_some()
+    }
+
+    fn push_microphone(&self, samples: &[f32]) -> Result<usize, ExecError> {
+        self.script.record("push_microphone");
+        let mut microphone = self.microphone.lock().unwrap();
+        microphone.as_mut().unwrap().extend_from_slice(samples);
+        Ok(samples.len())
+    }
+
+    fn commit_microphone(&self) -> Result<Vec<f32>, ExecError> {
+        self.script.record("commit_microphone");
+        let mut microphone = self.microphone.lock().unwrap();
+        if microphone.as_ref().unwrap().len() < 320 {
+            return Err(ExecError::InvalidArg(
+                "microphone turn requires 320 samples",
+            ));
+        }
+        Ok(microphone.take().unwrap())
     }
 
     fn is_poisoned(&self) -> bool {

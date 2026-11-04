@@ -6,6 +6,7 @@
 
 use std::time::Duration;
 
+pub use crate::generation::{OutputMode, SpeechChunk};
 use crate::types::ExecutionStats;
 
 /// An assistant turn, as parts.
@@ -59,6 +60,8 @@ impl AssistantMessage {
 pub enum OutputPart {
     /// Visible reply text.
     Text(String),
+    /// Spoken reply samples. Adjacent chunks share the same sample rate.
+    Speech(SpeechChunk),
     /// The reasoning channel, when the model exposes one.
     Reasoning(String),
     /// A request to call a tool. The caller runs it, or does not.

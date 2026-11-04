@@ -745,6 +745,18 @@ impl Session {
         self.0.append_messages(new_messages)
     }
 
+    pub(crate) fn is_capturing_microphone(&self) -> bool {
+        self.0.is_capturing_microphone()
+    }
+
+    pub(crate) fn push_microphone(&self, samples: &[f32]) -> Result<usize, ExecError> {
+        self.0.push_microphone(samples)
+    }
+
+    pub(crate) fn commit_microphone(&self) -> Result<Vec<f32>, ExecError> {
+        self.0.commit_microphone()
+    }
+
     pub fn save_cache(&self, dst: KvSaveSpec) -> Result<KvSnapshot, ExecError> {
         self.0
             .as_kv_snapshot()

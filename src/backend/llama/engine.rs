@@ -13,7 +13,7 @@ use crate::engine::{
     Capabilities, EmbedLoadRequest, ExecError, ExecutionStats, LoadRequest, Settings,
 };
 use crate::session_rt::SessionSpec;
-use crate::session_rt::media_util::messages_have_images;
+use crate::session_rt::media_util::unsupported_media;
 use llama_cpp_2::llama_backend::LlamaBackend;
 use llama_cpp_2::{LogOptions, send_logs_to_tracing};
 use once_cell::sync::OnceCell;
@@ -175,12 +175,8 @@ impl Engine {
                 "DFlash2 cannot be overridden per session".into(),
             ));
         }
-        {
-            if messages_have_images(&spec.messages)
-                && !bundle.capabilities.contains(Capabilities::IMAGES)
-            {
-                return Err(ExecError::FeatureUnsupported("images"));
-            }
+        if let Some(media) = unsupported_media(&spec.messages, || bundle.capabilities) {
+            return Err(ExecError::FeatureUnsupported(media));
         }
         let id = self.next_session_id.fetch_add(1, Ordering::SeqCst);
         #[allow(clippy::arc_with_non_send_sync)]

@@ -1133,5 +1133,8 @@ bitflags! {
         const TEXT   = 0b0001;
         const IMAGES = 0b0010;
         const AUDIO  = 0b0100;
+        const VIDEO  = 1 << 4;
+        const SPEECH = 1 << 5;
+        const MICROPHONE = 1 << 6;
     }
 }

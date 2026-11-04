@@ -18,6 +18,10 @@ use crate::{
 };
 
 pub mod kv_cache;
+#[cfg(feature = "mtmd")]
+pub(crate) mod mtmd_audio;
+#[cfg(feature = "mtmd")]
+pub(crate) mod mtmd_input;
 pub mod params;
 pub mod session;
 
@@ -29,6 +33,10 @@ pub struct LlamaContext<'a> {
     pub model: &'a LlamaModel,
     initialized_logits: Vec<i32>,
     embeddings_enabled: bool,
+    #[cfg(feature = "mtmd")]
+    mtmd_audio: Option<mtmd_audio::AudioGenerator<'a>>,
+    #[cfg(feature = "mtmd")]
+    mtmd_audio_input: Option<mtmd_input::AudioInput<'a>>,
     /// Backend samplers kept alive for the context's lifetime.
     _backend_samplers: Vec<(i32, LlamaSampler)>,
 }
@@ -52,6 +60,10 @@ impl<'model> LlamaContext<'model> {
             model: llama_model,
             initialized_logits: Vec::new(),
             embeddings_enabled,
+            #[cfg(feature = "mtmd")]
+            mtmd_audio: None,
+            #[cfg(feature = "mtmd")]
+            mtmd_audio_input: None,
             _backend_samplers: Vec::new(),
         }
     }
@@ -67,6 +79,10 @@ impl<'model> LlamaContext<'model> {
             model: llama_model,
             initialized_logits: Vec::new(),
             embeddings_enabled,
+            #[cfg(feature = "mtmd")]
+            mtmd_audio: None,
+            #[cfg(feature = "mtmd")]
+            mtmd_audio_input: None,
             _backend_samplers: backend_samplers,
         }
     }
@@ -317,7 +333,7 @@ impl<'model> LlamaContext<'model> {
             self.initialized_logits
         );
         assert!(
-            self.n_ctx() > u32::try_from(i).expect("i does not fit into a u32"),
+            i == -1 || self.n_ctx() > u32::try_from(i).expect("i does not fit into a u32"),
             "n_ctx ({}) must be greater than i ({})",
             self.n_ctx(),
             i
@@ -428,6 +444,11 @@ impl<'model> LlamaContext<'model> {
 
 impl Drop for LlamaContext<'_> {
     fn drop(&mut self) {
+        #[cfg(feature = "mtmd")]
+        {
+            self.discard_mtmd_audio_input();
+            self.discard_mtmd_audio();
+        }
         unsafe { llama_cpp_sys_2::llama_free(self.context.as_ptr()) }
     }
 }

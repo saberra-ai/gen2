@@ -56,6 +56,8 @@ pub use super::async_turn::AsyncEventStream;
 pub enum Event {
     /// A fragment of the visible reply.
     TextDelta(String),
+    /// Generated speech in mono PCM.
+    SpeechDelta(crate::generation::SpeechChunk),
     /// A fragment of the reasoning channel.
     ReasoningDelta(String),
     /// The model began a tool call.
@@ -270,7 +272,11 @@ impl StreamCore {
         let worth_recording = !cancelled
             || !message.text().is_empty()
             || message.reasoning().is_some()
-            || !message.tool_calls().is_empty();
+            || !message.tool_calls().is_empty()
+            || message
+                .content
+                .iter()
+                .any(|part| matches!(part, OutputPart::Speech(_)));
         let message_id = worth_recording.then(|| session.push(record_of(&message)));
 
         // Stopping evicts the backend's runtime, and a per-turn prefix must
@@ -538,6 +544,21 @@ impl Assembler {
                 for emission in self.splitter.push_emit(&text) {
                     self.emit(emission, &mut out);
                 }
+            }
+            TokenEvent::Speech(chunk) => {
+                for emission in self.splitter.flush_pending() {
+                    self.emit(emission, &mut out);
+                }
+                self.close_run();
+                match self.parts.last_mut() {
+                    Some(OutputPart::Speech(previous))
+                        if previous.sample_rate == chunk.sample_rate =>
+                    {
+                        previous.samples.extend_from_slice(&chunk.samples);
+                    }
+                    _ => self.parts.push(OutputPart::Speech(chunk.clone())),
+                }
+                out.push(Event::SpeechDelta(chunk));
             }
             TokenEvent::ToolCall(call) => {
                 let id = match call.id {

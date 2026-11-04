@@ -127,6 +127,26 @@ pub trait BackendSession: std::fmt::Debug {
     fn pull(&self, spec: GenSpec) -> Result<Box<dyn TokenPullerDyn>, ExecError>;
     fn append_messages(&self, new_messages: Vec<Message>) -> Result<usize, ExecError>;
 
+    /// A live microphone turn has prefilled its prompt prefix.
+    fn is_capturing_microphone(&self) -> bool {
+        false
+    }
+
+    /// Prefill available audio embeddings for this chunk of 16 kHz mono PCM.
+    /// Returns the number of embeddings decoded into the language model.
+    fn push_microphone(&self, _samples: &[f32]) -> Result<usize, ExecError> {
+        Err(ExecError::FeatureUnsupported(
+            "incremental microphone input",
+        ))
+    }
+
+    /// Finish the audio and prompt suffix, then return the accepted PCM.
+    fn commit_microphone(&self) -> Result<Vec<f32>, ExecError> {
+        Err(ExecError::FeatureUnsupported(
+            "incremental microphone input",
+        ))
+    }
+
     /// Optional KV cache probe — `None` unless the backend supports persistent
     /// KV. llama-cpp is the only such backend today.
     fn as_kv_snapshot(&self) -> Option<&dyn KvSnapshot> {

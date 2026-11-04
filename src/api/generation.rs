@@ -146,6 +146,12 @@ impl<'m> Generation<'m> {
         self
     }
 
+    /// Request a text, speech, or interleaved reply.
+    pub fn output_mode(mut self, mode: crate::generation::OutputMode) -> Self {
+        self.options.output_mode = mode;
+        self
+    }
+
     /// Every common control at once, replacing what was set so far.
     pub fn options(mut self, options: GenerationOptions) -> Self {
         self.options = options;

@@ -21,6 +21,7 @@ pub struct ControllerConfig {
 
     /// If a single generation takes longer than this without completing,
     /// the controller emits an error and stops it.
+    /// A live microphone capture uses this as its inactivity timeout.
     ///
     /// Validated on M1 MacBook Air 8GB with 7B Q4_K_M — 90s worst case
     /// observed. 120s gives headroom for larger contexts and slower hardware.

@@ -3,6 +3,8 @@ use std::sync::atomic::{AtomicBool, Ordering};
 use encoding_rs::UTF_8;
 use llama_cpp_2::ggml_time_us;
 use llama_cpp_2::llama_batch::LlamaBatch;
+use llama_cpp_2::model::AddBos;
+use llama_cpp_2::mtmd::{MtmdAudioOutputMode, MtmdPcmChunk};
 use llama_cpp_2::sampling::LlamaSampler;
 use llama_cpp_2::token::LlamaToken;
 use llama_cpp_2::token::data::LlamaTokenData;
@@ -15,7 +17,7 @@ use crate::backend::common::output_filter::OutputFilter;
 use crate::backend::common::stop_matcher::StopMatcher;
 use crate::engine::ExecError;
 use crate::engine::{ExecutionStats, HookBus, HookEvent};
-use crate::generation::{GenSpec, TokenEvent};
+use crate::generation::{GenSpec, OutputMode, SpeechChunk, TokenEvent};
 use std::collections::VecDeque;
 
 use parking_lot::Mutex;
@@ -30,6 +32,38 @@ struct DFlashDecode {
     drafted: u32,
     accepted: u32,
     failed: bool,
+}
+
+enum ReplyDecoder {
+    Text { extra_end: Option<LlamaToken> },
+    StartSpeech { mode: OutputMode, seed: Option<u32> },
+    Speech,
+}
+
+impl ReplyDecoder {
+    fn from_spec(spec: &GenSpec, bundle: &ModelBundle) -> Self {
+        match spec.output_mode {
+            OutputMode::Text => {
+                let extra_end = if bundle.meta.architecture.as_deref() == Some("lfm3") {
+                    bundle
+                        .model
+                        .str_to_token("<|text_end|>", AddBos::Never)
+                        .ok()
+                        .and_then(|tokens| match tokens.as_slice() {
+                            [token] => Some(*token),
+                            _ => None,
+                        })
+                } else {
+                    None
+                };
+                Self::Text { extra_end }
+            }
+            mode => Self::StartSpeech {
+                mode,
+                seed: spec.seed.map(|seed| seed as u32),
+            },
+        }
+    }
 }
 
 pub struct TokenPuller {
@@ -53,6 +87,7 @@ pub struct TokenPuller {
     logits_i: i32,
     produced: usize,
     max_tokens: Option<usize>,
+    reply_decoder: ReplyDecoder,
     request_context: Option<crate::types::RequestContext>,
     paused: Arc<AtomicBool>,
     stopped: Arc<AtomicBool>,
@@ -91,6 +126,12 @@ impl TokenPuller {
         initial_logits_i: i32,
     ) -> Self {
         let batch = LlamaBatch::new(1, 1);
+        let reply_decoder = ReplyDecoder::from_spec(&gen_spec, &bundle);
+        let stop_patterns = if bundle.meta.architecture.as_deref() == Some("lfm3") {
+            Vec::new()
+        } else {
+            StopMatcher::gemma4_chat_defaults()
+        };
         Self {
             session_id,
             hooks,
@@ -104,6 +145,7 @@ impl TokenPuller {
             logits_i: initial_logits_i,
             produced: 0,
             max_tokens: gen_spec.max_tokens,
+            reply_decoder,
             request_context: None,
             paused,
             stopped,
@@ -114,7 +156,7 @@ impl TokenPuller {
             done: false,
             #[cfg(feature = "llama-dflash2")]
             dflash: DFlashDecode::default(),
-            filter: OutputFilter::new(StopMatcher::gemma4_chat_defaults()),
+            filter: OutputFilter::new(stop_patterns),
             state_slot: Default::default(),
         }
     }
@@ -255,6 +297,98 @@ impl TokenPuller {
         }
     }
 
+    fn start_speech(&mut self) -> Result<(), ExecError> {
+        let ReplyDecoder::StartSpeech { mode, seed } = self.reply_decoder else {
+            return Ok(());
+        };
+        let suffix = match mode {
+            OutputMode::Speech => "<|audio_start|>",
+            OutputMode::TextAndSpeech => "<|mixed_start|>",
+            OutputMode::Text => unreachable!("text uses the regular decoder"),
+        };
+        self.cur_pos = self
+            .ctx_cell
+            .as_mut()
+            .unwrap()
+            .with_dependent_mut(|bundle, ctx| {
+                let mtmd = bundle
+                    .mtmd_ctx
+                    .as_ref()
+                    .ok_or(ExecError::FeatureUnsupported("speech output"))?;
+                ctx.start_mtmd_audio(mtmd, self.cur_pos, suffix, MtmdAudioOutputMode::Auto, seed)
+                    .map_err(|err| ExecError::Other(err.into()))
+            })?;
+        self.logits_i = -1;
+        self.reply_decoder = ReplyDecoder::Speech;
+        Ok(())
+    }
+
+    fn push_pcm(&mut self, pcm: MtmdPcmChunk) {
+        if self.first_token_us.is_none() {
+            self.first_token_us = Some((ggml_time_us() as u64).saturating_sub(self.start_us));
+        }
+        self.filter.flush_held();
+        self.filter.push_event(TokenEvent::Speech(SpeechChunk {
+            sample_rate: pcm.sample_rate,
+            samples: pcm.samples,
+        }));
+    }
+
+    fn finish_reply(&mut self, terminal: TokenEvent) {
+        if matches!(self.reply_decoder, ReplyDecoder::Speech) {
+            let result = self
+                .ctx_cell
+                .as_mut()
+                .unwrap()
+                .with_dependent_mut(|_, ctx| ctx.finish_mtmd_audio());
+            match result {
+                Ok(Some(pcm)) => self.push_pcm(pcm),
+                Ok(None) => {}
+                Err(err) => {
+                    self.filter.push_err(ExecError::Other(err.into()));
+                    self.done = true;
+                    return;
+                }
+            }
+        }
+        self.emit_final_stats();
+        self.done = true;
+        self.filter.finalize(terminal);
+    }
+
+    fn step_speech(&mut self) -> Result<Option<LlamaToken>, ExecError> {
+        let wants_text = self
+            .ctx_cell
+            .as_ref()
+            .unwrap()
+            .with_dependent(|_, ctx| ctx.mtmd_audio_next_is_text());
+        let token = if wants_text {
+            let token = self.sample_one()?;
+            self.sampler.as_mut().unwrap().accept(token);
+            Some(token)
+        } else {
+            None
+        };
+        let step = self
+            .ctx_cell
+            .as_mut()
+            .unwrap()
+            .with_dependent_mut(|_, ctx| ctx.step_mtmd_audio(token))
+            .map_err(|err| ExecError::Other(err.into()))?;
+        self.cur_pos = step.position;
+        if let Some(pcm) = step.audio {
+            self.push_pcm(pcm);
+        }
+        if step.stopped {
+            self.finish_reply(TokenEvent::Eos);
+            return Ok(None);
+        }
+        if token.is_none() {
+            self.produced += 1;
+        }
+        Ok(token)
+    }
+
     fn decode_single(&mut self, token: LlamaToken) -> Result<(), ExecError> {
         if self
             .request_context
@@ -376,6 +510,13 @@ impl TokenPuller {
         Ok(())
     }
 
+    fn is_text_end(&self, token: LlamaToken) -> bool {
+        let ReplyDecoder::Text { extra_end } = self.reply_decoder else {
+            return false;
+        };
+        extra_end == Some(token) || self.bundle.model.is_eog_token(token)
+    }
+
     fn next_token(&mut self) -> Result<LlamaToken, ExecError> {
         #[cfg(feature = "llama-dflash2")]
         if self.dflash.enabled {
@@ -406,7 +547,7 @@ impl TokenPuller {
         }
         let token = self.sample_one()?;
         self.sampler.as_mut().unwrap().accept(token);
-        if !self.bundle.model.is_eog_token(token) {
+        if !self.is_text_end(token) {
             self.decode_single(token)?;
         }
         Ok(token)
@@ -468,6 +609,12 @@ impl TokenPuller {
         pre_events: VecDeque<TokenEvent>,
     ) -> Self {
         let batch = LlamaBatch::new(1, 1);
+        let reply_decoder = ReplyDecoder::from_spec(&gen_spec, &bundle);
+        let stop_patterns = if bundle.meta.architecture.as_deref() == Some("lfm3") {
+            Vec::new()
+        } else {
+            StopMatcher::gemma4_chat_defaults()
+        };
         Self {
             session_id,
             hooks,
@@ -481,6 +628,7 @@ impl TokenPuller {
             logits_i: state.logits_i,
             produced: 0,
             max_tokens: gen_spec.max_tokens,
+            reply_decoder,
             request_context: None,
             paused,
             stopped,
@@ -492,7 +640,7 @@ impl TokenPuller {
             done: false,
             #[cfg(feature = "llama-dflash2")]
             dflash: DFlashDecode::default(),
-            filter: OutputFilter::new(StopMatcher::gemma4_chat_defaults()),
+            filter: OutputFilter::new(stop_patterns),
             state_slot,
         }
     }
@@ -506,16 +654,21 @@ impl Drop for TokenPuller {
             self.stopped.store(true, Ordering::Release);
             return;
         }
+        if let Some(ctx_cell) = self.ctx_cell.as_mut()
+            && matches!(self.reply_decoder, ReplyDecoder::Speech)
+        {
+            ctx_cell.with_dependent_mut(|_, ctx| ctx.discard_mtmd_audio());
+        }
         if let Some(slot) = self.state_slot.upgrade()
             && let (Some(ctx_cell), Some(_sampler)) = (self.ctx_cell.take(), self.sampler.take())
         {
             let mut g = slot.lock();
-            *g = Some(DecodeState {
+            *g = Some(DecodeState::ready(
                 ctx_cell,
-                cur_pos: self.cur_pos,
-                logits_i: self.logits_i,
-                prefill_start_us: self.start_us,
-            });
+                self.cur_pos,
+                self.logits_i,
+                self.start_us,
+            ));
         }
     }
 }
@@ -543,9 +696,7 @@ impl Iterator for TokenPuller {
                     produced = self.produced,
                     "termination: stopped flag"
                 );
-                self.emit_final_stats();
-                self.done = true;
-                self.filter.finalize(TokenEvent::Stopped);
+                self.finish_reply(TokenEvent::Stopped);
                 continue;
             }
             if self.paused.load(Ordering::Acquire) {
@@ -560,26 +711,33 @@ impl Iterator for TokenPuller {
                     limit,
                     "termination: max_tokens"
                 );
-                self.emit_final_stats();
-                self.done = true;
-                self.filter.finalize(TokenEvent::Eos);
+                self.finish_reply(TokenEvent::Eos);
                 continue;
             }
 
             // ── Sample + decode one token ──────────────────────────────
             // (grammar-aware: masks logits via llguidance when a
             // GrammarMatcher is present — see `sample_one`).
-            let token = match self.next_token() {
-                Ok(t) => t,
+            let step = self.start_speech().and_then(|()| match self.reply_decoder {
+                ReplyDecoder::Speech => self.step_speech(),
+                _ => self.next_token().map(Some),
+            });
+            let token = match step {
+                Ok(Some(token)) => token,
+                Ok(None) => continue,
                 Err(e) => {
                     self.emit_final_stats();
                     self.done = true;
+                    if !matches!(self.reply_decoder, ReplyDecoder::Text { .. }) {
+                        self.ctx_cell.take();
+                        self.stopped.store(true, Ordering::Release);
+                    }
                     self.filter.push_err(e);
                     continue;
                 }
             };
 
-            if self.bundle.model.is_eog_token(token) {
+            if self.is_text_end(token) {
                 tracing::info!(
                     target: "pio::gen2::llama::term",
                     produced = self.produced,
@@ -611,6 +769,18 @@ impl Iterator for TokenPuller {
                 self.first_token_us = Some((ggml_time_us() as u64).saturating_sub(self.start_us));
             }
             self.produced += 1;
+            if matches!(self.reply_decoder, ReplyDecoder::Speech)
+                && matches!(
+                    out.as_str(),
+                    "<|text_end|>"
+                        | "<|audio_start|>"
+                        | "<|mixed_start|>"
+                        | "<|mixed_end|>"
+                        | "<|audio_end|>"
+                )
+            {
+                continue;
+            }
             self.hooks.emit(HookEvent::DecodeStep {
                 session_id: self.session_id,
                 token_id: token.0 as u32,

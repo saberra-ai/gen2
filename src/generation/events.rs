@@ -8,9 +8,18 @@ pub struct Token {
     pub logprob: Option<f32>,
 }
 
+/// A chunk of generated mono PCM. The sample rate is supplied by the model.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
+pub struct SpeechChunk {
+    pub sample_rate: u32,
+    pub samples: Vec<f32>,
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 pub enum TokenEvent {
+    Speech(SpeechChunk),
     Token(Token),
     Special(&'static str),
     MediaBoundary(MediaBoundary),

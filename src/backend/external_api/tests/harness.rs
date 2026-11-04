@@ -104,6 +104,7 @@ impl Exchange {
                 Ok(TokenEvent::Token(t)) => format!("token:{}", t.text),
                 Ok(TokenEvent::Special(s)) => format!("special:{s}"),
                 Ok(TokenEvent::MediaBoundary(_)) => "media".to_string(),
+                Ok(TokenEvent::Speech(_)) => "speech".to_string(),
                 Ok(TokenEvent::ToolCall(c)) => format!("tool:{}", c.name),
                 Ok(TokenEvent::Paused) => "paused".to_string(),
                 Ok(TokenEvent::Stopped) => "stopped".to_string(),

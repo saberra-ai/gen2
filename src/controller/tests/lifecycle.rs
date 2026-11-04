@@ -13,10 +13,13 @@ use std::sync::Arc;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::time::Duration;
 
-use crate::controller::{ControllerCmd, ControllerConfig, ControllerEvent};
-use crate::engine::ExecError;
+use crate::controller::{
+    ControllerCmd, ControllerConfig, ControllerEvent, RuntimeLifecycleSnapshot,
+};
+use crate::engine::{Capabilities, ExecError};
 use crate::test_support::harness::{Harness, assert_valid_trace, text_of};
 use crate::test_support::{Gate, Script, Step};
+use crate::types::message::{Message, MessageBody, MessageChunk, MessageContent};
 
 // ── The happy path, and the shape of every path ─────────────────────────────
 
@@ -160,6 +163,139 @@ fn a_failed_start_session_leaves_no_runtime_behind() {
         0,
         "a chat whose session failed to start must not stay resident"
     );
+}
+
+fn microphone_message() -> Message {
+    Message {
+        body: MessageBody::Content {
+            content: MessageContent::MultipleChunks(vec![MessageChunk::Microphone]),
+        },
+        ..Message::user("")
+    }
+}
+
+fn push_microphone(harness: &Harness, samples: Vec<f32>) -> Result<usize, ExecError> {
+    let (resp, reply) = std::sync::mpsc::channel();
+    harness.send(ControllerCmd::PushMicrophone {
+        chat_id: "mic".into(),
+        samples,
+        resp,
+    });
+    reply.recv_timeout(Duration::from_secs(5)).unwrap()
+}
+
+fn commit_microphone(harness: &Harness) -> Result<Vec<f32>, ExecError> {
+    let (resp, reply) = std::sync::mpsc::channel();
+    harness.send(ControllerCmd::CommitMicrophone {
+        chat_id: "mic".into(),
+        resp,
+    });
+    reply.recv_timeout(Duration::from_secs(5)).unwrap()
+}
+
+#[test]
+fn an_unsupported_microphone_turn_never_starts_text_generation() {
+    let harness = Harness::loaded(Script::new().say(["unexpected reply"]));
+    let events = harness
+        .start_chat_with("mic", vec![microphone_message()])
+        .collect();
+
+    assert!(
+        matches!(&events[..], [ControllerEvent::Error { message, .. }]
+        if message.contains("incremental microphone input"))
+    );
+    assert_eq!(harness.resident_chats(), 0);
+    assert_eq!(harness.script.live_sessions(), 0);
+}
+
+#[test]
+fn a_microphone_turn_waits_for_commit_and_rejects_duplicate_turns() {
+    let harness = Harness::loaded(
+        Script::new()
+            .capable_of(Capabilities::MICROPHONE)
+            .say(["heard"]),
+    );
+    let events = harness.start_chat_with("mic", vec![microphone_message()]);
+    assert!(matches!(
+        events.next(),
+        ControllerEvent::Accepted { delivered: 1 }
+    ));
+    assert!(matches!(
+        harness.start_chat("mic").collect()[..],
+        [ControllerEvent::Error { .. }]
+    ));
+
+    harness.send(ControllerCmd::PauseChat {
+        chat_id: "mic".into(),
+    });
+    harness.send(ControllerCmd::ResumeChat {
+        chat_id: "mic".into(),
+    });
+    assert_eq!(push_microphone(&harness, vec![0.25; 160]).unwrap(), 160);
+    assert!(matches!(
+        commit_microphone(&harness),
+        Err(ExecError::InvalidArg(_))
+    ));
+    let snapshot = harness.handle.get_controller_runtime_snapshot().unwrap();
+    assert_eq!(
+        snapshot.chats[0].lifecycle,
+        RuntimeLifecycleSnapshot::CapturingMicrophone
+    );
+    assert_eq!(harness.script.count("pull"), 0);
+
+    push_microphone(&harness, vec![0.5; 160]).unwrap();
+    assert_eq!(
+        commit_microphone(&harness).unwrap(),
+        [vec![0.25; 160], vec![0.5; 160]].concat()
+    );
+    let events = events.collect_to_end();
+    assert_valid_trace(&events);
+    assert_eq!(text_of(&events), "heard");
+    assert!(push_microphone(&harness, vec![0.25; 320]).is_err());
+    assert!(commit_microphone(&harness).is_err());
+    assert_eq!(harness.script.count("pull"), 1);
+    assert_eq!(harness.script.count("push_microphone"), 2);
+    assert_eq!(harness.script.count("commit_microphone"), 2);
+    assert_eq!(harness.resident_chats(), 1);
+}
+
+#[test]
+fn stopping_after_a_short_microphone_commit_releases_the_session() {
+    let harness = Harness::loaded(Script::new().capable_of(Capabilities::MICROPHONE));
+    let events = harness.start_chat_with("mic", vec![microphone_message()]);
+    assert!(matches!(events.next(), ControllerEvent::Accepted { .. }));
+    assert!(commit_microphone(&harness).is_err());
+    harness.send(ControllerCmd::StopChat {
+        chat_id: "mic".into(),
+    });
+    assert!(matches!(events.collect()[..], [ControllerEvent::Stopped]));
+    assert!(push_microphone(&harness, vec![0.25; 320]).is_err());
+    assert_eq!(harness.resident_chats(), 0);
+    assert_eq!(harness.script.live_sessions(), 0);
+    assert_eq!(harness.script.count("pull"), 0);
+}
+
+#[test]
+fn an_inactive_microphone_capture_times_out_and_stops_without_a_reply() {
+    let config = ControllerConfig {
+        generation_timeout: Duration::from_millis(25),
+        ..ControllerConfig::default()
+    };
+    let harness = Harness::with_config(Script::new().capable_of(Capabilities::MICROPHONE), config);
+    harness.load_model().unwrap();
+    let events = harness
+        .start_chat_with("mic", vec![microphone_message()])
+        .collect();
+    assert_valid_trace(&events);
+    assert!(
+        matches!(&events[..], [ControllerEvent::Accepted { .. }, ControllerEvent::Error { code, .. }]
+        if code == "timeout")
+    );
+    assert!(commit_microphone(&harness).is_err());
+    assert_eq!(harness.resident_chats(), 0);
+    assert_eq!(harness.script.live_sessions(), 0);
+    assert_eq!(harness.script.count("stop"), 1);
+    assert_eq!(harness.script.count("pull"), 0);
 }
 
 #[test]

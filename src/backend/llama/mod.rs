@@ -18,6 +18,7 @@ pub(crate) mod engine;
 mod ios_memory;
 pub mod llama_config;
 pub(crate) mod loader;
+mod media;
 mod puller;
 mod session;
 mod tokenizer_adapter;

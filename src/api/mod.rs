@@ -62,7 +62,7 @@ pub use runtime::{
 };
 pub use session::Session;
 pub use tool_defs::{ToolDefinition, ToolSet};
-pub use turn::{GenerationOptions, ToolChoice, Turn};
+pub use turn::{GenerationOptions, MicrophoneTurn, ToolChoice, Turn};
 
 // ── The previous facade (`crate::legacy`) ───────────────────────────────────
 #[cfg(feature = "tokio")]

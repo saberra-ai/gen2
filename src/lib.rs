@@ -215,8 +215,8 @@ pub use api::event::AsyncEventStream;
 /// [`GenerationOptions`] and a [`ToolChoice`], blocking or as an
 /// [`EventStream`] of [`Event`]s.
 pub use api::{
-    Error, Event, EventStream, GenerationOptions, Input, Model, RequestSchema, Response, Result,
-    Runtime, Session, ToolChoice, ToolDefinition, ToolSet, Turn,
+    Error, Event, EventStream, GenerationOptions, Input, MicrophoneTurn, Model, RequestSchema,
+    Response, Result, Runtime, Session, ToolChoice, ToolDefinition, ToolSet, Turn,
 };
 /// The conversation the model is given: the role-based wire message the
 /// backends render (api_spec.md §9's `enum Message` is not yet this type).
@@ -271,14 +271,15 @@ pub mod session {
 /// What a model is given: [`Input`], its [`InputPart`](input::InputPart)s,
 /// and an [`Image`](input::Image) (api_spec.md §9.2).
 pub mod input {
-    pub use crate::api::input::{Image, Input, InputPart};
+    pub use crate::api::input::{Image, Input, InputPart, Video};
 }
 
 /// What comes back: the [`AssistantMessage`](output::AssistantMessage) and its
 /// parts, tool calls, usage, stats, and the finish reason (api_spec.md §14).
 pub mod output {
     pub use crate::api::output::{
-        AssistantMessage, FinishReason, GenerationStats, OutputPart, ToolCall, ToolCallId, Usage,
+        AssistantMessage, FinishReason, GenerationStats, OutputMode, OutputPart, SpeechChunk,
+        ToolCall, ToolCallId, Usage,
     };
     pub use crate::types::RequestContext;
 }

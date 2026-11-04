@@ -1,4 +1,4 @@
-//! What a model is given: text, and images for models that read them.
+//! Text, images, audio, and prepared video for models that accept them.
 //!
 //! One [`Input`] is one user turn. Modalities are parts of it rather than
 //! separate methods, so a new modality is a new [`InputPart`] variant and not
@@ -55,6 +55,17 @@ impl Input {
         self
     }
 
+    /// Append 20 ms to 192 seconds of mono 16 kHz PCM audio. Samples must be
+    /// finite and in `[-1, 1]`.
+    pub fn audio_pcm(self, samples: Vec<f32>) -> Self {
+        self.part(InputPart::AudioPcm(samples))
+    }
+
+    /// Append video frames and their soundtrack as one input part.
+    pub fn video(self, video: Video) -> Self {
+        self.part(InputPart::Video(video))
+    }
+
     /// Append an already-built part.
     pub fn part(mut self, part: InputPart) -> Self {
         self.parts.push(part);
@@ -97,6 +108,13 @@ impl Input {
     /// The transcript message this input becomes.
     pub(crate) fn into_message(self) -> crate::types::message::Message {
         use crate::types::message::{Message, to_file_url};
+        if self
+            .parts
+            .iter()
+            .any(|part| matches!(part, InputPart::AudioPcm(_) | InputPart::Video(_)))
+        {
+            return Message::user_parts(self.parts);
+        }
         let text = self.text_only();
         let images: Vec<String> = self.images().map(|i| to_file_url(i.source())).collect();
         Message::user_with_images(text, images)
@@ -106,8 +124,8 @@ impl Input {
 impl crate::types::message::Message {
     /// A user message from input parts, in the order given (api_spec.md §9.1).
     ///
-    /// Text parts become text chunks and images become image chunks; a bare
-    /// image path becomes a `file://` URL. Text alone collapses to a plain
+    /// Media parts keep their positions. A bare image path becomes a
+    /// `file://` URL. Text alone collapses to a plain
     /// text message, joined with newlines, exactly as [`Message::user`](crate::Message::user) would
     /// build it.
     ///
@@ -123,7 +141,7 @@ impl crate::types::message::Message {
     pub fn user_parts(parts: impl IntoIterator<Item = InputPart>) -> Self {
         use crate::types::message::{MessageBody, MessageChunk, MessageContent, Url, to_file_url};
         let parts: Vec<InputPart> = parts.into_iter().collect();
-        if !parts.iter().any(|p| matches!(p, InputPart::Image(_))) {
+        if parts.iter().all(|p| matches!(p, InputPart::Text(_))) {
             let text = parts
                 .iter()
                 .filter_map(|p| match p {
@@ -136,15 +154,15 @@ impl crate::types::message::Message {
         }
         let chunks = parts
             .into_iter()
-            .filter_map(|p| match p {
-                InputPart::Text(text) => Some(MessageChunk::Text { text }),
-                InputPart::Image(image) => Some(MessageChunk::ImageUrl {
+            .map(|p| match p {
+                InputPart::Text(text) => MessageChunk::Text { text },
+                InputPart::Image(image) => MessageChunk::ImageUrl {
                     image_url: Url {
                         url: to_file_url(image.source()),
                     },
-                }),
-                #[allow(unreachable_patterns)]
-                _ => None,
+                },
+                InputPart::AudioPcm(samples) => MessageChunk::AudioPcm { samples },
+                InputPart::Video(video) => MessageChunk::Video { video },
             })
             .collect();
         Self {
@@ -177,9 +195,6 @@ impl From<&String> for Input {
 }
 
 /// One piece of an [`Input`].
-///
-/// Audio is not here yet: no backend accepts an audio part on a message
-/// today, and a variant nothing can consume would be a promise.
 #[derive(Debug, Clone, PartialEq)]
 #[non_exhaustive]
 pub enum InputPart {
@@ -187,6 +202,10 @@ pub enum InputPart {
     Text(String),
     /// An image, for a model that reads them.
     Image(Image),
+    /// Mono PCM samples at 16 kHz.
+    AudioPcm(Vec<f32>),
+    /// Prepared video with an optional soundtrack.
+    Video(Video),
 }
 
 impl InputPart {
@@ -205,9 +224,37 @@ impl InputPart {
 ///
 /// The bytes are read by the backend at generation time. A local path
 /// becomes a `file://` URL; an `http(s)://` or `file://` URL passes through.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct Image {
     source: String,
+}
+
+/// A video decoded by the host. LFM3-Omni reads up to 384 frames sampled
+/// at 2 fps with an optional synchronized mono 16 kHz PCM soundtrack.
+#[derive(Debug, Clone, PartialEq, serde::Serialize, serde::Deserialize)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
+pub struct Video {
+    frames: Vec<Image>,
+    soundtrack: Vec<f32>,
+}
+
+impl Video {
+    /// Use frames of the same size, starting at time zero and spaced by half a
+    /// second. Pass an empty soundtrack for silent video.
+    pub fn new(frames: Vec<Image>, soundtrack: Vec<f32>) -> Self {
+        Self { frames, soundtrack }
+    }
+
+    /// The source frames in presentation order.
+    pub fn frames(&self) -> &[Image] {
+        &self.frames
+    }
+
+    /// The soundtrack, aligned to the first frame.
+    pub fn soundtrack(&self) -> &[f32] {
+        &self.soundtrack
+    }
 }
 
 impl Image {
@@ -302,6 +349,41 @@ mod tests {
         );
         assert!(
             matches!(&chunks[2], MessageChunk::ImageUrl { image_url } if image_url.url == "https://x/b.png")
+        );
+    }
+
+    #[test]
+    fn mixed_media_keeps_positions_across_transcript_serialization() {
+        let video = Video::new(vec![Image::from_path("frame.png")], vec![0.5; 320]);
+        let message = Input::new()
+            .text("Listen.")
+            .audio_pcm(vec![-0.5; 320])
+            .text("Now watch.")
+            .video(video.clone())
+            .into_message();
+        let encoded = serde_json::to_vec(&message).unwrap();
+        let decoded: crate::Message = serde_json::from_slice(&encoded).unwrap();
+        assert_eq!(decoded, message);
+        let MessageBody::Content {
+            content: MessageContent::MultipleChunks(chunks),
+        } = decoded.body
+        else {
+            panic!("a mixed input must retain its media");
+        };
+        assert_eq!(
+            chunks,
+            [
+                MessageChunk::Text {
+                    text: "Listen.".into()
+                },
+                MessageChunk::AudioPcm {
+                    samples: vec![-0.5; 320]
+                },
+                MessageChunk::Text {
+                    text: "Now watch.".into()
+                },
+                MessageChunk::Video { video },
+            ],
         );
     }
 }
