@@ -179,9 +179,20 @@ pub(crate) fn build_bundle(
                 .with_context(|| format!("failed to init mtmd from {}", p.display()))
             {
                 Ok(ctx) => {
+                    if ctx.support_vision() {
+                        caps |= Capabilities::IMAGES;
+                    }
+                    if ctx.get_audio_sample_rate() == Some(16_000) {
+                        caps |= Capabilities::AUDIO;
+                    }
+                    if ctx.support_lfm3_omni_video() {
+                        caps |= Capabilities::VIDEO;
+                    }
+                    if ctx.supports_lfm3_audio_generation() {
+                        caps |= Capabilities::SPEECH;
+                    }
                     mtmd_ctx = Some(ctx);
                     mtmd_marker = Some(marker);
-                    caps |= Capabilities::IMAGES;
                 }
                 Err(err) => {
                     warn!(

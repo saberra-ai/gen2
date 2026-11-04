@@ -40,7 +40,7 @@ use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, Ordering};
 
 use crate::backend::common::grammar::GrammarSpec;
-use crate::generation::{GenSpec, ThinkingMode};
+use crate::generation::{GenSpec, OutputMode, ThinkingMode};
 use crate::types::message::Message;
 
 use super::error::{Error, Result};
@@ -116,6 +116,8 @@ pub struct GenerationOptions {
     pub min_p: Option<f32>,
     /// The reasoning channel, on models that expose one.
     pub reasoning: ThinkingMode,
+    /// The requested reply format.
+    pub output_mode: OutputMode,
 }
 
 impl GenerationOptions {
@@ -174,9 +176,16 @@ impl GenerationOptions {
         self
     }
 
+    /// Request a text, speech, or interleaved reply.
+    pub fn output_mode(mut self, mode: OutputMode) -> Self {
+        self.output_mode = mode;
+        self
+    }
+
     /// Lay these options over a backend spec. A field left `None` keeps
     /// whatever the spec had — the engine's configured default.
     pub(crate) fn apply_to(&self, spec: &mut GenSpec) {
+        spec.output_mode = self.output_mode;
         if let Some(n) = self.max_tokens {
             spec.max_tokens = Some(n);
         }
@@ -333,6 +342,12 @@ impl<'a> Turn<'a> {
         self
     }
 
+    /// Request a text, speech, or interleaved reply.
+    pub fn output_mode(mut self, mode: OutputMode) -> Self {
+        self.options.output_mode = mode;
+        self
+    }
+
     /// How the model may use the tools it is offered.
     pub fn tool_choice(mut self, choice: ToolChoice) -> Self {
         self.tool_choice = choice;
@@ -424,14 +439,25 @@ impl<'a> Turn<'a> {
                 "full context requires a positive explicit output budget".into(),
             ));
         }
-        let staged_images = self
-            .staged
-            .iter()
-            .any(|m| super::chat::has_images(std::slice::from_ref(m)));
-        if (staged_images || super::chat::has_images(session.messages()))
-            && !engine.supports_images()
-        {
-            return Err(Error::Unsupported("images".into()));
+        if let Some(media) = crate::session_rt::media_util::unsupported_media(
+            session.messages().iter().chain(&self.staged),
+            || engine.capabilities(),
+        ) {
+            return Err(Error::Unsupported(media.into()));
+        }
+        if self.options.output_mode != OutputMode::Text {
+            if !engine
+                .capabilities()
+                .contains(crate::engine::Capabilities::SPEECH)
+            {
+                return Err(Error::Unsupported("speech output".into()));
+            }
+            if self.grammar.is_some() || self.require_full_context {
+                return Err(Error::InvalidRequest(
+                    "speech output cannot be combined with grammar or full context enforcement"
+                        .into(),
+                ));
+            }
         }
         let effective: &ToolSet = self.tools_override.as_ref().unwrap_or(session.tools());
         // Offer nothing: asked for, or an override that is the empty set.

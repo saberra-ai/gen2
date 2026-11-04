@@ -244,6 +244,12 @@ impl OutputFilter {
     /// Flushes the tool-call parser so any buffered partial-tag tail
     /// is released as literal text. Pushes `extra` as the terminal event.
     pub fn finalize(&mut self, extra: TokenEvent) {
+        self.flush_text();
+        self.pending.push_back(Ok(extra));
+        self.done = true;
+    }
+
+    pub(crate) fn flush_held(&mut self) {
         // Drain held content into pending: the partial pattern never
         // resolved to a Full match, so the text is legit output.
         let held_snapshot: Vec<(u32, String)> = self.held.drain(..).collect();
@@ -251,6 +257,10 @@ impl OutputFilter {
             self.emit_text_chunk(tid, t);
         }
         self.stop.reset();
+    }
+
+    fn flush_text(&mut self) {
+        self.flush_held();
         if let Some(parser) = self.tool_parser.as_mut() {
             for out in parser.flush() {
                 match out {
@@ -269,8 +279,6 @@ impl OutputFilter {
                 }
             }
         }
-        self.pending.push_back(Ok(extra));
-        self.done = true;
     }
 
     /// Pop the next ready event. Returns None if nothing's queued yet.

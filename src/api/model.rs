@@ -149,6 +149,8 @@ impl Model {
             text: true,
             images: caps.contains(crate::engine::Capabilities::IMAGES),
             audio: caps.contains(crate::engine::Capabilities::AUDIO),
+            video: caps.contains(crate::engine::Capabilities::VIDEO),
+            speech: caps.contains(crate::engine::Capabilities::SPEECH),
             // Local backends render tool declarations through the chat
             // template; the header says whether the template has a place for
             // them. The remote backend does not put `tools` on the wire yet.
@@ -311,6 +313,10 @@ pub struct ModelCapabilities {
     pub images: bool,
     /// Accepts audio on the input.
     pub audio: bool,
+    /// Accepts prepared video, including a soundtrack.
+    pub video: bool,
+    /// Generates spoken audio.
+    pub speech: bool,
     /// Can be offered tools and asked to call them.
     pub tools: bool,
     /// Exposes a reasoning channel the response separates from the reply.

@@ -1005,18 +1005,18 @@ fn handle_chat_command(state: &mut ControllerState, cmd: ControllerCmd) -> Contr
             if let Some(chat) = state.chats.get_mut(&chat_id) {
                 // These low-level commands have no reply channel. Refuse the
                 // unsupported operation without changing a live strict stream.
-                if chat.last_gen_spec.require_full_context {
-                    tracing::warn!(
-                        "pause/resume unsupported for a full-context request; use cancellation"
-                    );
+                if chat.last_gen_spec.require_full_context
+                    || chat.last_gen_spec.output_mode != crate::generation::OutputMode::Text
+                {
+                    tracing::warn!("pause/resume unsupported for this request; use cancellation");
                     return ControlFlow::Continue;
                 }
                 chat.session.pause();
                 chat.state = match std::mem::replace(&mut chat.state, ChatRunState::Idle) {
                     ChatRunState::Generating {
                         puller,
-                        gen_started: _,
                         last_gen_spec,
+                        ..
                     } => {
                         drop(puller);
                         chat.last_gen_spec = last_gen_spec.clone();
@@ -1031,10 +1031,10 @@ fn handle_chat_command(state: &mut ControllerState, cmd: ControllerCmd) -> Contr
             if let Some(chat) = state.chats.get_mut(&chat_id) {
                 // These low-level commands have no reply channel. Refuse the
                 // unsupported operation without changing a live strict stream.
-                if chat.last_gen_spec.require_full_context {
-                    tracing::warn!(
-                        "pause/resume unsupported for a full-context request; use cancellation"
-                    );
+                if chat.last_gen_spec.require_full_context
+                    || chat.last_gen_spec.output_mode != crate::generation::OutputMode::Text
+                {
+                    tracing::warn!("pause/resume unsupported for this request; use cancellation");
                     return ControlFlow::Continue;
                 }
                 chat.session.resume();
@@ -1249,6 +1249,29 @@ pub(super) fn tick_active_chats(state: &mut ControllerState, tick_busy: Duration
                 }
                 continue;
             }
+            if let ChatRunState::Generating { pending_speech, .. } = &mut chat.state
+                && let Some(chunk) = pending_speech.take()
+            {
+                match chat.tx.try_send(ControllerEvent::Speech(chunk)) {
+                    Ok(()) => chat.last_used = Instant::now(),
+                    Err(std::sync::mpsc::TrySendError::Full(ControllerEvent::Speech(chunk))) => {
+                        *pending_speech = Some(chunk);
+                        continue;
+                    }
+                    Err(std::sync::mpsc::TrySendError::Disconnected(_)) => {
+                        metrics_ref
+                            .receiver_disconnects
+                            .fetch_add(1, Ordering::Relaxed);
+                        chat.state = ChatRunState::Completed(CompletionReason::ReceiverDropped);
+                        if scheduler::should_cleanup(&chat.schedule_view()) {
+                            to_remove.push(id.clone());
+                        }
+                        continue;
+                    }
+                    Err(std::sync::mpsc::TrySendError::Full(_)) => unreachable!(),
+                }
+            }
+
             let step = {
                 let puller = match &mut chat.state {
                     ChatRunState::Generating { puller, .. } => puller,
@@ -1299,6 +1322,11 @@ pub(super) fn tick_active_chats(state: &mut ControllerState, tick_busy: Duration
                 Ok(Some(Ok(TokenEvent::Stopped))) => {
                     emit(ControllerEvent::Stopped);
                     chat.state = ChatRunState::Completed(CompletionReason::StoppedByUser);
+                }
+                Ok(Some(Ok(TokenEvent::Speech(chunk)))) => {
+                    if let ChatRunState::Generating { pending_speech, .. } = &mut chat.state {
+                        *pending_speech = Some(chunk);
+                    }
                 }
                 Ok(Some(Ok(TokenEvent::MediaBoundary(boundary)))) => {
                     emit(ControllerEvent::MediaBoundary(boundary));

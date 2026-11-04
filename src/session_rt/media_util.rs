@@ -1,4 +1,4 @@
-use crate::engine::ExecError;
+use crate::engine::{Capabilities, ExecError};
 use crate::types::message::{Message, MessageBody, MessageChunk, MessageContent};
 
 /// Hard caps on attached-image inputs, shared by every vision backend so the
@@ -89,50 +89,74 @@ pub fn validate_image_path(url_or_path: &str) -> Result<String, ExecError> {
     Ok(path.to_string())
 }
 
-/// Replace image paths with the backend marker in their original message and
-/// chunk position. Keep the original messages for loading the matching bitmaps.
+/// Replace media with the backend marker in its original message and chunk position.
 #[cfg(any(feature = "backend-llamacpp", test))]
-pub(crate) fn with_image_markers(messages: &[Message], marker: &str) -> Vec<Message> {
-    let mut rendered = messages.to_vec();
-    for message in &mut rendered {
-        if let MessageBody::Content {
-            content: MessageContent::MultipleChunks(chunks),
-        } = &mut message.body
-        {
-            for chunk in chunks {
-                if matches!(chunk, MessageChunk::ImageUrl { .. }) {
-                    *chunk = MessageChunk::Text {
-                        text: marker.to_string(),
-                    };
-                }
+pub(crate) fn with_media_markers(messages: &[Message], marker: &str) -> Vec<Message> {
+    messages
+        .iter()
+        .map(|message| {
+            let MessageBody::Content {
+                content: MessageContent::MultipleChunks(chunks),
+            } = &message.body
+            else {
+                return message.clone();
+            };
+            let chunks = chunks
+                .iter()
+                .map(|chunk| match chunk {
+                    MessageChunk::Text { .. } => chunk.clone(),
+                    _ => MessageChunk::Text {
+                        text: marker.to_owned(),
+                    },
+                })
+                .collect();
+            Message {
+                body: MessageBody::Content {
+                    content: MessageContent::MultipleChunks(chunks),
+                },
+                role: message.role.clone(),
+                name: message.name.clone(),
+                tool_call_id: message.tool_call_id.clone(),
             }
-        }
-    }
-    rendered
+        })
+        .collect()
+}
+
+pub(crate) fn media_parts<'a>(
+    messages: impl IntoIterator<Item = &'a Message>,
+) -> impl Iterator<Item = &'a MessageChunk> {
+    messages
+        .into_iter()
+        .flat_map(|message| match &message.body {
+            MessageBody::Content {
+                content: MessageContent::MultipleChunks(chunks),
+            } => chunks.as_slice(),
+            _ => &[],
+        })
+        .filter(|part| !matches!(part, MessageChunk::Text { .. }))
+}
+
+pub(crate) fn unsupported_media<'a>(
+    messages: impl IntoIterator<Item = &'a Message>,
+    available: impl FnOnce() -> Capabilities,
+) -> Option<&'static str> {
+    let mut media = media_parts(messages).peekable();
+    media.peek()?;
+    let available = available();
+    media.find_map(|part| {
+        let (capability, name) = match part {
+            MessageChunk::ImageUrl { .. } => (Capabilities::IMAGES, "images"),
+            MessageChunk::AudioPcm { .. } => (Capabilities::AUDIO, "audio input"),
+            MessageChunk::Video { .. } => (Capabilities::VIDEO, "video input"),
+            MessageChunk::Text { .. } => return None,
+        };
+        (!available.contains(capability)).then_some(name)
+    })
 }
 
 /// Whether any message carries an image chunk.
-pub fn messages_have_images(messages: &Vec<Message>) -> bool {
-    for msg in messages {
-        if let MessageBody::Content { content } = &msg.body {
-            match content {
-                MessageContent::SingleText(_) => {}
-                MessageContent::StructuredAssistant { .. } => {
-                    // Structured assistant replies carry no media —
-                    // models that produce them don't emit images.
-                }
-                MessageContent::MultipleChunks(chunks) => {
-                    if chunks
-                        .iter()
-                        .any(|c| matches!(c, MessageChunk::ImageUrl { .. }))
-                    {
-                        return true;
-                    }
-                }
-            }
-        }
-    }
-    false
+pub fn messages_have_images(messages: &[Message]) -> bool {
+    media_parts(messages).any(|part| matches!(part, MessageChunk::ImageUrl { .. }))
 }
 
 #[cfg(test)]
@@ -147,7 +171,7 @@ mod tests {
             Message::assistant_structured("answer", None),
             Message::user_with_images("second", ["file:///private/b.png".into()]),
         ];
-        let rendered = with_image_markers(&messages, "<image>");
+        let rendered = with_media_markers(&messages, "<image>");
         assert_eq!(rendered[0].text(), "first<image>");
         assert_eq!(rendered[1].text(), "answer");
         assert_eq!(rendered[2].text(), "second<image>");

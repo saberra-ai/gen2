@@ -271,14 +271,15 @@ pub mod session {
 /// What a model is given: [`Input`], its [`InputPart`](input::InputPart)s,
 /// and an [`Image`](input::Image) (api_spec.md §9.2).
 pub mod input {
-    pub use crate::api::input::{Image, Input, InputPart};
+    pub use crate::api::input::{Image, Input, InputPart, Video};
 }
 
 /// What comes back: the [`AssistantMessage`](output::AssistantMessage) and its
 /// parts, tool calls, usage, stats, and the finish reason (api_spec.md §14).
 pub mod output {
     pub use crate::api::output::{
-        AssistantMessage, FinishReason, GenerationStats, OutputPart, ToolCall, ToolCallId, Usage,
+        AssistantMessage, FinishReason, GenerationStats, OutputMode, OutputPart, SpeechChunk,
+        ToolCall, ToolCallId, Usage,
     };
     pub use crate::types::RequestContext;
 }

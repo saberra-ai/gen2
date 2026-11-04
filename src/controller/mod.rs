@@ -120,6 +120,7 @@ pub(super) enum ChatRunState {
         puller: crate::generation::TokenPuller,
         gen_started: Instant,
         last_gen_spec: GenSpec,
+        pending_speech: Option<crate::generation::SpeechChunk>,
     },
     Paused {
         last_gen_spec: GenSpec,
@@ -403,6 +404,7 @@ pub enum ControllerEvent {
     /// A newly generated token fragment.
     Token(String),
     MediaBoundary(crate::generation::MediaBoundary),
+    Speech(crate::generation::SpeechChunk),
     /// A structured tool-call extracted by the cross-backend tool-call
     /// parser (see `gen2/backend/common/tool_calls.rs`). The payload's
     /// `arguments` field is raw JSON text; downstream consumers validate

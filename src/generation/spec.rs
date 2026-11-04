@@ -1,8 +1,24 @@
 use serde::{Deserialize, Serialize};
 
+/// Select which parts the model can generate in this turn.
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
+#[non_exhaustive]
+pub enum OutputMode {
+    /// Generate text and tool calls.
+    #[default]
+    Text,
+    /// Generate spoken audio.
+    Speech,
+    /// Generate interleaved text and spoken audio.
+    TextAndSpeech,
+}
+
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct GenSpec {
+    #[serde(default)]
+    pub output_mode: OutputMode,
     /// Opt-in exact text context enforcement. Unsupported paths must reject it.
     #[serde(default)]
     pub require_full_context: bool,

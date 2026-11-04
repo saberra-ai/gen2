@@ -768,7 +768,8 @@ mod tests {
                 Some(Ok(TokenEvent::Paused))
                 | Some(Ok(TokenEvent::Special(_)))
                 | Some(Ok(TokenEvent::ToolCall(_)))
-                | Some(Ok(TokenEvent::MediaBoundary(_))) => continue,
+                | Some(Ok(TokenEvent::MediaBoundary(_)))
+                | Some(Ok(TokenEvent::Speech(_))) => continue,
                 Some(Err(e)) => return Err(e.into()),
                 None => break,
             }

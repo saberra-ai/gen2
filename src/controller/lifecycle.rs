@@ -104,6 +104,7 @@ pub(super) fn attach_generating_puller(
     chat.state = ChatRunState::Generating {
         puller,
         gen_started: Instant::now(),
+        pending_speech: None,
         last_gen_spec: pull_spec,
     };
 }

@@ -421,15 +421,13 @@ impl<'a> Chat<'a> {
             session.opened = false;
         }
 
-        // Checked before anything is sent, so a text-only model given an image
-        // fails with the conversation untouched — the caller can drop the
-        // attachment or swap the model and try again.
-        if has_images(session.messages()) && !engine.supports_images() {
-            // Leave the conversation as this turn found it. The builder appends
-            // as it is configured, so without this the rejected message would
-            // stay and every later turn would hit the same wall.
+        if let Some(media) =
+            crate::session_rt::media_util::unsupported_media(session.messages(), || {
+                engine.capabilities()
+            })
+        {
             session.rollback_to(self.mark);
-            return Err(Error::Unsupported("images".into()));
+            return Err(Error::Unsupported(media.into()));
         }
 
         let (tx, rx) = event_channel(engine.event_channel_capacity());
@@ -579,22 +577,6 @@ pub(crate) fn offered_fingerprint(tools: Option<&(Vec<ToolSpec>, String)>) -> u6
         feed(spec.function.arguments.to_string().as_bytes());
     }
     h
-}
-
-/// Whether any message carries an image.
-///
-/// Scans the whole transcript, not just this turn: a conversation that picked
-/// up an image earlier still needs a multimodal model to replay it.
-pub(crate) fn has_images(messages: &[Message]) -> bool {
-    use crate::types::message::{MessageBody, MessageChunk, MessageContent};
-    messages.iter().any(|m| match &m.body {
-        MessageBody::Content {
-            content: MessageContent::MultipleChunks(chunks),
-        } => chunks
-            .iter()
-            .any(|c| matches!(c, MessageChunk::ImageUrl { .. })),
-        _ => false,
-    })
 }
 
 /// Translate a streamed tool call into the form a message stores.

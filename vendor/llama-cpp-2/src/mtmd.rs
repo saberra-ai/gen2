@@ -8,8 +8,12 @@
 use std::ffi::{CStr, CString};
 use std::ptr::NonNull;
 use std::slice;
+use std::sync::{Mutex, MutexGuard};
 
 use crate::context::LlamaContext;
+pub use crate::context::mtmd_audio::{
+    MtmdAudioGenerationError, MtmdAudioOutputMode, MtmdAudioStep, MtmdPcmChunk,
+};
 use crate::model::LlamaModel;
 use crate::token::LlamaToken;
 
@@ -160,6 +164,8 @@ pub struct MtmdInputText {
 #[derive(Debug)]
 pub struct MtmdContext {
     pub(crate) context: NonNull<llama_cpp_sys_2::mtmd_context>,
+    pub(crate) model_identity: NonNull<llama_cpp_sys_2::llama_model>,
+    operations: Mutex<()>,
 }
 
 // MtmdContext is thread safe
@@ -201,7 +207,27 @@ impl MtmdContext {
         };
 
         let context = NonNull::new(context).ok_or(MtmdInitError::NullResult)?;
-        Ok(Self { context })
+        Ok(Self {
+            context,
+            model_identity: text_model.model,
+            operations: Mutex::new(()),
+        })
+    }
+
+    pub(crate) fn lock_operations(&self) -> MutexGuard<'_, ()> {
+        self.operations
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+    }
+
+    /// Whether this projector includes LFM3's speech decoder.
+    #[must_use]
+    pub fn supports_lfm3_audio_generation(&self) -> bool {
+        let _guard = self.lock_operations();
+        unsafe {
+            llama_cpp_sys_2::mtmd_gen_audio_get_info(self.context.as_ptr()).type_
+                == llama_cpp_sys_2::MTMD_GEN_AUDIO_TYPE_LFM3A
+        }
     }
 
     /// Check whether non-causal attention mask is needed before `llama_decode`.
@@ -239,6 +265,37 @@ impl MtmdContext {
     pub fn get_audio_sample_rate(&self) -> Option<u32> {
         let rate = unsafe { llama_cpp_sys_2::mtmd_get_audio_sample_rate(self.context.as_ptr()) };
         (rate > 0).then_some(rate.unsigned_abs())
+    }
+
+    /// Whether the projector accepts LFM3-Omni video with a soundtrack.
+    #[must_use]
+    pub fn support_lfm3_omni_video(&self) -> bool {
+        let cfg =
+            unsafe { llama_cpp_sys_2::mtmd_get_video_config(self.context.as_ptr(), 0, 0, 0, 0.0) };
+        cfg.tmpl == llama_cpp_sys_2::MTMD_VIDEO_TEMPLATE_LFM3_OMNI
+    }
+
+    /// Dimensions the projector expects for a sequence sampled at two frames per second.
+    #[must_use]
+    pub fn lfm3_video_size(
+        &self,
+        width: u32,
+        height: u32,
+        frame_count: usize,
+    ) -> Option<(u32, u32)> {
+        let cfg = unsafe {
+            llama_cpp_sys_2::mtmd_get_video_config(
+                self.context.as_ptr(),
+                i32::try_from(width).ok()?,
+                i32::try_from(height).ok()?,
+                i32::try_from(frame_count).ok()?,
+                2.0,
+            )
+        };
+        (cfg.tmpl == llama_cpp_sys_2::MTMD_VIDEO_TEMPLATE_LFM3_OMNI
+            && cfg.frame_width > 0
+            && cfg.frame_height > 0)
+            .then_some((cfg.frame_width as u32, cfg.frame_height as u32))
     }
 
     /// Backward-compatible alias for the audio sample rate getter.
@@ -302,6 +359,7 @@ impl MtmdContext {
             .map(|b| b.bitmap.as_ptr().cast_const())
             .collect();
 
+        let _guard = self.lock_operations();
         let result = unsafe {
             llama_cpp_sys_2::mtmd_tokenize(
                 self.context.as_ptr(),
@@ -338,6 +396,7 @@ impl MtmdContext {
     ///
     /// Returns `MtmdEncodeError::EncodeFailure` if encoding fails.
     pub fn encode_chunk(&self, chunk: &MtmdInputChunk) -> Result<(), MtmdEncodeError> {
+        let _guard = self.lock_operations();
         let result = unsafe {
             llama_cpp_sys_2::mtmd_encode_chunk(self.context.as_ptr(), chunk.chunk.as_ptr())
         };
@@ -361,9 +420,128 @@ impl Drop for MtmdContext {
 /// Represents bitmap data for images or audio that can be processed
 /// by the multimodal system. For images, data is stored in RGB format.
 /// For audio, data is stored as PCM F32 samples.
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 pub struct MtmdBitmap {
     pub(crate) bitmap: NonNull<llama_cpp_sys_2::mtmd_bitmap>,
+}
+
+/// One item in a prepared video, in projector input order.
+#[derive(Debug)]
+pub enum MtmdVideoPart {
+    /// A timestamp between temporal frame groups.
+    Timestamp(CString),
+    /// One RGB24 frame. The bytes are copied into a native bitmap at tokenization time.
+    Frame {
+        /// Frame width in pixels.
+        width: u32,
+        /// Frame height in pixels.
+        height: u32,
+        /// Packed RGB pixels, without row padding.
+        rgb: Vec<u8>,
+    },
+    /// PCM samples for the immediately preceding frame group.
+    Soundtrack(Vec<f32>),
+}
+
+/// A video marker backed by caller-supplied frames and audio. Its callback is
+/// invoked by MTMD synchronously during tokenization.
+#[derive(Debug)]
+pub struct MtmdVideoBitmap {
+    bitmap: MtmdBitmap,
+    _parts: Box<VideoParts>,
+}
+
+#[derive(Debug)]
+struct VideoParts(Vec<MtmdVideoPart>);
+
+impl MtmdVideoBitmap {
+    /// Construct a video marker. MTMD wraps the parts in its video template.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if MTMD cannot allocate the marker.
+    pub fn new(ctx: &MtmdContext, parts: Vec<MtmdVideoPart>) -> Result<Self, MtmdBitmapError> {
+        let mut parts = Box::new(VideoParts(parts));
+        let raw = unsafe {
+            llama_cpp_sys_2::mtmd_bitmap_init_lazy(
+                ctx.context.as_ptr(),
+                std::ptr::null(),
+                std::ptr::from_mut(parts.as_mut()).cast(),
+                Some(video_part),
+            )
+        };
+        let bitmap = NonNull::new(raw).ok_or(MtmdBitmapError::NullResult)?;
+        unsafe { llama_cpp_sys_2::mtmd_bitmap_set_is_video(bitmap.as_ptr(), true) };
+        Ok(Self {
+            bitmap: MtmdBitmap { bitmap },
+            _parts: parts,
+        })
+    }
+
+    /// The marker to pass in the bitmap slice to `MtmdContext::tokenize`.
+    #[must_use]
+    pub fn as_bitmap(&self) -> &MtmdBitmap {
+        &self.bitmap
+    }
+}
+
+unsafe extern "C" fn video_part(
+    index: usize,
+    state: *mut std::ffi::c_void,
+    out_bitmap: *mut *mut llama_cpp_sys_2::mtmd_bitmap,
+    out_text: *mut *mut std::ffi::c_char,
+) -> std::ffi::c_int {
+    unsafe extern "C" {
+        fn malloc(size: usize) -> *mut std::ffi::c_void;
+    }
+
+    // The owning video bitmap keeps the immutable parts alive for the duration
+    // of the synchronous MTMD call. The native consumer frees each result.
+    let parts = unsafe { &*state.cast::<VideoParts>() };
+    let Some(part) = parts.0.get(index) else {
+        return -1;
+    };
+    let raw = match part {
+        MtmdVideoPart::Timestamp(text) => {
+            let bytes = text.as_bytes_with_nul();
+            let dest = unsafe { malloc(bytes.len()).cast::<u8>() };
+            if dest.is_null() {
+                return -2;
+            }
+            unsafe {
+                std::ptr::copy_nonoverlapping(bytes.as_ptr(), dest, bytes.len());
+                *out_text = dest.cast();
+            }
+            return 0;
+        }
+        MtmdVideoPart::Frame { width, height, rgb } => {
+            if *width == 0
+                || *height == 0
+                || (*width as usize)
+                    .checked_mul(*height as usize)
+                    .and_then(|pixels| pixels.checked_mul(3))
+                    != Some(rgb.len())
+            {
+                return -2;
+            }
+            let raw = unsafe { llama_cpp_sys_2::mtmd_bitmap_init(*width, *height, rgb.as_ptr()) };
+            if !raw.is_null() {
+                unsafe {
+                    llama_cpp_sys_2::mtmd_bitmap_set_mergeable(raw, true);
+                    llama_cpp_sys_2::mtmd_bitmap_set_is_video(raw, true);
+                }
+            }
+            raw
+        }
+        MtmdVideoPart::Soundtrack(samples) => unsafe {
+            llama_cpp_sys_2::mtmd_bitmap_init_from_audio(samples.len(), samples.as_ptr())
+        },
+    };
+    if raw.is_null() {
+        return -2;
+    }
+    unsafe { *out_bitmap = raw };
+    0
 }
 
 // MtmdBitmap is thread safe
@@ -561,6 +739,9 @@ impl MtmdBitmap {
     pub fn data(&self) -> &[u8] {
         let ptr = unsafe { llama_cpp_sys_2::mtmd_bitmap_get_data(self.bitmap.as_ptr()) };
         let len = unsafe { llama_cpp_sys_2::mtmd_bitmap_get_n_bytes(self.bitmap.as_ptr()) };
+        if len == 0 {
+            return &[];
+        }
         unsafe { slice::from_raw_parts(ptr, len) }
     }
 
@@ -735,7 +916,6 @@ impl MtmdInputChunks {
     ///
     /// Returns `MtmdEvalError::EvalFailure` if any encoding or decoding operation fails.
     ///
-    /// This function is NOT thread-safe.
     pub fn eval_chunks(
         &self,
         mtmd_ctx: &MtmdContext,
@@ -747,6 +927,7 @@ impl MtmdInputChunks {
     ) -> Result<llama_cpp_sys_2::llama_pos, MtmdEvalError> {
         let mut new_n_past: llama_cpp_sys_2::llama_pos = 0;
 
+        let _guard = mtmd_ctx.lock_operations();
         let result = unsafe {
             llama_cpp_sys_2::mtmd_helper_eval_chunks(
                 mtmd_ctx.context.as_ptr(),

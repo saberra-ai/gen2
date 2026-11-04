@@ -103,6 +103,50 @@ response.usage();          // prompt and completion tokens
 # }
 ```
 
+## Run LFM3-Omni-2B in process
+
+Load Liquid AI's GGUF and projector with the default llama.cpp backend. The
+same model accepts text, images, 16 kHz mono PCM, and video frames with a
+soundtrack. Use the model card's system prompt for transcription or synthesis.
+You can also ask for interleaved text and speech in a conversational turn.
+
+```rust,no_run
+# fn main() -> gen2::Result<()> {
+use gen2::{Event, Runtime};
+use gen2::output::OutputMode;
+
+let runtime = Runtime::new()?;
+let model = runtime.load_with_projector(
+    "LFM3-Omni-2B-Q4_K_M.gguf",
+    "mmproj-LFM3-Omni-2B-Q4_K_M.gguf",
+)?;
+let mut stream = model
+    .generate("Hello world.")
+    .system("Perform TTS in American English using a female voice.")
+    .output_mode(OutputMode::Speech)
+    .stream()?;
+
+for event in &mut stream {
+    if let Event::SpeechDelta(chunk) = event? {
+        // Send chunk.samples to the host's audio player at chunk.sample_rate.
+    }
+}
+let response = stream.finish()?;
+# Ok(())
+# }
+```
+
+Pass a recorded turn through `Input::audio_pcm`. For video, give
+`input::Video::new` image frames sampled at 2 fps and the aligned mono PCM
+soundtrack. The host decodes the container and captures microphone audio.
+Gen2 consumes completed audio inputs and streams generated speech as 24 kHz
+mono PCM. Use `OutputMode::TextAndSpeech` to receive text and audio events in
+the same stream. `response.message.content` keeps the output parts in order.
+
+See the [LFM3-Omni model card](https://huggingface.co/LiquidAI/LFM3-Omni-2B#usage-examples)
+for task prompts and the [GGUF files](https://huggingface.co/LiquidAI/LFM3-Omni-2B-GGUF/tree/main)
+for the weights and projector.
+
 ## Models from Hugging Face
 
 Anywhere a path goes, an `hf:` reference goes too — the grammar `llama-cli

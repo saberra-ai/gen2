@@ -28,6 +28,8 @@ pub enum Event {
     ToolCall(ToolCall),
     /// A media segment boundary in a multimodal reply.
     MediaBoundary(MediaBoundary),
+    /// Generated speech in mono PCM.
+    Speech(crate::generation::SpeechChunk),
     /// Timing and token counts for the finished generation.
     Stats(ExecutionStats),
     /// The conversation didn't fit the context window; `dropped` messages were
@@ -190,7 +192,7 @@ impl TokenStream {
                 Event::Stats(s) => done.stats = Some(s),
                 Event::ContextTruncated { dropped } => done.dropped += dropped,
                 Event::ContextCompacted { compacted, .. } => done.compacted += compacted,
-                Event::MediaBoundary(_) => {}
+                Event::MediaBoundary(_) | Event::Speech(_) => {}
             }
         }
         done.finish = self.finish().unwrap_or_default();
@@ -339,6 +341,7 @@ impl Iterator for TokenStream {
             ControllerEvent::Token(t) => Event::Token(t),
             ControllerEvent::ToolCall(c) => Event::ToolCall(c),
             ControllerEvent::MediaBoundary(b) => Event::MediaBoundary(b),
+            ControllerEvent::Speech(chunk) => Event::Speech(chunk),
             ControllerEvent::FinalStats(s) => Event::Stats(s),
             ControllerEvent::ContextTruncated(dropped) => Event::ContextTruncated { dropped },
             ControllerEvent::ContextCompacted {
