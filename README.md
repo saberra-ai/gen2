@@ -141,46 +141,36 @@ Pass a recorded turn through `Input::audio_pcm`. For video, give
 soundtrack. The host decodes the video container. `response.message.content`
 keeps the output parts in order.
 
-### Stream a microphone turn
+### Run a voice turn
 
-Use `Turn::start_microphone` to start encoding while the host captures audio.
-Send finite, normalized mono 16 kHz PCM from a worker thread. Each push
-blocks until LFM3 processes that chunk and returns the number of rows added
-to the active context. Short chunks can return zero while the encoder waits
-for more samples.
+Call `Turn::voice` on a worker thread with PCM chunks from your microphone.
+Declare the source sample rate and channel count once. Gen2 downmixes and
+resamples while the source runs, then starts the reply when the source ends.
 
 ```rust,no_run
-use gen2::{Event, Model, Session};
-use gen2::output::OutputMode;
+use gen2::{Model, Response, Session, VoiceInput, output::SpeechChunk};
 
 fn voice_turn(
     model: &Model,
     session: &mut Session,
-    capture: impl IntoIterator<Item = Vec<f32>>,
-) -> gen2::Result<()> {
-    let mut mic = model
-        .turn(session)
-        .output_mode(OutputMode::TextAndSpeech)
-        .start_microphone()?;
-
-    for pcm in capture {
-        mic.push(&pcm)?;
-    }
-
-    let mut reply = mic.commit()?;
-    for event in &mut reply {
-        if let Event::SpeechDelta(chunk) = event? {
-            // Play chunk.samples at chunk.sample_rate (24 kHz for LFM3).
-        }
-    }
-    reply.finish()?;
-    Ok(())
+    capture: impl IntoIterator<Item = gen2::Result<Vec<f32>>>,
+    play: impl FnMut(&SpeechChunk) -> gen2::Result<()>,
+) -> gen2::Result<Response> {
+    model.turn(session).voice(
+        VoiceInput::new(capture, 48_000, 2),
+        play,
+    )
 }
 ```
 
-End the capture to start the reply. Use `OutputMode::Text` and Liquid AI's
-ASR system prompt for transcription. Drop the microphone turn to discard
-an unfinished capture. The host owns microphone permissions, capture,
+Supply finite, normalized, interleaved `f32` samples. The example uses
+48 kHz stereo. For an infallible PCM iterator, pass `capture.map(Ok)`.
+Queue speech chunks at their reported sample rate (24 kHz for LFM3), and
+reuse the session for follow-up turns.
+
+For explicit capture and commit control, call `Turn::start_microphone`
+with mono 16 kHz PCM. Use `OutputMode::Text` and Liquid AI's ASR system
+prompt for transcription. The host owns microphone permissions, capture,
 end-of-turn detection, and playback.
 
 See the [LFM3-Omni model card](https://huggingface.co/LiquidAI/LFM3-Omni-2B#usage-examples)

@@ -42,6 +42,7 @@ pub mod tool_defs;
 #[cfg(feature = "agent")]
 pub mod tools;
 pub mod turn;
+mod voice;
 
 // ── The inference-first facade (api_spec.md §4–§6) ──────────────────────────
 // `Runtime` loads `Model`s; a model generates a `Response`. Built over the
@@ -63,6 +64,7 @@ pub use runtime::{
 pub use session::Session;
 pub use tool_defs::{ToolDefinition, ToolSet};
 pub use turn::{GenerationOptions, MicrophoneTurn, ToolChoice, Turn};
+pub use voice::VoiceInput;
 
 // ── The previous facade (`crate::legacy`) ───────────────────────────────────
 #[cfg(feature = "tokio")]

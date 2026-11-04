@@ -36,6 +36,7 @@ libloading = { version = "0.9", optional = true }
 ort = { version = "=2.0.0-rc.12", default-features = false, features = ["std", "api-24"], optional = true }
 rustfft = { version = "6", optional = true }
 hound = { version = "3.5", optional = true }
+rubato = { version = "0.16.2", default-features = false }
 # ── Inference backends (all optional; pick at least one) ────────────────────
 llama-cpp-2 = { version = "=0.1.156", path = "vendor/llama-cpp-2", features = ["mtmd", "llguidance"], optional = true }
 llama-cpp-sys-2 = { version = "=0.1.156", path = "vendor/llama-cpp-sys-2", optional = true }
