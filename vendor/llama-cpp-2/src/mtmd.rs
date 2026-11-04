@@ -14,6 +14,7 @@ use crate::context::LlamaContext;
 pub use crate::context::mtmd_audio::{
     MtmdAudioGenerationError, MtmdAudioOutputMode, MtmdAudioStep, MtmdPcmChunk,
 };
+pub use crate::context::mtmd_input::MtmdAudioInputError;
 use crate::model::LlamaModel;
 use crate::token::LlamaToken;
 
@@ -257,6 +258,13 @@ impl MtmdContext {
     #[must_use]
     pub fn support_audio(&self) -> bool {
         unsafe { llama_cpp_sys_2::mtmd_support_audio(self.context.as_ptr()) }
+    }
+
+    /// Whether this LFM3-Omni projector accepts incremental microphone input.
+    #[must_use]
+    pub fn support_audio_stream(&self) -> bool {
+        self.support_lfm3_omni_video()
+            && unsafe { llama_cpp_sys_2::mtmd_support_audio_stream(self.context.as_ptr()) }
     }
 
     /// Get audio sample rate in Hz (e.g., 16000 for Whisper).

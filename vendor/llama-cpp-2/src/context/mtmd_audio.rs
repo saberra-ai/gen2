@@ -160,7 +160,7 @@ impl<'model> LlamaContext<'model> {
         mode: MtmdAudioOutputMode,
         seed: Option<u32>,
     ) -> Result<i32, MtmdAudioGenerationError> {
-        if self.mtmd_audio.is_some() {
+        if self.mtmd_audio.is_some() || self.mtmd_audio_input.is_some() {
             return Err(MtmdAudioGenerationError::AlreadyActive);
         }
         if position <= 0
