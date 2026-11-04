@@ -153,6 +153,10 @@ name = "laya_decisions"
 required-features = ["backend-laya-onnx"]
 
 [[example]]
+name = "image_generation"
+required-features = ["backend-stable-diffusion"]
+
+[[example]]
 name = "laya_benchmark"
 required-features = ["backend-laya-onnx"]
 
@@ -251,6 +255,8 @@ backend-litertlm = ["dep:libloading"]
 # ONNX Runtime GenAI's C ABI, supplied by the host at load time. Unlike
 # backend-laya-onnx this backend generates text from genai_config.json bundles.
 backend-onnx = ["dep:libloading"]
+# Host-supplied, versioned stable-diffusion bridge; no native build/download at Cargo build time.
+backend-stable-diffusion = ["dep:libloading"]
 # No binary downloads. Desktop hosts supply an ONNX Runtime 1.24 library.
 backend-laya-onnx = ["dep:ort"]
 onnx-dynamic = ["ort/load-dynamic", "dep:libloading"]

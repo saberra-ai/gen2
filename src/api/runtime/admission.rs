@@ -4,7 +4,7 @@ use crate::{
     memory::{MemoryGovernor, MemorySnapshot},
     residency_policy::ModelMemoryPlan,
 };
-use std::path::Path;
+use std::{path::Path, sync::atomic::Ordering};
 
 /// Individual inference charges at the observation, in MiB.
 #[derive(Debug, Clone)]
@@ -129,6 +129,17 @@ impl Runtime {
             .values()
             .filter(|model| model.source.is_local() && model.is_resident())
             .try_fold(0u64, |sum, model| sum.checked_add(model.estimated_mb));
+        let image_models = self
+            .inner
+            .image_models
+            .lock()
+            .map_err(|_| Error::Load("image model registry lock poisoned".into()))?;
+        let resident = resident.and_then(|resident| {
+            image_models
+                .values()
+                .filter(|entry| entry.resident.load(Ordering::SeqCst))
+                .try_fold(resident, |sum, entry| sum.checked_add(entry.plan.total_mb))
+        });
         let speech = self.speech_reserved_mb();
         let decision = self.decision_reserved_mb();
         let diarization = self.diarization_reserved_mb();

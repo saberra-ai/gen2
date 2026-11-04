@@ -95,6 +95,7 @@ pub(crate) struct RuntimeInner {
     /// [`Model`] carries its own `Arc` to the same entry, and an evicted
     /// model keeps its entry so it can be restored.
     models: Mutex<HashMap<ModelId, Arc<Loaded>>>,
+    image_models: Mutex<HashMap<ModelId, Arc<crate::image::Entry>>>,
     next_id: AtomicU64,
     /// Serialises admission: one load, restore, or eviction decides at a
     /// time, so two turns racing to restore two models cannot both pass a
@@ -438,6 +439,167 @@ impl Runtime {
             .unwrap_or_default()
     }
 
+    /// Load Qwen-Image-2.1-Turbo components through the host-supplied native
+    /// bridge. A conservative peak reservation covers all component weights,
+    /// working buffers and retained caches until the context is evicted.
+    pub fn load_image_model(
+        &self,
+        bundle: crate::image::ImageBundle,
+        options: crate::image::ImageLoadOptions,
+    ) -> Result<crate::image::ImageModel> {
+        if !cfg!(feature = "backend-stable-diffusion") {
+            return Err(crate::image::ImageError::BackendUnavailable(
+                "enable backend-stable-diffusion".into(),
+            )
+            .into());
+        }
+        if !cfg!(all(target_os = "macos", target_arch = "aarch64")) {
+            return Err(crate::image::ImageError::BackendUnavailable(
+                "this bridge is qualified for Apple silicon macOS only".into(),
+            )
+            .into());
+        }
+        let (bundle, files) = bundle.verify()?;
+        let plan = options.plan(&files)?;
+        let name = bundle
+            .denoiser
+            .file_stem()
+            .unwrap_or_default()
+            .to_string_lossy()
+            .into_owned();
+        let _admission = self
+            .inner
+            .admission
+            .lock()
+            .map_err(|_| Error::Load("admission lock poisoned".into()))?;
+        self.make_room(plan.total_mb, None);
+        self.require_image_admission(plan.total_mb)?;
+        let factory = crate::image::factory(bundle, options, files, plan.clone())?;
+        self.register_image(name, plan, factory)
+    }
+
+    fn register_image(
+        &self,
+        name: String,
+        plan: crate::image::ImageMemoryPlan,
+        factory: crate::image::Factory,
+    ) -> Result<crate::image::ImageModel> {
+        let driver = factory()?;
+        let entry = Arc::new(crate::image::Entry {
+            name,
+            plan,
+            factory,
+            state: Mutex::new(Some(driver)),
+            resident: AtomicBool::new(true),
+            busy: AtomicBool::new(false),
+            last_used: Mutex::new(Some(Instant::now())),
+        });
+        let id = ModelId(self.inner.next_id.fetch_add(1, Ordering::SeqCst));
+        self.inner
+            .image_models
+            .lock()
+            .unwrap_or_else(|e| e.into_inner())
+            .insert(id, Arc::clone(&entry));
+        Ok(crate::image::ImageModel {
+            runtime: self.clone(),
+            id,
+            entry,
+        })
+    }
+
+    /// Release an idle image context and its full peak reservation. A busy
+    /// request must be cancelled and finished first; its memory stays charged.
+    pub fn evict_image_model(&self, model: &crate::image::ImageModel) -> Result<()> {
+        self.own_image(model)?;
+        let _admission = self
+            .inner
+            .admission
+            .lock()
+            .map_err(|_| Error::Load("admission lock poisoned".into()))?;
+        model.entry.unload()?;
+        Ok(())
+    }
+
+    /// Restore an evicted image model. Its handle and request defaults survive.
+    pub fn preload_image_model(&self, model: &crate::image::ImageModel) -> Result<()> {
+        self.own_image(model)?;
+        let _admission = self
+            .inner
+            .admission
+            .lock()
+            .map_err(|_| Error::Load("admission lock poisoned".into()))?;
+        if !model.is_resident() {
+            self.make_room(model.entry.plan.total_mb, Some(model.id));
+            self.require_image_admission(model.entry.plan.total_mb)?;
+            model.entry.restore()?;
+        }
+        model.entry.touch();
+        Ok(())
+    }
+
+    pub(crate) fn begin_image_job(&self, model: &crate::image::ImageModel) -> Result<()> {
+        self.own_image(model)?;
+        let _admission = self
+            .inner
+            .admission
+            .lock()
+            .map_err(|_| Error::Load("admission lock poisoned".into()))?;
+        if model.is_busy() {
+            return Err(crate::image::ImageError::Busy.into());
+        }
+        if !model.is_resident() {
+            self.make_room(model.entry.plan.total_mb, Some(model.id));
+            self.require_image_admission(model.entry.plan.total_mb)?;
+            model.entry.restore()?;
+        } else {
+            // No additional ledger reservation: the peak envelope is already
+            // charged, including any native working buffers retained while idle.
+            self.make_room(0, Some(model.id));
+            self.require_image_admission(0)?;
+        }
+        model.entry.busy.store(true, Ordering::SeqCst);
+        model.entry.touch();
+        Ok(())
+    }
+
+    pub(crate) fn finish_image_job(&self, model: &crate::image::ImageModel) {
+        let _admission = self
+            .inner
+            .admission
+            .lock()
+            .unwrap_or_else(|e| e.into_inner());
+        model.entry.touch();
+        model.entry.busy.store(false, Ordering::SeqCst);
+    }
+
+    fn own_image(&self, model: &crate::image::ImageModel) -> Result<()> {
+        if !Arc::ptr_eq(&self.inner, &model.runtime.inner) {
+            return Err(Error::InvalidRequest(format!(
+                "{} belongs to another runtime",
+                model.id
+            )));
+        }
+        Ok(())
+    }
+
+    fn require_image_admission(&self, extra_mb: u64) -> Result<()> {
+        if self.can_admit(extra_mb) {
+            return Ok(());
+        }
+        Err(crate::image::ImageError::ResourceLimit(format!(
+            "need {extra_mb} additional MiB; current reservations {} MiB, inference budget {} MiB",
+            self.residency()
+                .resident_mb()
+                .saturating_add(self.auxiliary_reserved_mb()),
+            self.inner
+                .config
+                .memory_governor()
+                .budgets()
+                .inference_resident_mb,
+        ))
+        .into())
+    }
+
     /// Current admission limits and measured host memory, for inspection before
     /// attempting a load. The snapshot can change as other applications allocate.
     pub fn memory_snapshot(&self) -> crate::advanced::runtime::MemorySnapshot {
@@ -758,6 +920,14 @@ impl Runtime {
             .lock()
             .map(|m| m.keys().copied().collect())
             .unwrap_or_default();
+        ids.extend(
+            self.inner
+                .image_models
+                .lock()
+                .unwrap_or_else(|e| e.into_inner())
+                .keys()
+                .copied(),
+        );
         ids.sort();
         ids
     }
@@ -798,6 +968,21 @@ impl Runtime {
                     .collect()
             })
             .unwrap_or_default();
+        models.extend(
+            self.inner
+                .image_models
+                .lock()
+                .unwrap_or_else(|e| e.into_inner())
+                .iter()
+                .map(|(id, entry)| ModelResidency {
+                    id: *id,
+                    name: Some(entry.name.clone()),
+                    local: true,
+                    resident: entry.resident.load(Ordering::SeqCst),
+                    estimated_mb: entry.plan.total_mb,
+                    idle_for: entry.last_used().map(|t| t.elapsed()),
+                }),
+        );
         models.sort_by_key(|m| m.id);
         ResidencySnapshot { models }
     }
@@ -848,6 +1033,23 @@ impl Runtime {
                     .sum()
             })
             .unwrap_or(0);
+        let (image_reserved_mb, active_image_jobs) = {
+            let entries = self
+                .inner
+                .image_models
+                .lock()
+                .unwrap_or_else(|e| e.into_inner());
+            (
+                entries
+                    .values()
+                    .filter(|entry| entry.resident.load(Ordering::SeqCst))
+                    .fold(0u64, |sum, entry| sum.saturating_add(entry.plan.total_mb)),
+                entries
+                    .values()
+                    .filter(|entry| entry.busy.load(Ordering::SeqCst))
+                    .count(),
+            )
+        };
         RuntimeStats {
             models: residency.models.len(),
             resident_models: residency.models.iter().filter(|m| m.resident).count(),
@@ -858,6 +1060,8 @@ impl Runtime {
             speech_reserved_mb: self.speech_reserved_mb(),
             diarization_reserved_mb: self.diarization_reserved_mb(),
             working_memory_reserved_mb: self.working_memory_reserved_mb(),
+            image_reserved_mb,
+            active_image_jobs,
             active_sessions,
             evictions: self.inner.evictions.load(Ordering::SeqCst),
         }
@@ -902,7 +1106,7 @@ impl Runtime {
             let Some(victim) = victim else {
                 return;
             };
-            if Self::unload(&victim).is_ok() {
+            if victim.unload().is_ok() {
                 self.inner.evictions.fetch_add(1, Ordering::SeqCst);
             } else {
                 // A model that will not unload cannot make room; try no
@@ -921,15 +1125,32 @@ impl Runtime {
     }
 
     /// The resident local model used longest ago, other than `keep`.
-    fn least_recently_used(&self, keep: Option<ModelId>) -> Option<Arc<Loaded>> {
-        let models = self.inner.models.lock().ok()?;
-        models
+    fn least_recently_used(&self, keep: Option<ModelId>) -> Option<EvictionCandidate> {
+        let mut candidates: Vec<_> = self
+            .inner
+            .models
+            .lock()
+            .ok()?
             .iter()
-            .filter(|(id, loaded)| {
-                Some(**id) != keep && loaded.source.is_local() && loaded.is_resident()
+            .filter(|(id, entry)| {
+                Some(**id) != keep && entry.source.is_local() && entry.is_resident()
             })
-            .min_by_key(|(id, loaded)| (loaded.last_used(), **id))
-            .map(|(_, loaded)| Arc::clone(loaded))
+            .map(|(id, entry)| EvictionCandidate::Text(*id, Arc::clone(entry)))
+            .collect();
+        candidates.extend(
+            self.inner
+                .image_models
+                .lock()
+                .ok()?
+                .iter()
+                .filter(|(id, entry)| {
+                    Some(**id) != keep
+                        && entry.resident.load(Ordering::SeqCst)
+                        && !entry.busy.load(Ordering::SeqCst)
+                })
+                .map(|(id, entry)| EvictionCandidate::Image(*id, Arc::clone(entry))),
+        );
+        candidates.into_iter().min_by_key(|entry| entry.order())
     }
 
     /// Unload one model's weights. Called with the admission lock held.
@@ -1003,6 +1224,38 @@ impl Runtime {
         model.loaded().touch();
         model
     }
+
+    #[cfg(test)]
+    pub(crate) fn scripted_image_in(
+        &self,
+        plan: crate::image::ImageMemoryPlan,
+        factory: crate::image::Factory,
+    ) -> Result<crate::image::ImageModel> {
+        let _admission = self.inner.admission.lock().unwrap();
+        self.make_room(plan.total_mb, None);
+        self.require_image_admission(plan.total_mb)?;
+        self.register_image("scripted image".into(), plan, factory)
+    }
+}
+
+enum EvictionCandidate {
+    Text(ModelId, Arc<Loaded>),
+    Image(ModelId, Arc<crate::image::Entry>),
+}
+
+impl EvictionCandidate {
+    fn order(&self) -> (Option<Instant>, ModelId) {
+        match self {
+            Self::Text(id, entry) => (entry.last_used(), *id),
+            Self::Image(id, entry) => (entry.last_used(), *id),
+        }
+    }
+    fn unload(&self) -> Result<()> {
+        match self {
+            Self::Text(_, entry) => Runtime::unload(entry),
+            Self::Image(_, entry) => entry.unload().map_err(Into::into),
+        }
+    }
 }
 
 /// One model's residency, from [`Runtime::residency`].
@@ -1017,9 +1270,8 @@ pub struct ModelResidency {
     pub local: bool,
     /// Whether they are loaded right now. Always true for a remote model.
     pub resident: bool,
-    /// Host memory the weights are estimated to hold while resident, in
-    /// MB. An estimate from the file size and the GPU offload, not a
-    /// measurement.
+    /// Estimated allocation in MiB. For image models this includes the full
+    /// peak workspace reservation as well as weights; this is not measured RSS.
     pub estimated_mb: u64,
     /// Time since the model last ran a turn or was preloaded; `None` if it
     /// never has.
@@ -1077,6 +1329,10 @@ pub struct RuntimeStats {
     pub diarization_reserved_mb: u64,
     /// Host media/cache/finalization work, including stopping operations.
     pub working_memory_reserved_mb: u64,
+    /// Subset of residency reserved for image component weights and peak workspace.
+    pub image_reserved_mb: u64,
+    /// Image jobs currently executing or waiting on the process-wide native gate.
+    pub active_image_jobs: usize,
     /// Conversations the engines currently hold runtime state for, summed.
     pub active_sessions: usize,
     /// Models evicted to make room for another, over the runtime's life.
@@ -1125,8 +1381,8 @@ impl RuntimeBuilder {
     }
 
     /// Set the host application's resident-memory budget in MiB instead of
-    /// using the automatic inference allocation. Includes chat weights and
-    /// decision peak reservations. Live memory pressure and process ceilings
+    /// using the automatic inference allocation. Includes chat allocations,
+    /// image peak envelopes and decision reservations. Live pressure and process ceilings
     /// still apply at both runtime and controller admission. The host must
     /// leave space for its own UI and other work.
     pub(crate) fn resident_budget_mb(mut self, mb: u64) -> Self {
@@ -1159,6 +1415,7 @@ impl RuntimeBuilder {
                 config: self.config,
                 settings: self.settings.unwrap_or_default(),
                 models: Mutex::new(HashMap::new()),
+                image_models: Mutex::new(HashMap::new()),
                 next_id: AtomicU64::new(0),
                 admission: Mutex::new(()),
                 evictions: AtomicU64::new(0),

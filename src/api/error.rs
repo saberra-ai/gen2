@@ -17,6 +17,9 @@ pub enum Error {
     Diarization(#[from] crate::diarization::DiarizationError),
     #[error(transparent)]
     Speech(#[from] crate::speech::SpeechError),
+    /// Image validation, native execution, cancellation or memory admission.
+    #[error(transparent)]
+    Image(#[from] crate::image::ImageError),
     /// Typed decision validation, admission, lifecycle or native execution error.
     #[error(transparent)]
     Decision(#[from] crate::decision::DecisionError),
@@ -112,6 +115,7 @@ impl Error {
             Self::ResourceLimit { .. } => Some("resource_limit"),
             Self::Speech(e) => Some(e.code()),
             Self::Diarization(e) => Some(e.code()),
+            Self::Image(e) => Some(e.code()),
             Self::Decision(e) => Some(e.code()),
             Self::Generation { code, .. } => Some(code),
             Self::WontFit(_) => Some("wont_fit"),
@@ -150,6 +154,7 @@ impl Error {
         match self {
             Self::Speech(crate::speech::SpeechError::Busy) => true,
             Self::Diarization(crate::diarization::DiarizationError::Busy) => true,
+            Self::Image(crate::image::ImageError::Busy) => true,
             Self::Decision(crate::decision::DecisionError::Busy) => true,
             Self::Generation { code, .. } => !NOT_WORTH_RETRYING.contains(&code.as_str()),
             _ => false,

@@ -34,7 +34,7 @@ pub mod model;
 pub mod output;
 mod request_schema;
 mod response;
-mod runtime;
+pub(crate) mod runtime;
 pub mod session;
 mod spawned;
 mod stream;

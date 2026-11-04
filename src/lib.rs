@@ -77,6 +77,8 @@ pub mod speech;
 #[cfg(feature = "backend-asr-whisper")]
 pub mod whisper;
 
+/// Local image generation, progress, cancellation and model memory plans.
+pub mod image;
 #[cfg(any(feature = "backend-laya-onnx", feature = "backend-asr-onnx"))]
 mod onnx_runtime;
 

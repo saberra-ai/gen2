@@ -6,6 +6,11 @@ cheap handle you can clone, a `Session` is conversation state you own, and a
 generation options in; structured, streamable output out. Backends today are
 llama.cpp, mistral.rs, MLX, LiteRT-LM, or an OpenAI-compatible endpoint.
 
+For local image generation, `Runtime::load_image_model` returns a typed
+`gen2::image::ImageModel` with progress, cancellation and shared runtime memory
+admission. Enable `backend-stable-diffusion` and supply the Metal bridge and
+Qwen-Image-2.1-Turbo components. [API, setup and memory policy](docs/image-generation.md).
+
 For non-generative choice, score and yes/no decisions, the experimental
 `gen2::decision` API loads native Laya bundles. Enable `laya-dynamic` on desktop
 and supply an ONNX Runtime 1.24 library, or `backend-laya-onnx` for app-linked
