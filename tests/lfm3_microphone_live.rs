@@ -3,7 +3,7 @@
 use std::path::PathBuf;
 
 use gen2::output::{FinishReason, OutputMode};
-use gen2::{Event, Message, Runtime, Session};
+use gen2::{Error, Event, Message, Runtime, Session, VoiceInput};
 
 #[test]
 #[ignore = "requires LFM3 Omni GGUF fixtures, pineapple.f32le, and red.png"]
@@ -171,5 +171,41 @@ fn lfm3_encodes_microphone_before_commit_and_streams_a_reply() -> gen2::Result<(
         .unwrap_err();
     assert!(err.to_string().contains("open image"), "{err}");
     assert_eq!(serde_json::to_vec(&warm).unwrap(), before);
+
+    let stereo_48khz: Vec<_> = pcm.iter().flat_map(|&sample| [sample; 6]).collect();
+    let mut voice = Session::new().with_system(
+        "Repeat the secret word in the user's audio. Respond with interleaved text and audio.",
+    );
+    let mut played = 0;
+    let response = model.turn(&mut voice).greedy().max_tokens(128).voice(
+        VoiceInput::new(stereo_48khz.chunks(997).map(Ok), 48_000, 2),
+        |speech| {
+            assert_eq!(speech.sample_rate, 24_000);
+            assert!(speech.samples.iter().all(|sample| sample.is_finite()));
+            played += speech.samples.len();
+            Ok(())
+        },
+    )?;
+    assert!(response.text().to_lowercase().contains("pineapple"));
+    assert!(played > 2400, "the host must receive speech chunks");
+
+    let before = voice.messages().len();
+    let sink_error = model
+        .turn(&mut voice)
+        .greedy()
+        .max_tokens(128)
+        .voice(VoiceInput::new(pcm.chunks(1600).map(Ok), 16_000, 1), |_| {
+            Err(Error::Generation {
+                code: "speaker_failed".into(),
+                message: "playback stopped".into(),
+            })
+        })
+        .unwrap_err();
+    assert_eq!(sink_error.code(), Some("speaker_failed"));
+    assert_eq!(
+        voice.messages().len(),
+        before + 1,
+        "capture committed before playback"
+    );
     Ok(())
 }

@@ -216,7 +216,7 @@ pub use api::event::AsyncEventStream;
 /// [`EventStream`] of [`Event`]s.
 pub use api::{
     Error, Event, EventStream, GenerationOptions, Input, MicrophoneTurn, Model, RequestSchema,
-    Response, Result, Runtime, Session, ToolChoice, ToolDefinition, ToolSet, Turn,
+    Response, Result, Runtime, Session, ToolChoice, ToolDefinition, ToolSet, Turn, VoiceInput,
 };
 /// The conversation the model is given: the role-based wire message the
 /// backends render (api_spec.md §9's `enum Message` is not yet this type).
